@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/login_background"
+    android:gravity="center">
+
+
+    <!--  배경화면 사진   -->
+    <!--    <ImageView-->
+    <!--        android:id="@+id/img_bg"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        android:layout_centerHorizontal="true"-->
+    <!--        android:background="#ff000000"-->
+    <!--        android:scaleType="centerCrop"-->
+    <!--        android:src="@drawable/checklist" />-->
+
+    <ImageView
+        android:id="@+id/img_logo"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/yonsei_logo_ot"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_below="@+id/img_logo"
+        android:id="@+id/edt_login_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:hint="ID"
+        android:textColorHint="@color/colorPrimaryDark"
+        android:layout_marginTop="32dp">
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/fill_transparent_edt"
+            android:ems="10"
+            android:padding="8dp"
+            android:inputType="textEmailAddress"
+            tools:ignore="RtlSymmetry" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/edt_login_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/edt_login_id"
+        app:hintAnimationEnabled="true"
+        android:textColorHint="@color/colorPrimary"
+        android:layout_marginTop="16dp"
+        android:hint="Password"
+        android:layout_centerHorizontal="true">
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/fill_transparent_edt"
+            android:ems="10"
+            android:padding="8dp"
+            android:inputType="textPassword" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <CheckBox
+        android:id="@+id/check_saveId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/edt_login_password"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:buttonTint="@color/colorAccent"
+        android:text="아이디 저장" />
+
+    <CheckBox
+        android:id="@+id/check_autoLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/check_saveId"
+        android:layout_centerHorizontal="true"
+        android:buttonTint="@color/colorAccent"
+        android:text="자동 로그인" />
+
+    <Button
+        android:id="@+id/btn_go_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/check_autoLogin"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:padding="10dp"
+        android:background="@drawable/fill_maincolor_round_custom"
+        android:text="들어가기"
+        android:textColor="#ffffff" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btn_go_main"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:contextClickable="true"
+        android:text="회원가입"
+        android:textColor="#000000" />
+
+</RelativeLayout>
