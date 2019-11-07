@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "388831720388",
+    "firebase_url": "https://therapyschedulemanagement.firebaseio.com",
+    "project_id": "therapyschedulemanagement",
+    "storage_bucket": "therapyschedulemanagement.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:388831720388:android:0ce5ca58920cbab69caa91",
+        "android_client_info": {
+          "package_name": "kr.ac.yonsei.therapyschedulemanagement"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "388831720388-k3q43tbe0so51pu7ccvhvrv0rsctp8ev.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "kr.ac.yonsei.therapyschedulemanagement",
+            "certificate_hash": "de383008e03167f3a47a4d4d42e420fe8b2c65dc"
+          }
+        },
+        {
+          "client_id": "388831720388-pvu78861hkdjc4l0tddln26a8vsn8vnq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5QRljc3BogHCkHvOrYbEk-5KmH_S20-M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "388831720388-pvu78861hkdjc4l0tddln26a8vsn8vnq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
