@@ -32,7 +32,7 @@
             android:layout_marginHorizontal="8dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/stroke_rectang_edt"
-            android:hint="홍길동"
+            android:hint="이름을 입력해주세요."
             android:inputType="textPersonName"
             android:padding="16dp" />
 
@@ -112,13 +112,7 @@
                 android:layout_height="wrap_content"
                 android:hint="1993/08/27" />
 
-            <ImageButton
-                android:id="@+id/btn_userBirth"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:background="#00000000"
-                android:src="@drawable/stroke_rectang_edt" />
+
         </RelativeLayout>
 
         <RadioGroup
