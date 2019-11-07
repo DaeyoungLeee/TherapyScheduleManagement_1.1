@@ -63,6 +63,7 @@ public class SignIn_Activity extends AppCompatActivity {
         radio_man = findViewById(R.id.radio_man);
         radio_woman = findViewById(R.id.radio_woman);
 
+
         // 비밀번호 첫 번 째 받을 때 검증
         edt_member_userPassword1.addTextChangedListener(new TextWatcher() {
             @Override
