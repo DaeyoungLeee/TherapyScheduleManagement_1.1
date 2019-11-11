@@ -93,6 +93,11 @@ public class Calendar_Fragment extends Fragment {
                 month = eventDay.getCalendar().getTime().getMonth();
                 Log.d(TAG, "onDayClick: " + eventDay.getCalendar().getTime().getYear());
 
+                calendar_date = eventDay.getCalendar();
+                events.add(new EventDay(calendar_date, R.drawable.dot_orrange_small_icon));
+                events.add(new EventDay(calendar_date, R.drawable.dot_purple_small_icon));
+                // 달력 이미지 추가
+                calendarView.setEvents(events);
             }
 
         });
@@ -101,6 +106,7 @@ public class Calendar_Fragment extends Fragment {
         btn_add_schedule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // 캘린더 날짜 전달
                 Intent intent = new Intent(getContext(), Popup_Activity.class);
                 intent.putExtra("Date", year + "년 " + month + "월 " + date + "일");
                 startActivityForResult(intent, 1);
