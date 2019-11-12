@@ -123,7 +123,7 @@ public class LogIn_Activity extends AppCompatActivity {
         });
     }
 
-    void log_In() {
+    private void log_In() {
 
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {

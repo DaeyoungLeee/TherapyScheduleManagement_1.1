@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/bottomBarItemOne"
+        android:icon="@drawable/home_icon"
+        android:title="홈" />
+    <item
+        android:id="@+id/bottomBarItemSecond"
+        android:icon="@drawable/calendar_icon"
+        android:title="치료관리" />
+    <item
+        android:id="@+id/bottomBarItemThird"
+        android:icon="@drawable/diary_icon"
+        android:title="행동관리" />
+    <item
+        android:id="@+id/bottomBarItemFourth"
+        android:icon="@drawable/chart_icon"
+        android:title="데이터 관리" />
+    <item
+        android:id="@+id/bottomBarItemFifth"
+        android:icon="@drawable/setting_icon"
+        android:title="설정" />
+
+</menu>

@@ -27,6 +27,17 @@ allprojects {
         maven {
             url 'https://navercorp.bintray.com/maps'
         }
+        maven {
+            url  "https://dl.bintray.com/moro56/AnimatedCheckBox"
+        }
+
+        // 체크박스
+        maven {
+            url  "https://dl.bintray.com/moro56/AnimatedCheckBox"
+        }
+        // 라디오뷰 관련 jitpack설치
+        maven { url "https://jitpack.io" }
+
     }
 }
 

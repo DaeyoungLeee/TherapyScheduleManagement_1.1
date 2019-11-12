@@ -6,22 +6,35 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CalendarView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.applandeo.materialcalendarview.CalendarView;
-import com.applandeo.materialcalendarview.EventDay;
-import com.applandeo.materialcalendarview.listeners.OnDayClickListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
+import java.util.Map;
 
+import kr.ac.yonsei.therapyschedulemanagement.CalendarDaySchdule_Adapter;
+import kr.ac.yonsei.therapyschedulemanagement.CardItem;
 import kr.ac.yonsei.therapyschedulemanagement.Popup_Activity;
 import kr.ac.yonsei.therapyschedulemanagement.R;
 
@@ -31,9 +44,20 @@ public class Calendar_Fragment extends Fragment {
     // UI elements
     FloatingActionButton btn_add_schedule;
     CalendarView calendarView;
-    Calendar calendar_date;
+    Calendar calendar;
     SlidingUpPanelLayout sliding_layout;
-    LinearLayout linearLayout;
+    RecyclerView recyclerView;
+    TextView backslide;
+
+
+
+    // Firebase
+    private FirebaseAuth mAuth;
+    private FirebaseUser mUser;
+    private FirebaseDatabase mDatabase;
+    // Adapter
+    CalendarDaySchdule_Adapter calendarDaySchduleAdapter;
+
     int date, month, year;
 
     public static Calendar_Fragment newInstance() {
@@ -43,16 +67,109 @@ public class Calendar_Fragment extends Fragment {
 
     View view;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_calendar, container, false);
 
-        List<EventDay> events = new ArrayList<>();
-
         calendarView = view.findViewById(R.id.calendarView);
         btn_add_schedule = view.findViewById(R.id.btn_add);
         sliding_layout = view.findViewById(R.id.sliding_layout);
-        linearLayout = view.findViewById(R.id.linearLayout);
+        recyclerView = view.findViewById(R.id.recycler_frag2);
+
+        // 슬라이딩 올라와있는 상태에서 외부 Fade쪽 클릭하면 다시 내려오는 동작
+        backslide = view.findViewById(R.id.backSlide);
+        backslide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sliding_layout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+            }
+        });
+
+        mDatabase = FirebaseDatabase.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
+
+        ArrayList<CardItem> cardItemsList = new ArrayList<>();
+
+        calendarDaySchduleAdapter = new CalendarDaySchdule_Adapter(cardItemsList);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+        calendarDaySchduleAdapter.notifyDataSetChanged();
+        recyclerView.setAdapter(calendarDaySchduleAdapter);
+        Log.d(TAG, "onCreateView: " + year + "/" + month + "/" + date);
+        // 종료시간 가져오기
+        DatabaseReference listDataRef = mDatabase.getReference(mUser.getEmail().replace(".", "_"))
+                .child("Calendar")
+                .child(year + "/" + month + "/" + date)
+                .child("Therapy_schedule")
+                .child("end_time");
+        listDataRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                String end_time = dataSnapshot.getValue().toString(); // 종료시간들
+                // 시작시간 가져오기
+                mDatabase.getReference(mUser.getEmail().replace(".", "_"))
+                        .child("Calendar")
+                        .child(year + "/" + month + "/" + date)
+                        .child("Therapy_schedule")
+                        .child("start_time")
+                        .addChildEventListener(new ChildEventListener() {
+                            @Override
+                            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                String start_time = dataSnapshot.getValue().toString();
+
+                                final CardItem cardItem = new CardItem(start_time, end_time);
+
+                                cardItemsList.add(cardItem);
+
+                                recyclerView.setAdapter(calendarDaySchduleAdapter);
+                            }
+
+                            @Override
+                            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                            }
+
+                            @Override
+                            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                            }
+
+                            @Override
+                            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         // 현재 날짜 (초기화)
         long now = System.currentTimeMillis();
@@ -65,7 +182,6 @@ public class Calendar_Fragment extends Fragment {
         sliding_layout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
-                Log.d(TAG, "onPanelSlide: ");
             }
 
             @Override
@@ -84,23 +200,20 @@ public class Calendar_Fragment extends Fragment {
         });
 
         /** 캘린더 날짜 선택했을 때 동작 리스너 */
-        calendarView.setOnDayClickListener(new OnDayClickListener() {
+        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
-            public void onDayClick(EventDay eventDay) {
-                date = eventDay.getCalendar().getTime().getDate();
-                year = eventDay.getCalendar().getTime().getYear();
-                year = year - 100 + 2000;
-                month = eventDay.getCalendar().getTime().getMonth();
-                Log.d(TAG, "onDayClick: " + eventDay.getCalendar().getTime().getYear());
+            public void onSelectedDayChange(@NonNull CalendarView view, int selected_year, int selected_month, int selected_dayOfMonth) {
+                year = selected_year;
+                month = selected_month + 1;
+                date = selected_dayOfMonth;
 
-                calendar_date = eventDay.getCalendar();
-                events.add(new EventDay(calendar_date, R.drawable.dot_orrange_small_icon));
-                events.add(new EventDay(calendar_date, R.drawable.dot_purple_small_icon));
-                // 달력 이미지 추가
-                calendarView.setEvents(events);
+                Log.d(TAG, "onSelectedDayChange: " + year + "/" + month + "/" + date);
+
             }
-
         });
+
+
+
 
         /** Floating 추가 버튼 클릭 동작 */
         btn_add_schedule.setOnClickListener(new View.OnClickListener() {
@@ -109,10 +222,18 @@ public class Calendar_Fragment extends Fragment {
                 // 캘린더 날짜 전달
                 Intent intent = new Intent(getContext(), Popup_Activity.class);
                 intent.putExtra("Date", year + "년 " + month + "월 " + date + "일");
+                intent.putExtra("Year", year);
+                intent.putExtra("Month", month);
+                intent.putExtra("Day", date);
                 startActivityForResult(intent, 1);
+
+                /** 캘린더 날짜 선택했을 때 동작 리스너 */
+
             }
         });
+
         return view;
+
     }
 
 }

@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="kr.ac.yonsei.therapyschedulemanagement">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -10,6 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        tools:replace="android:label"
         tools:ignore="GoogleAppIndexingWarning">
 
         <!--   액티비티     -->
@@ -19,10 +22,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"/>
+        <activity android:name=".MainActivity">
+        </activity>
         <activity android:name=".LogIn_Activity"/>
         <activity android:name=".SignIn_Activity"
             android:launchMode="singleTop"/>
+        <activity android:name=".Popup_Activity"
+            android:theme="@android:style/Theme.Dialog"/>
+        <activity android:name=".Test_Activity"/>
     </application>
 
 </manifest>

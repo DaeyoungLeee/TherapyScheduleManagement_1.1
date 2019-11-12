@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TherapyScheduleManagement</string>
+    <string name="bottomnav_title_0">홈 화면</string>
 </resources>

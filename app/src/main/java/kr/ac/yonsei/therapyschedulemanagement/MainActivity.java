@@ -89,6 +89,5 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "한 번 더 누르면 종료됩니다", Toast.LENGTH_SHORT).show();
         }
 
-
     }
 }
