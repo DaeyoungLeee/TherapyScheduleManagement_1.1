@@ -1,4 +1,4 @@
-package kr.ac.yonsei.therapyschedulemanagement;
+package kr.ac.yonsei.therapyschedulemanagement.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +15,7 @@ import kr.ac.yonsei.therapyschedulemanagement.Fragments.Calendar_Fragment;
 import kr.ac.yonsei.therapyschedulemanagement.Fragments.Chart_Fragment;
 import kr.ac.yonsei.therapyschedulemanagement.Fragments.Diary_Fragment;
 import kr.ac.yonsei.therapyschedulemanagement.Fragments.Home_Fragment;
+import kr.ac.yonsei.therapyschedulemanagement.R;
 
 public class MainActivity extends AppCompatActivity {
 

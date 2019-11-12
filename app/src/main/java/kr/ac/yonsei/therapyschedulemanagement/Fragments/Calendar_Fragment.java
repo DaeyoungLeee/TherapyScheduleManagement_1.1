@@ -7,9 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CalendarView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,17 +23,15 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Map;
 
 import kr.ac.yonsei.therapyschedulemanagement.CalendarDaySchdule_Adapter;
 import kr.ac.yonsei.therapyschedulemanagement.CardItem;
-import kr.ac.yonsei.therapyschedulemanagement.Popup_Activity;
+import kr.ac.yonsei.therapyschedulemanagement.Activities.Popup_Activity;
 import kr.ac.yonsei.therapyschedulemanagement.R;
 
 public class Calendar_Fragment extends Fragment {
@@ -100,76 +96,7 @@ public class Calendar_Fragment extends Fragment {
         calendarDaySchduleAdapter.notifyDataSetChanged();
         recyclerView.setAdapter(calendarDaySchduleAdapter);
         Log.d(TAG, "onCreateView: " + year + "/" + month + "/" + date);
-        // 종료시간 가져오기
-        DatabaseReference listDataRef = mDatabase.getReference(mUser.getEmail().replace(".", "_"))
-                .child("Calendar")
-                .child(year + "/" + month + "/" + date)
-                .child("Therapy_schedule")
-                .child("end_time");
-        listDataRef.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                String end_time = dataSnapshot.getValue().toString(); // 종료시간들
-                // 시작시간 가져오기
-                mDatabase.getReference(mUser.getEmail().replace(".", "_"))
-                        .child("Calendar")
-                        .child(year + "/" + month + "/" + date)
-                        .child("Therapy_schedule")
-                        .child("start_time")
-                        .addChildEventListener(new ChildEventListener() {
-                            @Override
-                            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                String start_time = dataSnapshot.getValue().toString();
 
-                                final CardItem cardItem = new CardItem(start_time, end_time);
-
-                                cardItemsList.add(cardItem);
-
-                                recyclerView.setAdapter(calendarDaySchduleAdapter);
-                            }
-
-                            @Override
-                            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                            }
-
-                            @Override
-                            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-                            }
-
-                            @Override
-                            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
 
         // 현재 날짜 (초기화)
         long now = System.currentTimeMillis();
@@ -208,6 +135,105 @@ public class Calendar_Fragment extends Fragment {
                 date = selected_dayOfMonth;
 
                 Log.d(TAG, "onSelectedDayChange: " + year + "/" + month + "/" + date);
+/*
+
+                ArrayList<String> endTime1 = new ArrayList<>();
+                ArrayList<String> endTime2 = new ArrayList<>();
+                ArrayList<String> startTime1 = new ArrayList<>();
+                ArrayList<String> startTime2 = new ArrayList<>();
+
+                // 종료시간 가져오기
+                DatabaseReference listDataRef = mDatabase.getReference(mUser.getEmail().replace(".", "_"))
+                        .child("Calendar")
+                        .child(year + "/" + month + "/" + date)
+                        .child("Therapy_schedule")
+                        .child("end_time");
+                listDataRef.addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        String end_time = dataSnapshot.getValue().toString(); // 종료시간들
+                        Log.d(TAG, "onChildAdded: " + end_time);
+                        endTime1.add(end_time);
+                       */
+/* for (int i = 0; i < endTime1.size(); i++) {
+                            if (!endTime1.contains(endTime1.get(i))) {
+                                endTime2.add(endTime1.get(i));
+                            }
+                        }*//*
+
+
+
+                    }
+
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                    }
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+                // 시작시간 가져오기
+                mDatabase.getReference(mUser.getEmail().replace(".", "_"))
+                        .child("Calendar")
+                        .child(year + "/" + month + "/" + date)
+                        .child("Therapy_schedule")
+                        .child("start_time")
+                        .addChildEventListener(new ChildEventListener() {
+                            @Override
+                            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                String start_time = dataSnapshot.getValue().toString();
+                                startTime1.add(start_time);
+                              */
+/*  for (int i = 0; i < startTime1.size(); i++) {
+                                    if (!startTime1.contains(startTime1.get(i))) {
+                                        startTime2.add(startTime1.get(i));
+                                    }
+                                }*//*
+
+
+                                for (int j = 0; j < startTime1.size(); j++) {
+                                    final CardItem cardItem = new CardItem(startTime1.get(j), endTime1.get(j));
+                                    cardItemsList.add(cardItem);
+                                    recyclerView.removeAllViewsInLayout();
+                                    recyclerView.setAdapter(calendarDaySchduleAdapter);
+                                }
+                            }
+
+                            @Override
+                            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                            }
+
+                            @Override
+                            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                            }
+
+                            @Override
+                            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+*/
+
 
             }
         });

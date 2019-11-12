@@ -1,4 +1,4 @@
-package kr.ac.yonsei.therapyschedulemanagement;
+package kr.ac.yonsei.therapyschedulemanagement.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import javax.security.auth.login.LoginException;
+import kr.ac.yonsei.therapyschedulemanagement.R;
 
 public class Intro_Activity extends AppCompatActivity {
     @Override

@@ -1,4 +1,4 @@
-package kr.ac.yonsei.therapyschedulemanagement;
+package kr.ac.yonsei.therapyschedulemanagement.Activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -21,6 +21,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import kr.ac.yonsei.therapyschedulemanagement.R;
 
 public class LogIn_Activity extends AppCompatActivity {
     // 로그 태깅

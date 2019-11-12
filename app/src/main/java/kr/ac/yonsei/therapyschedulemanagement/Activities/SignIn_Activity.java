@@ -1,4 +1,4 @@
-package kr.ac.yonsei.therapyschedulemanagement;
+package kr.ac.yonsei.therapyschedulemanagement.Activities;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -33,6 +33,9 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import kr.ac.yonsei.therapyschedulemanagement.R;
+import kr.ac.yonsei.therapyschedulemanagement.UserData;
 
 public class SignIn_Activity extends AppCompatActivity {
     // 로깅 태그

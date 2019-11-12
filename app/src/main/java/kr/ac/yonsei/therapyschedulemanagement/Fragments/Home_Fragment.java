@@ -1,6 +1,5 @@
 package kr.ac.yonsei.therapyschedulemanagement.Fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +8,6 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 
 import kr.ac.yonsei.therapyschedulemanagement.R;
-import kr.ac.yonsei.therapyschedulemanagement.Test_Activity;
 
 public class Home_Fragment extends Fragment {
 

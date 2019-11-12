@@ -16,20 +16,20 @@
         tools:ignore="GoogleAppIndexingWarning">
 
         <!--   액티비티     -->
-        <activity android:name=".Intro_Activity">
+        <activity android:name=".Activities.Intro_Activity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity">
+        <activity android:name=".Activities.MainActivity">
         </activity>
-        <activity android:name=".LogIn_Activity"/>
-        <activity android:name=".SignIn_Activity"
+        <activity android:name=".Activities.LogIn_Activity"/>
+        <activity android:name=".Activities.SignIn_Activity"
             android:launchMode="singleTop"/>
-        <activity android:name=".Popup_Activity"
+        <activity android:name=".Activities.Popup_Activity"
             android:theme="@android:style/Theme.Dialog"/>
-        <activity android:name=".Test_Activity"/>
+        <activity android:name=".Activities.Test_Activity"/>
     </application>
 
 </manifest>
