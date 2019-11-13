@@ -62,7 +62,8 @@ public class MainActivity extends AppCompatActivity {
                     showFragment(Chart_Fragment.newInstance());
                     return true;
                 case R.id.bottomBarItemFifth:
-
+                    Intent intent = new Intent(MainActivity.this, Setting_Activity.class);
+                    startActivity(intent);
                     return false;
                 default:
                     return false;

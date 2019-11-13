@@ -111,12 +111,19 @@ public class Popup_Activity extends Activity {
                     if (start_hour > end_hour || ((start_hour == end_hour) && start_minute > end_minute)) {
                         Toast.makeText(Popup_Activity.this, "시간 설정이 잘못되었습니다.", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(Popup_Activity.this, "시작시간:" + save_year + "년" + save_month + "월" + save_day + "일" + start_hour + "시" + start_minute + "분", Toast.LENGTH_SHORT).show();
-                        Toast.makeText(Popup_Activity.this, "끝나는시간:" + save_year + "년" + save_month + "월" + save_day + "일" + end_hour + "시" + end_minute + "분", Toast.LENGTH_SHORT).show();
+                        String db_date;
+                        String db_start_time;
+                        String db_end_time;
+                        if (save_day < 10) {
+                            db_date = save_year + "/" + save_month + "/" + "0" + save_day;
+                            db_start_time = start_hour + ":" + start_minute;
+                            db_end_time = end_hour + ":" + end_minute;
+                        } else {
+                            db_date = save_year + "/" + save_month + "/" + save_day;
+                            db_start_time = start_hour + ":" + start_minute;
+                            db_end_time = end_hour + ":" + end_minute;
+                        }
 
-                        String db_date = save_year + "/" + save_month + "/" + save_day;
-                        String db_start_time = start_hour + ":" + start_minute;
-                        String db_end_time = end_hour + ":" + end_minute;
 
                         // 감각통증
                         if (check_sensory.isChecked()) {
@@ -126,6 +133,7 @@ public class Popup_Activity extends Activity {
                             DB_save(db_date, DB_START_TIME, db_start_time);
                             // 종료시간 저장
                             DB_save(db_date, DB_END_TIME, db_end_time);
+                            finish();
                         } else if (check_language.isChecked()) {
                             // 테라피 종류 저장
                             DB_save(db_date, DB_THERAPY_KIND, LANGUAGE);
@@ -133,6 +141,7 @@ public class Popup_Activity extends Activity {
                             DB_save(db_date, DB_START_TIME, db_start_time);
                             // 종료시간 저장
                             DB_save(db_date, DB_END_TIME, db_end_time);
+                            finish();
                         } else if (check_play.isChecked()) {
                             // 테라피 종류 저장
                             DB_save(db_date, DB_THERAPY_KIND, PLAY);
@@ -140,6 +149,7 @@ public class Popup_Activity extends Activity {
                             DB_save(db_date, DB_START_TIME, db_start_time);
                             // 종료시간 저장
                             DB_save(db_date, DB_END_TIME, db_end_time);
+                            finish();
                         } else if (check_physical.isChecked()) {
                             // 테라피 종류 저장
                             DB_save(db_date, DB_THERAPY_KIND, PHYSICAL);
@@ -147,6 +157,7 @@ public class Popup_Activity extends Activity {
                             DB_save(db_date, DB_START_TIME, db_start_time);
                             // 종료시간 저장
                             DB_save(db_date, DB_END_TIME, db_end_time);
+                            finish();
                         } else if (check_occupation.isChecked()) {
                             // 테라피 종류 저장
                             DB_save(db_date, DB_THERAPY_KIND, OCCUPATION);
@@ -154,8 +165,10 @@ public class Popup_Activity extends Activity {
                             DB_save(db_date, DB_START_TIME, db_start_time);
                             // 종료시간 저장
                             DB_save(db_date, DB_END_TIME, db_end_time);
+                            finish();
+                        } else {
+                            Toast.makeText(Popup_Activity.this, "일정을 체크해주세요!", Toast.LENGTH_SHORT).show();
                         }
-                        finish();
                     }
                 } else {
                     Toast.makeText(Popup_Activity.this, "마시멜로버전 이상 가능", Toast.LENGTH_SHORT).show();
@@ -174,13 +187,14 @@ public class Popup_Activity extends Activity {
     }
 
     // 저장
-    private void DB_save(String date,String kind, String time) {
+    private void DB_save(String date, String kind, String time) {
         mDatabase.getReference(db_email)
                 .child("Calendar")
                 .child(date)
                 .child("Therapy_schedule")
                 .child(kind)
                 .push()
+                .child(kind)
                 .setValue(time);
     }
 
