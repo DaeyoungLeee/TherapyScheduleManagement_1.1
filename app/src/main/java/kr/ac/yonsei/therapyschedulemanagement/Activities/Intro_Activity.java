@@ -15,9 +15,7 @@ public class Intro_Activity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
-        // 액션바 숨기기
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
+
 
         Handler handler = new Handler(); // 객체생성
         handler.postDelayed(new Runnable() {

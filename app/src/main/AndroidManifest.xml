@@ -3,7 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="kr.ac.yonsei.therapyschedulemanagement">
 
+<!--  인터넷  -->
     <uses-permission android:name="android.permission.INTERNET"/>
+<!--  위치검색  -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
