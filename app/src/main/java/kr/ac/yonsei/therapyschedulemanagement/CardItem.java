@@ -1,7 +1,15 @@
 package kr.ac.yonsei.therapyschedulemanagement;
 
 public class CardItem {
-    private String startTime, endTime;
+    private String therapy, startTime, endTime;
+
+    public String getTherapy() {
+        return therapy;
+    }
+
+    public void setTherapy(String therapy) {
+        this.therapy = therapy;
+    }
 
     public String getStartTime() {
         return startTime;
@@ -19,12 +27,14 @@ public class CardItem {
         this.endTime = endTime;
     }
 
-    public CardItem(String startTime, String endTime) {
+    public CardItem(String therapy, String startTime, String endTime) {
+        this.therapy = therapy;
         this.startTime = startTime;
         this.endTime = endTime;
     }
 
     public CardItem() {
+        this.therapy = therapy;
         this.startTime = startTime;
         this.endTime = endTime;
 

@@ -29,7 +29,6 @@
             android:launchMode="singleTop"/>
         <activity android:name=".Activities.Popup_Activity"
             android:theme="@android:style/Theme.Dialog"/>
-        <activity android:name=".Activities.Test_Activity"/>
         <activity android:name=".Activities.Setting_Activity"/>
     </application>
 
