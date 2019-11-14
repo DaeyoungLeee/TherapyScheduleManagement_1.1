@@ -2,7 +2,10 @@ package kr.ac.yonsei.therapyschedulemanagement.Fragments;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -30,6 +33,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -55,6 +59,7 @@ public class Home_Fragment extends Fragment {
     TextView txt_temp, txt_humidity;
     double latitude, longitude;
     int year, month, day;
+    SlidingUpPanelLayout sl_q1, sl_q2, sl_q3, sl_q4,sl_q5;
 
     // 주소정보
     private String area1, area2, area3, area4;
@@ -77,12 +82,20 @@ public class Home_Fragment extends Fragment {
         txt_location = view.findViewById(R.id.txt_location);
         txt_temp = view.findViewById(R.id.txt_temperature);
         txt_humidity = view.findViewById(R.id.txt_humidity);
+        sl_q1 = view.findViewById(R.id.Q1);
+        sl_q2 = view.findViewById(R.id.Q2);
+        sl_q3 = view.findViewById(R.id.Q3);
+        sl_q4 = view.findViewById(R.id.Q4);
+        sl_q5 = view.findViewById(R.id.Q5);
+
+
 
         long now = System.currentTimeMillis();
+
         Date date = new Date(now);
         year = date.getYear() + 2000 - 100;
         month = date.getMonth() + 1;
-        day = date.getDay();
+        day = date.getDate();
         txt_date.setText(year + "년 " + month + "월 " + day + "일");
 
         // GPS 연동을 위한 권한 체크
@@ -96,24 +109,31 @@ public class Home_Fragment extends Fragment {
             // 내위치 검색
             LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
             Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            double now_longitude = location.getLongitude();
-            double now_latitude = location.getLatitude();
 
-            latitude = now_latitude;
-            longitude = now_longitude;
+            if (location != null) {
+                double now_longitude = location.getLongitude();
+                double now_latitude = location.getLatitude();
 
-//            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-//                    3000,
-//                    1,
-//                    gpsLocationListener);
-//            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-//                    3000,
-//                    1,
-//                    gpsLocationListener);
+                latitude = now_latitude;
+                longitude = now_longitude;
+//                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+//                        3000,
+//                        1,
+//                        gpsLocationListener);
+//                lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+//                        3000,
+//                        1,
+//                        gpsLocationListener);
+                getAddress(longitude, latitude);
+            }else {
+                Toast.makeText(getContext(), "GPS를 확인해주세요", Toast.LENGTH_SHORT).show();
+                chkGpsService();
+            }
+
+
         }
 
 
-        getAddress(longitude, latitude);
 
         return view;
     }
@@ -404,5 +424,35 @@ public class Home_Fragment extends Fragment {
                 .replace("횡성군", "Hoengseong");
 
         return engAddress;
+    }
+
+    private boolean chkGpsService() {
+
+        String gps = android.provider.Settings.Secure.getString(getActivity().getContentResolver(), android.provider.Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+
+        if (!(gps.matches(".*gps.*") && gps.matches(".*network.*"))) {
+
+            // GPS OFF 일때 Dialog 표시
+            AlertDialog.Builder gsDialog = new AlertDialog.Builder(getContext());
+            gsDialog.setTitle("위치 서비스 설정");
+            gsDialog.setMessage("무선 네트워크 사용, GPS 위성 사용을 모두 체크하셔야 정확한 위치 서비스가 가능합니다.\n위치 서비스 기능을 설정하시겠습니까?");
+            gsDialog.setPositiveButton("설정", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    // GPS설정 화면으로 이동
+                    Intent intent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    intent.addCategory(Intent.CATEGORY_DEFAULT);
+                    startActivity(intent);
+                }
+            })
+                    .setNegativeButton("아니오", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            return;
+                        }
+                    }).create().show();
+            return false;
+
+        } else {
+            return true;
+        }
     }
 }

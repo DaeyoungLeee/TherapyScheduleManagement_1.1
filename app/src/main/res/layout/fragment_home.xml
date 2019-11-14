@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:sothree="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -8,91 +10,103 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <LinearLayout
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="8dp">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/img_weather"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:scaleType="center" />
-
-                <TextView
-                    android:id="@+id/txt_weather_information"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="" />
-            </LinearLayout>
+            android:layout_margin="8dp"
+            android:elevation="2dp"
+            android:padding="8dp"
+            app:cardCornerRadius="4dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="100dp"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/txt_date"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center" />
+                    android:layout_marginStart="16dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/img_weather"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp" />
+
+                    <TextView
+                        android:id="@+id/txt_weather_information"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text=""
+                        android:textColor="#000000" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:gravity="center"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/txt_date"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="온도 : " />
+                        android:layout_gravity="center" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="온도 : " />
+
+                        <TextView
+                            android:id="@+id/txt_temperature"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#000000" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=" ℃" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="습도 : " />
+
+                        <TextView
+                            android:id="@+id/txt_humidity"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#000000" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=" % " />
+
+                    </LinearLayout>
 
                     <TextView
-                        android:id="@+id/txt_temperature"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
+                        android:id="@+id/txt_location"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text=" ℃" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="습도 : " />
-
-                    <TextView
-                        android:id="@+id/txt_humidity"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text=" % " />
-
+                        android:layout_gravity="center"
+                        android:textColor="#000000" />
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/txt_location"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center" />
             </LinearLayout>
-
-        </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -103,4 +117,201 @@
 
     </LinearLayout>
 
+    <com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:sothree="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/sliding_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:gravity="bottom"
+        sothree:umanoFadeColor="#aa000000"
+        sothree:umanoPanelHeight="50dp"
+        sothree:umanoShadowHeight="0dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#ffffff"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:background="@drawable/stroke_rectang_edt"
+                android:text="Q&amp;A 이럴땐 이렇게"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.sothree.slidinguppanel.SlidingUpPanelLayout
+                    android:id="@+id/Q1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top"
+                    sothree:umanoFadeColor="#000000"
+                    sothree:umanoPanelHeight="50dp"
+                    sothree:umanoShadowHeight="0dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:gravity="center" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="tjfasadkasdmk 0000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000a" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:text="Q1. 양치질을 하기 싫어할 때" />
+
+                    </LinearLayout>
+                </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+
+                <com.sothree.slidinguppanel.SlidingUpPanelLayout
+                    android:id="@+id/Q2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top"
+                    android:layout_marginTop="50dp"
+                    sothree:umanoFadeColor="#000000"
+                    sothree:umanoPanelHeight="50dp"
+                    sothree:umanoShadowHeight="0dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:gravity="center" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="tjfasadkasdmk 0000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000a" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:text="Q2. 잠을 쉽게 자지 못할 때" />
+                    </LinearLayout>
+                </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+
+                <com.sothree.slidinguppanel.SlidingUpPanelLayout
+                    android:id="@+id/Q3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top"
+                    android:layout_marginTop="100dp"
+                    sothree:umanoFadeColor="#000000"
+                    sothree:umanoPanelHeight="50dp"
+                    sothree:umanoShadowHeight="0dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:gravity="center" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="tjfasadkasdmk 0000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000a" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:text="Q3. 옷 입기를 싫어할 때" />
+                    </LinearLayout>
+                </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+
+                <com.sothree.slidinguppanel.SlidingUpPanelLayout
+                    android:id="@+id/Q4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top"
+                    android:layout_marginTop="150dp"
+                    sothree:umanoFadeColor="#000000"
+                    sothree:umanoPanelHeight="50dp"
+                    sothree:umanoShadowHeight="0dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:gravity="center" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="tjfasadkasdmk 0000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000a" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:text="Q4. 세수, 손 씻기, 샤워하기를 싫어할 때" />
+                    </LinearLayout>
+                </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+
+                <com.sothree.slidinguppanel.SlidingUpPanelLayout
+                    android:id="@+id/Q5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top"
+                    android:layout_marginTop="200dp"
+                    sothree:umanoFadeColor="#000000"
+                    sothree:umanoPanelHeight="50dp"
+                    sothree:umanoShadowHeight="0dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:gravity="center" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="tjfasadkasdmk 0000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000a" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:text="Q5. 화장실 이용을 무서워할 때" />
+                    </LinearLayout>
+                </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+
+            </RelativeLayout>
+        </LinearLayout>
+    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 </RelativeLayout>
