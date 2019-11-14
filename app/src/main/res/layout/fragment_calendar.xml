@@ -6,13 +6,13 @@
     android:layout_height="match_parent">
 
     <com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:sothree="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/sliding_layout"
+        android:id="@+id/sliding_layout_calendar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:gravity="bottom"
-        sothree:umanoPanelHeight="60dp"
         sothree:umanoFadeColor="#22000000"
+        sothree:umanoPanelHeight="60dp"
         sothree:umanoShadowHeight="0dp">
 
         <TextView
@@ -24,8 +24,8 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_frag2"
             android:layout_width="match_parent"
-            tools:listitem="@layout/item_calendar_dayschedule"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/item_calendar_dayschedule" />
 
     </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
