@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,13 +20,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -33,6 +42,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.json.JSONArray;
@@ -44,22 +60,38 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 import java.util.Objects;
 
+import kr.ac.yonsei.therapyschedulemanagement.Adatpers.CalendarDaySchdule_Adapter;
+import kr.ac.yonsei.therapyschedulemanagement.Adatpers.HomeMonthSchedule_Adapter;
+import kr.ac.yonsei.therapyschedulemanagement.CardItem;
+import kr.ac.yonsei.therapyschedulemanagement.HomeMonth_CardItem;
 import kr.ac.yonsei.therapyschedulemanagement.R;
 
 public class Home_Fragment extends Fragment {
 
     private static final String TAG = "FRAGMENT1";
 
+    // Firebase 객체
+    FirebaseDatabase mDatabase;
+    FirebaseAuth mAuth;
+    FirebaseUser mUser;
+
+    // UI element
     ImageView img_weather;
     TextView txt_date, txt_location, txt_weather;
     TextView txt_temp, txt_humidity;
     double latitude, longitude;
     int year, month, day;
-    SlidingUpPanelLayout sl_q1, sl_q2, sl_q3, sl_q4,sl_q5;
+    SlidingUpPanelLayout sl_q1, sl_q2, sl_q3, sl_q4, sl_q5, sl_main;
+    WebView web_q1, web_q2, web_q3, web_q4, web_q5;
+    HomeMonthSchedule_Adapter homeMonthScheduleAdapter;
+    RecyclerView recyclerViewMonth;
+    LinearLayout linearLayoutMain;
 
     // 주소정보
     private String area1, area2, area3, area4;
@@ -76,29 +108,49 @@ public class Home_Fragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
 
+        //Firebase elements
+        mDatabase = FirebaseDatabase.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
+
+        // UI elements mapping
         img_weather = view.findViewById(R.id.img_weather);
         txt_date = view.findViewById(R.id.txt_date);
         txt_weather = view.findViewById(R.id.txt_weather_information);
         txt_location = view.findViewById(R.id.txt_location);
         txt_temp = view.findViewById(R.id.txt_temperature);
         txt_humidity = view.findViewById(R.id.txt_humidity);
-        sl_q1 = view.findViewById(R.id.Q1);
-        sl_q2 = view.findViewById(R.id.Q2);
-        sl_q3 = view.findViewById(R.id.Q3);
-        sl_q4 = view.findViewById(R.id.Q4);
-        sl_q5 = view.findViewById(R.id.Q5);
+        web_q1 = view.findViewById(R.id.web_q1);
+        web_q2 = view.findViewById(R.id.web_q2);
+        web_q3 = view.findViewById(R.id.web_q3);
+        web_q4 = view.findViewById(R.id.web_q4);
+        web_q5 = view.findViewById(R.id.web_q5);
+        recyclerViewMonth = view.findViewById(R.id.recyclerView_home);
+        linearLayoutMain = view.findViewById(R.id.linear_main);
 
+        webSettingMethod(web_q1);
+        webSettingMethod(web_q2);
+        webSettingMethod(web_q3);
+        webSettingMethod(web_q4);
+        webSettingMethod(web_q5);
 
+        slidingViewSet();
 
         long now = System.currentTimeMillis();
 
+        // now date
         Date date = new Date(now);
         year = date.getYear() + 2000 - 100;
         month = date.getMonth() + 1;
         day = date.getDate();
         txt_date.setText(year + "년 " + month + "월 " + day + "일");
 
-        // GPS 연동을 위한 권한 체크
+        // GPS가 꺼져잇으면 켜도록 유도
+        chkGpsService();
+
+        linearLayoutMain.bringToFront();
+
+        /** GPS 연동을 위한 권한 체크 및 위치정보 찾기 */
         if (Build.VERSION.SDK_INT >= 23 &&
                 ContextCompat.checkSelfPermission(Objects.requireNonNull(getContext()),
                         android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -108,37 +160,212 @@ public class Home_Fragment extends Fragment {
         } else {
             // 내위치 검색
             LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-            Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-            if (location != null) {
-                double now_longitude = location.getLongitude();
-                double now_latitude = location.getLatitude();
+            if (lm != null) {
+                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                        3000,
+                        1,
+                        gpsLocationListener);
+                lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+                        3000,
+                        1,
+                        gpsLocationListener);
+            }
+        }
+        //test
+        ArrayList<String> dayList = new ArrayList<>();
+        ArrayList<String> therapyList = new ArrayList<>();
+        ArrayList<String> startTimeList = new ArrayList<>();
+        ArrayList<String> endTimeList = new ArrayList<>();
 
-                latitude = now_latitude;
-                longitude = now_longitude;
-//                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-//                        3000,
-//                        1,
-//                        gpsLocationListener);
-//                lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-//                        3000,
-//                        1,
-//                        gpsLocationListener);
-                getAddress(longitude, latitude);
-            }else {
-                Toast.makeText(getContext(), "GPS를 확인해주세요", Toast.LENGTH_SHORT).show();
-                chkGpsService();
+        mDatabase.getReference(mUser.getEmail().replace(".", "_"))
+                .child("Calendar")
+                .child("2019")
+                .child("11")
+                .child("day")
+                .addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        Map<String, Object> data = (Map<String, Object>)dataSnapshot.getValue();
+
+                        String dayData = data.get("day").toString();
+
+                        Log.d(TAG, "onDataChange: " + dayData);
+
+                        dayList.add(dayData);
+                    }
+
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+        mDatabase.getReference(mUser.getEmail().replace(".", "_"))
+                .child("Calendar")
+                .child("2019")
+                .child("11")
+                .child("therapy")
+                .addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        Map<String, Object> data = (Map<String, Object>)dataSnapshot.getValue();
+
+                        String therapyData = data.get("therapy").toString();
+
+                        therapyList.add(therapyData);
+                    }
+
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+        mDatabase.getReference(mUser.getEmail().replace(".", "_"))
+                .child("Calendar")
+                .child("2019")
+                .child("11")
+                .child("start_time")
+                .addChildEventListener(new ChildEventListener() {
+
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        Map<String, Object> data = (Map<String, Object>)dataSnapshot.getValue();
+                        Log.d(TAG, "onDataChange: " + data);
+
+                        String startTimeData = Objects.requireNonNull(data.get("start_time")).toString();
+
+                        startTimeList.add(startTimeData);
+                    }
+
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+        mDatabase.getReference(mUser.getEmail().replace(".", "_"))
+                .child("Calendar")
+                .child("2019")
+                .child("11")
+                .child("end_time")
+                .addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        Map<String, Object> data = (Map<String, Object>)dataSnapshot.getValue();
+
+                        String endTimeData = data.get("end_time").toString();
+
+                        endTimeList.add(endTimeData);
+
+                        if (therapyList.size() == startTimeList.size()
+                                && endTimeList.size() == dayList.size()
+                                && therapyList.size() == endTimeList.size()) {
+
+                            /** 데이터가, 바뀔때마다 리사이클러뷰 업데이트! */
+                            ArrayList<HomeMonth_CardItem> cardItemsList = new ArrayList<>();
+                            homeMonthScheduleAdapter = new HomeMonthSchedule_Adapter(cardItemsList);
+                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+                            recyclerViewMonth.setLayoutManager(linearLayoutManager);
+                            homeMonthScheduleAdapter.notifyDataSetChanged();
+                            Log.d(TAG, "onChildAdded: " + dayList.size() + "/" + therapyList.size() + "/" + startTimeList.size() + "/ " + endTimeList.size());
+                            for (int j = 0; j < dayList.size(); j++) {
+                                final HomeMonth_CardItem cardItem = new HomeMonth_CardItem(therapyList.get(j), dayList.get(j), startTimeList.get(j), endTimeList.get(j));
+                                cardItemsList.add(cardItem);
+                                recyclerViewMonth.removeAllViewsInLayout();
+                                recyclerViewMonth.setAdapter(homeMonthScheduleAdapter);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+        // 메인 슬라이딩 뷰 동작
+        sl_main.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
             }
 
-
-        }
-
-
-
+            @Override
+            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+                // 슬라이딩 뷰가 올라오면 Parent뷰로 만들고, 내려가면 캘린더뷰가 Parent 뷰가 되도록
+                if (newState.toString().equals("DRAGGING")) {
+                    sl_main.bringToFront();
+                }
+                if (newState.toString().equals("EXPANDED")) {
+                    sl_main.bringToFront();
+                } else if (newState.toString().equals("COLLAPSED")) {
+                    linearLayoutMain.bringToFront();
+                }
+            }
+        });
         return view;
     }
 
-    /** 날씨정보 받아오기 */
+    /**   날씨정보 받아오기    */
     public void findWeather() {
         //open weather api 받아오기
         String Url = "https://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&appid=27b1b8b908d5ad361af19ff8eee92989";
@@ -253,40 +480,50 @@ public class Home_Fragment extends Fragment {
         queue.add(jor);
     }
 
-    /** 위치 정보 리스너  */
+    /**
+     * 위치 정보 리스너
+     */
     final LocationListener gpsLocationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
             double now_longitude = location.getLongitude();
             double now_latitude = location.getLatitude();
 
+            Log.d(TAG, "latitude = " + latitude + "  longitude = " + longitude);
+
             latitude = now_latitude;
             longitude = now_longitude;
+            getAddress(longitude, latitude);
 
-            LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+            try {
+                LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
-            // 권한 체크
-            if (ActivityCompat.checkSelfPermission(getContext(),
-                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(getContext(),
-                    Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return;
+                // 권한 체크
+                if (ActivityCompat.checkSelfPermission(Objects.requireNonNull(getContext()),
+                        Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                        && ActivityCompat.checkSelfPermission(getContext(),
+                        Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
+                lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+                        3000,
+                        1,
+                        gpsLocationListener);
+
+                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                        3000,
+                        1,
+                        gpsLocationListener);
+            }catch (Exception e) {
+                e.printStackTrace();
             }
-            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                    3000,
-                    1,
-                    gpsLocationListener);
 
-            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                    3000,
-                    1,
-                    gpsLocationListener);
         }
 
         public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -299,7 +536,10 @@ public class Home_Fragment extends Fragment {
         }
     };
 
-    /** 네이버 Geocoding */
+
+    /**
+     * 네이버 Geocoding
+     */
     private void getAddress(final double longitude, final double latitude) {
 
         new Thread(new Runnable() {
@@ -396,7 +636,12 @@ public class Home_Fragment extends Fragment {
         public void handleMessage(Message msg) {
             txt_location.setText(area1 + " " + area2 + " " + area3 + " " + area4);
             cityName = koreanAddressToEng(area2);
-            findWeather();
+            try {
+                findWeather();
+
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     };
 
@@ -454,5 +699,164 @@ public class Home_Fragment extends Fragment {
         } else {
             return true;
         }
+    }
+
+    // 슬라이딩 뷰 위계질서
+    private void slidingViewSet() {
+        sl_main = view.findViewById(R.id.sliding_layout_home);
+        sl_q1 = view.findViewById(R.id.Q1);
+        sl_q2 = view.findViewById(R.id.Q2);
+        sl_q3 = view.findViewById(R.id.Q3);
+        sl_q4 = view.findViewById(R.id.Q4);
+        sl_q5 = view.findViewById(R.id.Q5);
+
+        web_q1.onPause();
+        web_q2.onPause();
+        web_q3.onPause();
+        web_q4.onPause();
+        web_q5.onPause();
+
+        sl_q1.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+
+            }
+
+            @Override
+            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+                if (newState.toString().equals("DRAGGING")) {
+                    sl_q1.bringToFront();
+                }
+                if (newState.toString().equals("EXPANDED")) {
+                    sl_q1.bringToFront();
+                    web_q1.loadUrl("https://www.youtube.com/watch?v=A9c7KW8ePVE");
+                    web_q1.onResume();
+                } else if (newState.toString().equals("COLLAPSED")) {
+                    sl_q1.bringToFront();
+                    sl_q2.bringToFront();
+                    sl_q3.bringToFront();
+                    sl_q4.bringToFront();
+                    sl_q5.bringToFront();
+                    web_q1.onPause();
+                }
+            }
+        });
+
+        sl_q2.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+
+            }
+
+            @Override
+            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+                if (newState.toString().equals("DRAGGING")) {
+                    sl_q2.bringToFront();
+                }
+                if (newState.toString().equals("EXPANDED")) {
+                    sl_q2.bringToFront();
+                    web_q2.loadUrl("https://www.youtube.com/watch?v=2XQo8N72YII");
+                    web_q2.onResume();
+                } else if (newState.toString().equals("COLLAPSED")) {
+                    sl_q1.bringToFront();
+                    sl_q2.bringToFront();
+                    sl_q3.bringToFront();
+                    sl_q4.bringToFront();
+                    sl_q5.bringToFront();
+                    web_q2.onPause();
+                }
+            }
+        });
+        sl_q3.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+
+            }
+
+            @Override
+            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+                if (newState.toString().equals("DRAGGING")) {
+                    sl_q3.bringToFront();
+                }
+                if (newState.toString().equals("EXPANDED")) {
+                    web_q3.onResume();
+                    web_q3.loadUrl("https://www.youtube.com/watch?v=dCAZ2fio2BA");
+                    sl_q3.bringToFront();
+                } else if (newState.toString().equals("COLLAPSED")) {
+                    sl_q1.bringToFront();
+                    sl_q2.bringToFront();
+                    sl_q3.bringToFront();
+                    sl_q4.bringToFront();
+                    sl_q5.bringToFront();
+                    web_q3.onPause();
+                }
+            }
+        });
+        sl_q4.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+
+            }
+
+            @Override
+            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+                if (newState.toString().equals("DRAGGING")) {
+                    sl_q4.bringToFront();
+                }
+                if (newState.toString().equals("EXPANDED")) {
+                    sl_q4.bringToFront();
+                    web_q4.loadUrl("https://www.youtube.com/watch?v=fiNHTC6LSg0");
+                    web_q4.onResume();
+                } else if (newState.toString().equals("COLLAPSED")) {
+                    sl_q1.bringToFront();
+                    sl_q2.bringToFront();
+                    sl_q3.bringToFront();
+                    sl_q4.bringToFront();
+                    sl_q5.bringToFront();
+                    web_q4.onPause();
+                }
+            }
+        });
+        sl_q5.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+
+            }
+
+            @Override
+            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+                if (newState.toString().equals("DRAGGING")) {
+                    sl_q5.bringToFront();
+                }
+                if (newState.toString().equals("EXPANDED")) {
+                    sl_q5.bringToFront();
+                    web_q5.loadUrl("https://www.youtube.com/watch?v=nbTFiG2aclk");
+                    web_q5.onResume();
+                } else if (newState.toString().equals("COLLAPSED")) {
+                    sl_q1.bringToFront();
+                    sl_q2.bringToFront();
+                    sl_q3.bringToFront();
+                    sl_q4.bringToFront();
+                    sl_q5.bringToFront();
+                    web_q5.onPause();
+                }
+            }
+        });
+    }
+
+    private void webSettingMethod(WebView webView) {
+        WebSettings webSettings = webView.getSettings();
+
+        webSettings.setSupportZoom(true);
+        webSettings.setJavaScriptEnabled(true);
+        //webset.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        webSettings.setSupportMultipleWindows(true);
+        webView.setWebViewClient(new WebViewClient());
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
     }
 }
