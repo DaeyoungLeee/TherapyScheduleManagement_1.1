@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment;
 import java.util.Calendar;
 
 import devs.mulham.horizontalcalendar.HorizontalCalendar;
-import devs.mulham.horizontalcalendar.HorizontalCalendarView;
 import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener;
 import kr.ac.yonsei.therapyschedulemanagement.R;
 

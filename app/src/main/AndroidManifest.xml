@@ -7,8 +7,13 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 <!--  위치검색  -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+<!--일정 시간 알람-->
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
+        android:hardwareAccelerated="true"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="모바일 14조"
@@ -33,6 +38,18 @@
         <activity android:name=".Activities.Popup_Activity"
             android:theme="@android:style/Theme.Dialog"/>
         <activity android:name=".Activities.Setting_Activity"/>
+
+<!--   브로드캐스트 리시버     -->
+        <receiver android:name=".AlarmBroadcastReceiver"/>
+<!--    서비스    -->
+        <service
+            android:exported="true"
+            android:enabled="true"
+            android:name=".NotificationJobFireBaseService">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

@@ -33,10 +33,20 @@ public class HomeMonthSchedule_Adapter extends RecyclerView.Adapter<HomeMonthSch
 
     @Override
     public void onBindViewHolder(@NonNull HomeMonthSchedule_Adapter.CustomViewHolder holder, int position) {
-        holder.txt_therapy_month.setText(cardItemsMonth.get(position).getTherapyMonth());
         holder.txt_start_time_month.setText(cardItemsMonth.get(position).getStartTimeMonth());
         holder.txt_end_time_month.setText(cardItemsMonth.get(position).getEndTimeMonth());
         holder.txt_day_month.setText(cardItemsMonth.get(position).getDayMonth());
+        if (cardItemsMonth.get(position).getTherapyMonth().equals("1")) {
+            holder.txt_therapy_month.setText("감각통증치료");
+        }else if (cardItemsMonth.get(position).getTherapyMonth().equals("2")) {
+            holder.txt_therapy_month.setText("언어치료");
+        }else if (cardItemsMonth.get(position).getTherapyMonth().equals("3")) {
+            holder.txt_therapy_month.setText("놀이치료");
+        }else if (cardItemsMonth.get(position).getTherapyMonth().equals("4")) {
+            holder.txt_therapy_month.setText("물리치료");
+        }else if (cardItemsMonth.get(position).getTherapyMonth().equals("5")) {
+            holder.txt_therapy_month.setText("작업치료");
+        }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

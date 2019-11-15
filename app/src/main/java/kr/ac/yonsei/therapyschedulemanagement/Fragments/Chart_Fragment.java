@@ -22,7 +22,7 @@ import kr.ac.yonsei.therapyschedulemanagement.R;
 
 public class Chart_Fragment extends Fragment {
 
-    PieChart mPiechart;
+    private PieChart mPiechart;
 
     public static Chart_Fragment newInstance(){
         Chart_Fragment f = new Chart_Fragment();
@@ -53,7 +53,7 @@ public class Chart_Fragment extends Fragment {
         yValues.add(new PieEntry(34f, "매우나쁨"));
         yValues.add(new PieEntry(31f, "나쁨"));
         yValues.add(new PieEntry(54f, "보통"));
-        yValues.add(new PieEntry(43f, "졸음"));
+        yValues.add(new PieEntry(43f, "좋음"));
         yValues.add(new PieEntry(56f, "매우좋음"));
 
         //설명란

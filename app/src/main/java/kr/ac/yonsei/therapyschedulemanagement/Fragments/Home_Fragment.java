@@ -3,15 +3,14 @@ package kr.ac.yonsei.therapyschedulemanagement.Fragments;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.job.JobScheduler;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -42,13 +41,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.json.JSONArray;
@@ -59,9 +59,11 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
@@ -70,6 +72,7 @@ import kr.ac.yonsei.therapyschedulemanagement.Adatpers.CalendarDaySchdule_Adapte
 import kr.ac.yonsei.therapyschedulemanagement.Adatpers.HomeMonthSchedule_Adapter;
 import kr.ac.yonsei.therapyschedulemanagement.CardItem;
 import kr.ac.yonsei.therapyschedulemanagement.HomeMonth_CardItem;
+import kr.ac.yonsei.therapyschedulemanagement.JobSchedulerStart;
 import kr.ac.yonsei.therapyschedulemanagement.R;
 
 public class Home_Fragment extends Fragment {
@@ -77,21 +80,21 @@ public class Home_Fragment extends Fragment {
     private static final String TAG = "FRAGMENT1";
 
     // Firebase 객체
-    FirebaseDatabase mDatabase;
-    FirebaseAuth mAuth;
-    FirebaseUser mUser;
+    private FirebaseDatabase mDatabase;
+    private FirebaseAuth mAuth;
+    private FirebaseUser mUser;
 
     // UI element
-    ImageView img_weather;
-    TextView txt_date, txt_location, txt_weather;
-    TextView txt_temp, txt_humidity;
-    double latitude, longitude;
-    int year, month, day;
-    SlidingUpPanelLayout sl_q1, sl_q2, sl_q3, sl_q4, sl_q5, sl_main;
-    WebView web_q1, web_q2, web_q3, web_q4, web_q5;
-    HomeMonthSchedule_Adapter homeMonthScheduleAdapter;
-    RecyclerView recyclerViewMonth;
-    LinearLayout linearLayoutMain;
+    private ImageView img_weather;
+    private TextView txt_date, txt_location, txt_weather;
+    private TextView txt_temp, txt_humidity;
+    private double latitude, longitude;
+    private int year, month, day, day1, day2, nowHour, nowMinute;
+    private SlidingUpPanelLayout sl_q1, sl_q2, sl_q3, sl_q4, sl_q5, sl_main;
+    private WebView web_q1, web_q2, web_q3, web_q4, web_q5;
+    private HomeMonthSchedule_Adapter homeMonthScheduleAdapter;
+    private RecyclerView recyclerViewMonth;
+    private LinearLayout linearLayoutMain;
 
     // 주소정보
     private String area1, area2, area3, area4;
@@ -136,6 +139,24 @@ public class Home_Fragment extends Fragment {
 
         slidingViewSet();
 
+        // 잠깐 테스트용, 지울것
+        img_weather.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                JobSchedulerStart.start(getContext());
+                Log.d(TAG, "job_start");
+
+            }
+        });
+        txt_weather.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(getContext()));
+                dispatcher.cancelAll();
+                Log.d(TAG, "job_stop");
+            }
+        });
+
         long now = System.currentTimeMillis();
 
         // now date
@@ -143,6 +164,10 @@ public class Home_Fragment extends Fragment {
         year = date.getYear() + 2000 - 100;
         month = date.getMonth() + 1;
         day = date.getDate();
+        day1 = day + 1;
+        day2 = day + 2;
+        nowHour = date.getHours();
+        nowMinute = date.getMinutes();
         txt_date.setText(year + "년 " + month + "월 " + day + "일");
 
         // GPS가 꺼져잇으면 켜도록 유도
@@ -172,27 +197,47 @@ public class Home_Fragment extends Fragment {
                         gpsLocationListener);
             }
         }
-        //test
-        ArrayList<String> dayList = new ArrayList<>();
-        ArrayList<String> therapyList = new ArrayList<>();
-        ArrayList<String> startTimeList = new ArrayList<>();
-        ArrayList<String> endTimeList = new ArrayList<>();
 
+
+        ArrayList<String> dataList1 = new ArrayList<>();
+        ArrayList<String> dataList2 = new ArrayList<>();
+        ArrayList<String> dataList3 = new ArrayList<>();
+        ArrayList<String> allDataList = new ArrayList<>();
+
+
+        /** 오늘 날짜 */
+        // splitData[0] : 연도,
+        // splitData[1] : 월,
+        // splitData[2] : 일,
+        // splitData[3] : 시작시간,
+        // splitData[4] : 시작 분,
+        // splitData[5] : 끝 시간,
+        // splitData[6] : 끝 분,
+        // splitData[7] : 치료 종류
         mDatabase.getReference(mUser.getEmail().replace(".", "_"))
                 .child("Calendar")
-                .child("2019")
-                .child("11")
-                .child("day")
+                .child(year + "/" + month + "/" + day)
+                .child("Therapy_schedule")
+                .child("data_save")
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                         Map<String, Object> data = (Map<String, Object>)dataSnapshot.getValue();
+                        String dataAll = data.get("data_save").toString();
 
-                        String dayData = data.get("day").toString();
+                        final String[] splitData = dataAll.split(":");
 
-                        Log.d(TAG, "onDataChange: " + dayData);
+                        Log.d(TAG, "onChildAdded: nowTIme : " + nowHour + ":" + nowMinute);
+                        if (Integer.parseInt(splitData[5]) > nowHour) {
+                            dataList1.add(splitData[0] + splitData[1] + splitData[2] + splitData[3] + splitData[4] + splitData[5] + splitData[6] + splitData[7]);
+                        }else if (Integer.parseInt(splitData[5]) == nowHour && Integer.parseInt(splitData[6]) >= nowMinute) {
+                            dataList1.add(splitData[0] + splitData[1] + splitData[2] + splitData[3] + splitData[4] + splitData[5] + splitData[6] + splitData[7]);
+                        }else {
 
-                        dayList.add(dayData);
+                        }
+
+                        Log.d(TAG, "onDataChange: day1" + dataList1.size());
+
                     }
 
                     @Override
@@ -215,20 +260,24 @@ public class Home_Fragment extends Fragment {
 
                     }
                 });
-
+        /** 내일 날짜 */
         mDatabase.getReference(mUser.getEmail().replace(".", "_"))
                 .child("Calendar")
-                .child("2019")
-                .child("11")
-                .child("therapy")
+                .child(year + "/" + month + "/" + day1)
+                .child("Therapy_schedule")
+                .child("data_save")
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                         Map<String, Object> data = (Map<String, Object>)dataSnapshot.getValue();
+                        String dataAll = data.get("data_save").toString();
 
-                        String therapyData = data.get("therapy").toString();
+                        final String[] splitData = dataAll.split(":");
 
-                        therapyList.add(therapyData);
+                        dataList2.add(splitData[0] + splitData[1] + splitData[2] + splitData[3] + splitData[4] + splitData[5] + splitData[6] + splitData[7]);
+
+                        Log.d(TAG, "onDataChange: day2" + dataList2.size());
+
                     }
 
                     @Override
@@ -251,75 +300,51 @@ public class Home_Fragment extends Fragment {
 
                     }
                 });
+        /** 모레 날짜 */
         mDatabase.getReference(mUser.getEmail().replace(".", "_"))
                 .child("Calendar")
-                .child("2019")
-                .child("11")
-                .child("start_time")
-                .addChildEventListener(new ChildEventListener() {
-
-                    @Override
-                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        Map<String, Object> data = (Map<String, Object>)dataSnapshot.getValue();
-                        Log.d(TAG, "onDataChange: " + data);
-
-                        String startTimeData = Objects.requireNonNull(data.get("start_time")).toString();
-
-                        startTimeList.add(startTimeData);
-                    }
-
-                    @Override
-                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                    }
-
-                    @Override
-                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-                    }
-
-                    @Override
-                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-        mDatabase.getReference(mUser.getEmail().replace(".", "_"))
-                .child("Calendar")
-                .child("2019")
-                .child("11")
-                .child("end_time")
+                .child(year + "/" + month + "/" + day2)
+                .child("Therapy_schedule")
+                .child("data_save")
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                         Map<String, Object> data = (Map<String, Object>)dataSnapshot.getValue();
+                        String dataAll = data.get("data_save").toString();
 
-                        String endTimeData = data.get("end_time").toString();
+                        final String[] splitData = dataAll.split(":");
 
-                        endTimeList.add(endTimeData);
+                        dataList3.add(splitData[0] + splitData[1] + splitData[2] + splitData[3] + splitData[4] + splitData[5] + splitData[6] + splitData[7]);
 
-                        if (therapyList.size() == startTimeList.size()
-                                && endTimeList.size() == dayList.size()
-                                && therapyList.size() == endTimeList.size()) {
+                        Log.d(TAG, "onDataChange: day3" + dataList3.size());
 
-                            /** 데이터가, 바뀔때마다 리사이클러뷰 업데이트! */
-                            ArrayList<HomeMonth_CardItem> cardItemsList = new ArrayList<>();
-                            homeMonthScheduleAdapter = new HomeMonthSchedule_Adapter(cardItemsList);
-                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-                            recyclerViewMonth.setLayoutManager(linearLayoutManager);
-                            homeMonthScheduleAdapter.notifyDataSetChanged();
-                            Log.d(TAG, "onChildAdded: " + dayList.size() + "/" + therapyList.size() + "/" + startTimeList.size() + "/ " + endTimeList.size());
-                            for (int j = 0; j < dayList.size(); j++) {
-                                final HomeMonth_CardItem cardItem = new HomeMonth_CardItem(therapyList.get(j), dayList.get(j), startTimeList.get(j), endTimeList.get(j));
+                        allDataList.addAll(dataList1);
+                        allDataList.addAll(dataList2);
+                        allDataList.addAll(dataList3);
+
+                        Collections.sort(allDataList);
+
+                        ArrayList<HomeMonth_CardItem> cardItemsList = new ArrayList<>();
+                        homeMonthScheduleAdapter = new HomeMonthSchedule_Adapter(cardItemsList);
+                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+                        recyclerViewMonth.setLayoutManager(linearLayoutManager);
+                        homeMonthScheduleAdapter.notifyDataSetChanged();
+
+                        for (int j = 0; j < allDataList.size(); j++) {
+                            try {
+                                final HomeMonth_CardItem cardItem = new HomeMonth_CardItem(allDataList.get(j).substring(16),
+                                        allDataList.get(j).substring(6, 8),
+                                        allDataList.get(j).substring(8, 10) + ":" + allDataList.get(j).substring(10, 12),
+                                        allDataList.get(j).substring(12, 14) + ":" + allDataList.get(j).substring(14, 16));
                                 cardItemsList.add(cardItem);
                                 recyclerViewMonth.removeAllViewsInLayout();
                                 recyclerViewMonth.setAdapter(homeMonthScheduleAdapter);
+                            }catch (Exception e) {
+                                e.printStackTrace();
                             }
+
                         }
+
                     }
 
                     @Override
@@ -390,6 +415,7 @@ public class Home_Fragment extends Fragment {
                     }
                     txt_humidity.setText(humidity);
 
+                    Log.d(TAG, "description : " + descroption);
                     //description(날씨)에 따라 그림 변화
                     // 안개
                     if (descroption.equals("haze")
@@ -444,9 +470,10 @@ public class Home_Fragment extends Fragment {
                         txt_weather.setText("폭우");
                     } else if (descroption.equals("light rain")
                             || descroption.equals("moderate rain")
+                            || descroption.equals("shower rain")
                             || descroption.equals("light intensity shower rain")) {
                         img_weather.setImageResource(R.drawable.heavy_rain_icon);
-                        txt_weather.setText("가랑비");
+                        txt_weather.setText("비");
 
                     }
 

@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import it.emperor.animatedcheckbox.AnimatedCheckBox;
@@ -23,14 +24,14 @@ import kr.ac.yonsei.therapyschedulemanagement.R;
 
 public class Popup_Activity extends Activity {
 
-    private static final String SENSORY_PAIN = "SensoryPain";
-    private static final String LANGUAGE = "Language";
-    private static final String PLAY = "Play";
-    private static final String PHYSICAL = "Physical";
-    private static final String OCCUPATION = "Occupation";
-    private static final String DB_START_TIME = "start_time";
-    private static final String DB_END_TIME = "end_time";
-    private static final String DB_THERAPY_KIND = "therapy";
+    private static final String SENSORY_PAIN = "1";
+    private static final String LANGUAGE = "2";
+    private static final String PLAY = "3";
+    private static final String PHYSICAL = "4";
+    private static final String OCCUPATION = "5";
+    private static final String DB_START_TIME = "start_time;";
+    private static final String DB_END_TIME = "end_time:";
+    private static final String DB_THERAPY_KIND = "therapy:";
 
     // Firebase 객체 생성
     private FirebaseAuth mAuth;
@@ -112,59 +113,103 @@ public class Popup_Activity extends Activity {
                         Toast.makeText(Popup_Activity.this, "시간 설정이 잘못되었습니다.", Toast.LENGTH_SHORT).show();
                     } else {
                         String db_date;
-                        String db_start_time;
-                        String db_end_time;
-                        if (save_day < 10) {
-                            db_date = save_year + "/" + save_month + "/" + "0" + save_day;
-                            db_start_time = start_hour + ":" + start_minute;
-                            db_end_time = end_hour + ":" + end_minute;
-                        } else {
-                            db_date = save_year + "/" + save_month + "/" + save_day;
-                            db_start_time = start_hour + ":" + start_minute;
-                            db_end_time = end_hour + ":" + end_minute;
-                        }
+                        String db_month;
+                        String db_day;
+                        String db_start_hour;
+                        String db_start_minute;
+                        String db_end_hour;
+                        String db_end_minute;
+                        String db_date_save;
 
+                        db_date = save_year + "/" + save_month + "/" + save_day;
+
+
+                        if (save_month < 10) {
+                            db_month = "0" + save_month;
+                        }else {
+                            db_month = String.valueOf(save_month);
+                        }
+                        if (save_day < 10) {
+                            db_day = "0" + save_day;
+                        }else {
+                            db_day = String.valueOf(save_day);
+                        }
+                        if (start_hour < 10) {
+                            db_start_hour = "0" + start_hour;
+                        }else {
+                            db_start_hour = String.valueOf(start_hour);
+                        }
+                        if (start_minute < 10) {
+                            db_start_minute = "0" + start_minute;
+                        }else {
+                            db_start_minute = String.valueOf(start_minute);
+                        }
+                        if (end_hour < 10) {
+                            db_end_hour = "0" + end_hour;
+                        }else {
+                            db_end_hour = String.valueOf(end_hour);
+                        }
+                        if (end_minute < 10) {
+                            db_end_minute = "0" + end_minute;
+                        }else {
+                            db_end_minute = String.valueOf(end_minute);
+                        }
+                        db_date_save = save_year + ":" + db_month + ":" + db_day + ":" + db_start_hour + ":" + db_start_minute + ":" + db_end_hour + ":" + db_end_minute;
 
                         // 감각통증
                         if (check_sensory.isChecked()) {
-                            // 테라피 종류 저장
-                            DB_save(db_date, DB_THERAPY_KIND, SENSORY_PAIN);
-                            // 시작시간 저장
-                            DB_save(db_date, DB_START_TIME, db_start_time);
-                            // 종료시간 저장
-                            DB_save(db_date, DB_END_TIME, db_end_time);
+//                            DB_Save_All(date, SENSORY_PAIN + db_date_save);
+                            DB_save(db_date, "data_save", db_date_save + ":" + SENSORY_PAIN);
+
+//
+//                            // 월별로 저장
+//                            DB_Save_month(db_year_month, "therapy", SENSORY_PAIN);
+//                            DB_Save_month(db_year_month, "day", db_day);
+//                            DB_Save_month(db_year_month, DB_START_TIME, db_start_time);
+//                            DB_Save_month(db_year_month, DB_END_TIME, db_end_time);
+
                             finish();
                         } else if (check_language.isChecked()) {
-                            // 테라피 종류 저장
-                            DB_save(db_date, DB_THERAPY_KIND, LANGUAGE);
-                            // 시작시간 저장
-                            DB_save(db_date, DB_START_TIME, db_start_time);
-                            // 종료시간 저장
-                            DB_save(db_date, DB_END_TIME, db_end_time);
+//                            DB_Save_All(date, LANGUAGE + db_date_save);
+                            DB_save(db_date, "data_save", db_date_save + ":" + LANGUAGE);
+
+//                            // 월별로 저장
+//                            DB_Save_month(db_year_month, "therapy", LANGUAGE);
+//                            DB_Save_month(db_year_month, "day", db_day);
+//                            DB_Save_month(db_year_month, DB_START_TIME, db_start_time);
+//                            DB_Save_month(db_year_month, DB_END_TIME, db_end_time);
                             finish();
                         } else if (check_play.isChecked()) {
-                            // 테라피 종류 저장
-                            DB_save(db_date, DB_THERAPY_KIND, PLAY);
-                            // 시작시간 저장
-                            DB_save(db_date, DB_START_TIME, db_start_time);
-                            // 종료시간 저장
-                            DB_save(db_date, DB_END_TIME, db_end_time);
+//                            DB_Save_All(date, PLAY + db_date_save);
+                            DB_save(db_date, "data_save", db_date_save + ":" + PLAY);
+
+//
+//                            // 월별로 저장
+//                            DB_Save_month(db_year_month, "therapy", PLAY);
+//                            DB_Save_month(db_year_month, "day", db_day);
+//                            DB_Save_month(db_year_month, DB_START_TIME, db_start_time);
+//                            DB_Save_month(db_year_month, DB_END_TIME, db_end_time);
                             finish();
                         } else if (check_physical.isChecked()) {
-                            // 테라피 종류 저장
-                            DB_save(db_date, DB_THERAPY_KIND, PHYSICAL);
-                            // 시작시간 저장
-                            DB_save(db_date, DB_START_TIME, db_start_time);
-                            // 종료시간 저장
-                            DB_save(db_date, DB_END_TIME, db_end_time);
+//                            DB_Save_All(date, PHYSICAL + db_date_save);
+                            DB_save(db_date, "data_save", db_date_save + ":" + PHYSICAL);
+//
+//                            // 월별로 저장
+//                            DB_Save_month(db_year_month, "therapy", PHYSICAL);
+//                            DB_Save_month(db_year_month, "day", db_day);
+//                            DB_Save_month(db_year_month, DB_START_TIME, db_start_time);
+//                            DB_Save_month(db_year_month, DB_END_TIME, db_end_time);
                             finish();
                         } else if (check_occupation.isChecked()) {
-                            // 테라피 종류 저장
-                            DB_save(db_date, DB_THERAPY_KIND, OCCUPATION);
-                            // 시작시간 저장
-                            DB_save(db_date, DB_START_TIME, db_start_time);
-                            // 종료시간 저장
-                            DB_save(db_date, DB_END_TIME, db_end_time);
+                            //DB_Save_All(date, OCCUPATION + db_date_save);
+                            DB_save(db_date, "data_save", db_date_save + ":" + OCCUPATION);
+
+//
+//                            // 월별로 저장
+//                            DB_Save_month(db_year_month, "therapy", OCCUPATION);
+//                            DB_Save_month(db_year_month, "day", db_day);
+//                            DB_Save_month(db_year_month, DB_START_TIME, db_start_time);
+//                            DB_Save_month(db_year_month, DB_END_TIME, db_end_time);
                             finish();
                         } else {
                             Toast.makeText(Popup_Activity.this, "일정을 체크해주세요!", Toast.LENGTH_SHORT).show();
@@ -186,6 +231,7 @@ public class Popup_Activity extends Activity {
         });
     }
 
+    //
     // 저장
     private void DB_save(String date, String kind, String time) {
         mDatabase.getReference(db_email)
@@ -197,14 +243,23 @@ public class Popup_Activity extends Activity {
                 .child(kind)
                 .setValue(time);
     }
+//    private void DB_Save_month(String yearAndMonth, String kind, String time) {
+//        mDatabase.getReference(db_email)
+//                .child("Calendar")
+//                .child(yearAndMonth)
+//                .child(kind)
+//                .push()
+//                .child(kind)
+//                .setValue(time);
+//    }
 
-    public void onclick1(View view) {
-        Toast.makeText(this, "hi", Toast.LENGTH_SHORT).show();
-        if (check_sensory.isChecked()) {
-            check_language.setChecked(false, true);
-            check_play.setChecked(false, true);
-            check_physical.setChecked(false, true);
-            check_occupation.setChecked(false, true);
-        }
+    private void DB_Save_All(String date, String day, String data) {
+        mDatabase.getReference(db_email)
+                .child("Calendar")
+                .child(date)
+                .child(day)
+                .push()
+                .child(day)
+                .setValue(data);
     }
 }

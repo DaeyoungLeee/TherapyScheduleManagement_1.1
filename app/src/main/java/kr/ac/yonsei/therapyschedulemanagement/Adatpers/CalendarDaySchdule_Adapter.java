@@ -34,20 +34,24 @@ public class CalendarDaySchdule_Adapter extends RecyclerView.Adapter<CalendarDay
 
     @Override
     public void onBindViewHolder(@NonNull CalendarDaySchdule_Adapter.CustomViewHolder holder, int position) {
-        holder.txt_therapy.setText(cardItems.get(position).getTherapy());
         holder.txt_start_time.setText(cardItems.get(position).getStartTime());
         holder.txt_end_time.setText(cardItems.get(position).getEndTime());
         String a = cardItems.get(position).getTherapy();
-        if (a.equals("SensoryPain")) {
+        if (a.equals("1")) {
             holder.img_calendar_dot.setImageResource(R.drawable.dot_red_icon);
-        }else if (a.equals("Language")) {
+            holder.txt_therapy.setText("감각통합치료");
+        }else if (a.equals("2")) {
             holder.img_calendar_dot.setImageResource(R.drawable.dot_blue_icon);
-        }else if (a.equals("Play")) {
+            holder.txt_therapy.setText("언어치료");
+        }else if (a.equals("3")) {
             holder.img_calendar_dot.setImageResource(R.drawable.dot_yellow_icon);
-        }else if (a.equals("Physical")) {
+            holder.txt_therapy.setText("놀이치료");
+        }else if (a.equals("4")) {
             holder.img_calendar_dot.setImageResource(R.drawable.dot_green_icon);
-        }else if (a.equals("Occupation")) {
+            holder.txt_therapy.setText("물리치료");
+        }else if (a.equals("5")) {
             holder.img_calendar_dot.setImageResource(R.drawable.dot_orrange_icon);
+            holder.txt_therapy.setText("작업치료");
         }
 
 

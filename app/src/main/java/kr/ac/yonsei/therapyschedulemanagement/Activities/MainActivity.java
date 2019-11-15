@@ -18,10 +18,12 @@ import kr.ac.yonsei.therapyschedulemanagement.Fragments.Home_Fragment;
 import kr.ac.yonsei.therapyschedulemanagement.R;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MainActivity";
 
     private BottomNavigationView bottomNavigation;
     private FrameLayout fragment;
     private long backBtnTime = 0;
+    private static int ONE_MINUTE = 5626;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,16 +52,20 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.bottomBarItemOne:
-                    showFragment(Home_Fragment.newInstance());
+                    if (!item.isChecked())
+                        showFragment(Home_Fragment.newInstance());
                     return true;
                 case R.id.bottomBarItemSecond:
-                    showFragment(Calendar_Fragment.newInstance());
+                    if (!item.isChecked())
+                        showFragment(Calendar_Fragment.newInstance());
                     return true;
                 case R.id.bottomBarItemThird:
-                    showFragment(Diary_Fragment.newInstance());
+                    if (!item.isChecked())
+                        showFragment(Diary_Fragment.newInstance());
                     return true;
                 case R.id.bottomBarItemFourth:
-                    showFragment(Chart_Fragment.newInstance());
+                    if (!item.isChecked())
+                        showFragment(Chart_Fragment.newInstance());
                     return true;
                 case R.id.bottomBarItemFifth:
                     Intent intent = new Intent(MainActivity.this, Setting_Activity.class);
