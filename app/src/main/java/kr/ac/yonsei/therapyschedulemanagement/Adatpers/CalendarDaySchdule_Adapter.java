@@ -1,8 +1,9 @@
-package kr.ac.yonsei.therapyschedulemanagement;
+package kr.ac.yonsei.therapyschedulemanagement.Adatpers;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -10,6 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+
+import kr.ac.yonsei.therapyschedulemanagement.CardItem;
+import kr.ac.yonsei.therapyschedulemanagement.R;
 
 public class CalendarDaySchdule_Adapter extends RecyclerView.Adapter<CalendarDaySchdule_Adapter.CustomViewHolder> {
 
@@ -33,6 +37,19 @@ public class CalendarDaySchdule_Adapter extends RecyclerView.Adapter<CalendarDay
         holder.txt_therapy.setText(cardItems.get(position).getTherapy());
         holder.txt_start_time.setText(cardItems.get(position).getStartTime());
         holder.txt_end_time.setText(cardItems.get(position).getEndTime());
+        String a = cardItems.get(position).getTherapy();
+        if (a.equals("SensoryPain")) {
+            holder.img_calendar_dot.setImageResource(R.drawable.dot_red_icon);
+        }else if (a.equals("Language")) {
+            holder.img_calendar_dot.setImageResource(R.drawable.dot_blue_icon);
+        }else if (a.equals("Play")) {
+            holder.img_calendar_dot.setImageResource(R.drawable.dot_yellow_icon);
+        }else if (a.equals("Physical")) {
+            holder.img_calendar_dot.setImageResource(R.drawable.dot_green_icon);
+        }else if (a.equals("Occupation")) {
+            holder.img_calendar_dot.setImageResource(R.drawable.dot_orrange_icon);
+        }
+
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,12 +84,14 @@ public class CalendarDaySchdule_Adapter extends RecyclerView.Adapter<CalendarDay
     public class CustomViewHolder extends RecyclerView.ViewHolder {
 
         private TextView txt_therapy, txt_start_time, txt_end_time;
+        private ImageView img_calendar_dot;
 
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
             this.txt_therapy = itemView.findViewById(R.id.txt_therapy);
             this.txt_start_time = itemView.findViewById(R.id.txt_start_time);
             this.txt_end_time = itemView.findViewById(R.id.txt_end_time);
+            this.img_calendar_dot = itemView.findViewById(R.id.img_calendar_dot);
         }
     }
 }
