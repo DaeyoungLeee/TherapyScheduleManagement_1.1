@@ -43,6 +43,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -96,6 +97,10 @@ public class Home_Fragment extends Fragment {
     private RecyclerView recyclerViewMonth;
     private LinearLayout linearLayoutMain;
 
+    private boolean isRunning1 = false;
+    private boolean isRunning2 = false;
+    private boolean isRunning3 = false;
+
     // 주소정보
     private String area1, area2, area3, area4;
     private String cityName;
@@ -130,13 +135,13 @@ public class Home_Fragment extends Fragment {
         web_q5 = view.findViewById(R.id.web_q5);
         recyclerViewMonth = view.findViewById(R.id.recyclerView_home);
         linearLayoutMain = view.findViewById(R.id.linear_main);
-
+        // 웹뷰 세팅값
         webSettingMethod(web_q1);
         webSettingMethod(web_q2);
         webSettingMethod(web_q3);
         webSettingMethod(web_q4);
         webSettingMethod(web_q5);
-
+        // 슬라이딩뷰 설정
         slidingViewSet();
 
         // 잠깐 테스트용, 지울것
@@ -157,9 +162,8 @@ public class Home_Fragment extends Fragment {
             }
         });
 
-        long now = System.currentTimeMillis();
-
         // now date
+        long now = System.currentTimeMillis();
         Date date = new Date(now);
         year = date.getYear() + 2000 - 100;
         month = date.getMonth() + 1;
@@ -198,7 +202,6 @@ public class Home_Fragment extends Fragment {
             }
         }
 
-
         ArrayList<String> dataList1 = new ArrayList<>();
         ArrayList<String> dataList2 = new ArrayList<>();
         ArrayList<String> dataList3 = new ArrayList<>();
@@ -214,6 +217,7 @@ public class Home_Fragment extends Fragment {
         // splitData[5] : 끝 시간,
         // splitData[6] : 끝 분,
         // splitData[7] : 치료 종류
+        Log.d(TAG, "onCreateView: year=" + year + "month=" + month + "day=" + day);
         mDatabase.getReference(mUser.getEmail().replace(".", "_"))
                 .child("Calendar")
                 .child(year + "/" + month + "/" + day)
@@ -222,7 +226,7 @@ public class Home_Fragment extends Fragment {
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        Map<String, Object> data = (Map<String, Object>)dataSnapshot.getValue();
+                        Map<String, Object> data = (Map<String, Object>) dataSnapshot.getValue();
                         String dataAll = data.get("data_save").toString();
 
                         final String[] splitData = dataAll.split(":");
@@ -230,14 +234,47 @@ public class Home_Fragment extends Fragment {
                         Log.d(TAG, "onChildAdded: nowTIme : " + nowHour + ":" + nowMinute);
                         if (Integer.parseInt(splitData[5]) > nowHour) {
                             dataList1.add(splitData[0] + splitData[1] + splitData[2] + splitData[3] + splitData[4] + splitData[5] + splitData[6] + splitData[7]);
-                        }else if (Integer.parseInt(splitData[5]) == nowHour && Integer.parseInt(splitData[6]) >= nowMinute) {
+                        } else if (Integer.parseInt(splitData[5]) == nowHour && Integer.parseInt(splitData[6]) >= nowMinute) {
                             dataList1.add(splitData[0] + splitData[1] + splitData[2] + splitData[3] + splitData[4] + splitData[5] + splitData[6] + splitData[7]);
-                        }else {
+                        } else {
 
                         }
 
                         Log.d(TAG, "onDataChange: day1" + dataList1.size());
 
+                        for (int i = 0; i < dataList1.size(); i++) {
+                            if (!allDataList.contains(dataList1.get(i))) {
+                                allDataList.add(dataList1.get(i));
+
+                                Collections.sort(allDataList);
+                            }
+                        }
+
+                        Log.d(TAG, "alldata=" + allDataList);
+
+                        ArrayList<HomeMonth_CardItem> cardItemsList = new ArrayList<>();
+                        homeMonthScheduleAdapter = new HomeMonthSchedule_Adapter(cardItemsList);
+                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+                        recyclerViewMonth.setLayoutManager(linearLayoutManager);
+                        homeMonthScheduleAdapter.notifyDataSetChanged();
+
+                        if (!isRunning1) {
+                            Log.d(TAG, "onChildAdded: 1번호출");
+                            for (int j = 0; j < allDataList.size(); j++) {
+                                try {
+                                    isRunning1 = true;
+                                    final HomeMonth_CardItem cardItem = new HomeMonth_CardItem(allDataList.get(j).substring(16),
+                                            allDataList.get(j).substring(6, 8),
+                                            allDataList.get(j).substring(8, 10) + ":" + allDataList.get(j).substring(10, 12),
+                                            allDataList.get(j).substring(12, 14) + ":" + allDataList.get(j).substring(14, 16));
+                                    cardItemsList.add(cardItem);
+                                    recyclerViewMonth.removeAllViewsInLayout();
+                                    recyclerViewMonth.setAdapter(homeMonthScheduleAdapter);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
                     }
 
                     @Override
@@ -269,14 +306,46 @@ public class Home_Fragment extends Fragment {
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        Map<String, Object> data = (Map<String, Object>)dataSnapshot.getValue();
+                        Map<String, Object> data = (Map<String, Object>) dataSnapshot.getValue();
                         String dataAll = data.get("data_save").toString();
 
                         final String[] splitData = dataAll.split(":");
 
                         dataList2.add(splitData[0] + splitData[1] + splitData[2] + splitData[3] + splitData[4] + splitData[5] + splitData[6] + splitData[7]);
 
-                        Log.d(TAG, "onDataChange: day2" + dataList2.size());
+                        Log.d(TAG, "onDataChange: day2" + dataList2);
+
+                        for (int i = 0; i < dataList2.size(); i++) {
+                            if (!allDataList.contains(dataList2.get(i))) {
+                                allDataList.add(dataList2.get(i));
+
+                                Collections.sort(allDataList);
+                            }
+                        }
+
+                        ArrayList<HomeMonth_CardItem> cardItemsList = new ArrayList<>();
+                        homeMonthScheduleAdapter = new HomeMonthSchedule_Adapter(cardItemsList);
+                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+                        recyclerViewMonth.setLayoutManager(linearLayoutManager);
+                        homeMonthScheduleAdapter.notifyDataSetChanged();
+
+                        Log.d(TAG, "2번호출");
+                        for (int j = 0; j < allDataList.size(); j++) {
+                            try {
+                                final HomeMonth_CardItem cardItem = new HomeMonth_CardItem(allDataList.get(j).substring(16),
+                                        allDataList.get(j).substring(6, 8),
+                                        allDataList.get(j).substring(8, 10) + ":" + allDataList.get(j).substring(10, 12),
+                                        allDataList.get(j).substring(12, 14) + ":" + allDataList.get(j).substring(14, 16));
+                                cardItemsList.add(cardItem);
+                                recyclerViewMonth.removeAllViewsInLayout();
+                                recyclerViewMonth.setAdapter(homeMonthScheduleAdapter);
+                                isRunning2 = true;
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+
 
                     }
 
@@ -309,7 +378,7 @@ public class Home_Fragment extends Fragment {
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        Map<String, Object> data = (Map<String, Object>)dataSnapshot.getValue();
+                        Map<String, Object> data = (Map<String, Object>) dataSnapshot.getValue();
                         String dataAll = data.get("data_save").toString();
 
                         final String[] splitData = dataAll.split(":");
@@ -317,12 +386,14 @@ public class Home_Fragment extends Fragment {
                         dataList3.add(splitData[0] + splitData[1] + splitData[2] + splitData[3] + splitData[4] + splitData[5] + splitData[6] + splitData[7]);
 
                         Log.d(TAG, "onDataChange: day3" + dataList3.size());
+                        Log.d(TAG, "allDataList = " + allDataList.size());
 
-                        allDataList.addAll(dataList1);
-                        allDataList.addAll(dataList2);
-                        allDataList.addAll(dataList3);
-
-                        Collections.sort(allDataList);
+                        for (int i = 0; i < dataList3.size(); i++) {
+                            if (!allDataList.contains(dataList3.get(i))) {
+                                allDataList.add(dataList3.get(i));
+                                Collections.sort(allDataList);
+                            }
+                        }
 
                         ArrayList<HomeMonth_CardItem> cardItemsList = new ArrayList<>();
                         homeMonthScheduleAdapter = new HomeMonthSchedule_Adapter(cardItemsList);
@@ -330,6 +401,7 @@ public class Home_Fragment extends Fragment {
                         recyclerViewMonth.setLayoutManager(linearLayoutManager);
                         homeMonthScheduleAdapter.notifyDataSetChanged();
 
+                        Log.d(TAG, "3번호출");
                         for (int j = 0; j < allDataList.size(); j++) {
                             try {
                                 final HomeMonth_CardItem cardItem = new HomeMonth_CardItem(allDataList.get(j).substring(16),
@@ -339,11 +411,11 @@ public class Home_Fragment extends Fragment {
                                 cardItemsList.add(cardItem);
                                 recyclerViewMonth.removeAllViewsInLayout();
                                 recyclerViewMonth.setAdapter(homeMonthScheduleAdapter);
-                            }catch (Exception e) {
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
-
                         }
+
 
                     }
 
@@ -390,7 +462,9 @@ public class Home_Fragment extends Fragment {
         return view;
     }
 
-    /**   날씨정보 받아오기    */
+    /**
+     * 날씨정보 받아오기
+     */
     public void findWeather() {
         //open weather api 받아오기
         String Url = "https://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&appid=27b1b8b908d5ad361af19ff8eee92989";
@@ -547,7 +621,7 @@ public class Home_Fragment extends Fragment {
                         3000,
                         1,
                         gpsLocationListener);
-            }catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -666,7 +740,7 @@ public class Home_Fragment extends Fragment {
             try {
                 findWeather();
 
-            }catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -886,4 +960,5 @@ public class Home_Fragment extends Fragment {
         super.onDetach();
 
     }
+
 }

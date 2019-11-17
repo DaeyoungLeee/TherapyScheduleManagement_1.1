@@ -28,16 +28,6 @@ public class NotificationJobFireBaseService extends JobService {
          *    FLAG_UPDATE_CURRENT : 실행중인 PendingIntent가 있다면  Extra Data만 교체함
          */
 
-        long now = System.currentTimeMillis();
-        Date date = new Date(now);
-        int year = date.getYear() + 2000 - 100;
-        int month = date.getMonth() + 1;
-        int day = date.getDate();
-        int hour = date.getHours();
-        int minute = date.getMinutes();
-
-
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 10000, pendingIntent); //10초뒤 알람
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {

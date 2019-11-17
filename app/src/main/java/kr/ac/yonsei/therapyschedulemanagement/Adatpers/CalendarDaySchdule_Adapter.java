@@ -1,8 +1,11 @@
 package kr.ac.yonsei.therapyschedulemanagement.Adatpers;
 
+import android.app.ProgressDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CalendarView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,6 +21,13 @@ import kr.ac.yonsei.therapyschedulemanagement.R;
 public class CalendarDaySchdule_Adapter extends RecyclerView.Adapter<CalendarDaySchdule_Adapter.CustomViewHolder> {
 
     private ArrayList<CardItem> cardItems;
+    OnItemClickedListener listener;
+
+
+    public static interface OnItemClickedListener {
+        public void onItemClick(CustomViewHolder holder, View view, int position);
+        void onDeleteButtonClick(int position);
+    }
 
     public CalendarDaySchdule_Adapter(ArrayList<CardItem> cardItems) {
         this.cardItems = cardItems;
@@ -33,7 +43,7 @@ public class CalendarDaySchdule_Adapter extends RecyclerView.Adapter<CalendarDay
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CalendarDaySchdule_Adapter.CustomViewHolder holder, int position) {
+    public void onBindViewHolder(CalendarDaySchdule_Adapter.CustomViewHolder holder, int position) {
         holder.txt_start_time.setText(cardItems.get(position).getStartTime());
         holder.txt_end_time.setText(cardItems.get(position).getEndTime());
         String a = cardItems.get(position).getTherapy();
@@ -66,11 +76,27 @@ public class CalendarDaySchdule_Adapter extends RecyclerView.Adapter<CalendarDay
             @Override
             public boolean onLongClick(View v) {
                 remove(holder.getAdapterPosition());
+
                 return true;
             }
         });
-    }
 
+        holder.setOnItemClickedListener(listener);
+
+        holder.img_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("tag", "onClick: num" + holder.getAdapterPosition());
+                if (listener != null) {
+                    listener.onDeleteButtonClick(holder.getAdapterPosition());
+                }
+            }
+        });
+    }
+    public void setOnItemClickedListener(OnItemClickedListener listener) {
+        this.listener = listener;
+
+    }
     @Override
     public int getItemCount() {
         return (null != cardItems ? cardItems.size() : 0);
@@ -88,7 +114,9 @@ public class CalendarDaySchdule_Adapter extends RecyclerView.Adapter<CalendarDay
     public class CustomViewHolder extends RecyclerView.ViewHolder {
 
         private TextView txt_therapy, txt_start_time, txt_end_time;
+        private ImageView img_delete;
         private ImageView img_calendar_dot;
+        OnItemClickedListener listener;
 
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -96,6 +124,23 @@ public class CalendarDaySchdule_Adapter extends RecyclerView.Adapter<CalendarDay
             this.txt_start_time = itemView.findViewById(R.id.txt_start_time);
             this.txt_end_time = itemView.findViewById(R.id.txt_end_time);
             this.img_calendar_dot = itemView.findViewById(R.id.img_calendar_dot);
+            this.img_delete = itemView.findViewById(R.id.img_delete);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if (listener != null) {
+                        listener.onItemClick(CustomViewHolder.this, v, position);
+                    }
+                }
+            });
+        }
+
+        public void setOnItemClickedListener(OnItemClickedListener listener) {
+            this.listener = listener;
         }
     }
+
+
 }

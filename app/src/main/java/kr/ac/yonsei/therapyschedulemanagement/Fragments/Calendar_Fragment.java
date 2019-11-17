@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -39,7 +40,7 @@ import kr.ac.yonsei.therapyschedulemanagement.Adatpers.CalendarDaySchdule_Adapte
 import kr.ac.yonsei.therapyschedulemanagement.CardItem;
 import kr.ac.yonsei.therapyschedulemanagement.R;
 
-public class Calendar_Fragment extends Fragment {
+public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Adapter.OnItemClickedListener {
 
     private static String TAG = "Fragment2";
     // UI elements
@@ -57,6 +58,9 @@ public class Calendar_Fragment extends Fragment {
     private FirebaseDatabase mDatabase;
     // Adapter
     CalendarDaySchdule_Adapter calendarDaySchduleAdapter;
+
+    ArrayList<String> allDataList = new ArrayList<>();
+    ArrayList<String> keyList = new ArrayList<>();
 
     int date, month, year;
     String dayName;
@@ -108,7 +112,28 @@ public class Calendar_Fragment extends Fragment {
         ArrayList<String> startTimeList = new ArrayList<>();
         ArrayList<String> endTimeList = new ArrayList<>();
 
-        ArrayList<String> allDataList = new ArrayList<>();
+        // 키값 받아오기 1
+        // 키값 받아오기(삭제하기 위해)
+        mDatabase.getReference(mUser.getEmail().replace(".", "_"))
+                .child("Calendar")
+                .child(year + "/" + month + "/" + date)
+                .child("sort_data")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot dataSnapshotKey : dataSnapshot.getChildren()) {
+                            keyList.add(dataSnapshotKey.getKey());
+                            Log.d(TAG, "onDataChange: keyList1 " + keyList);
+
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
 
         mDatabase.getReference(mUser.getEmail().replace(".", "_"))
                 .child("Calendar")
@@ -118,7 +143,7 @@ public class Calendar_Fragment extends Fragment {
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        Map<String, Object> data = (Map<String, Object>)dataSnapshot.getValue();
+                        Map<String, Object> data = (Map<String, Object>) dataSnapshot.getValue();
                         String dataAll = data.get("data_save").toString();
 
                         final String[] splitData = dataAll.split(":");
@@ -132,6 +157,7 @@ public class Calendar_Fragment extends Fragment {
                             /** 데이터가, 바뀔때마다 리사이클러뷰 업데이트! */
                             ArrayList<CardItem> cardItemsList = new ArrayList<>();
                             calendarDaySchduleAdapter = new CalendarDaySchdule_Adapter(cardItemsList);
+                            calendarDaySchduleAdapter.setOnItemClickedListener(Calendar_Fragment.this);
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
                             recyclerView.setLayoutManager(linearLayoutManager);
                             calendarDaySchduleAdapter.notifyDataSetChanged();
@@ -145,7 +171,7 @@ public class Calendar_Fragment extends Fragment {
                                     recyclerView.removeAllViewsInLayout();
                                     recyclerView.setAdapter(calendarDaySchduleAdapter);
                                     dialog.dismiss();
-                                }catch (Exception e) {
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
 
@@ -180,6 +206,7 @@ public class Calendar_Fragment extends Fragment {
             /** 데이터가, 바뀔때마다 리사이클러뷰 업데이트! */
             ArrayList<CardItem> cardItemsList = new ArrayList<>();
             calendarDaySchduleAdapter = new CalendarDaySchdule_Adapter(cardItemsList);
+            calendarDaySchduleAdapter.setOnItemClickedListener(Calendar_Fragment.this);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
             recyclerView.setLayoutManager(linearLayoutManager);
             calendarDaySchduleAdapter.notifyDataSetChanged();
@@ -215,7 +242,7 @@ public class Calendar_Fragment extends Fragment {
                         .addChildEventListener(new ChildEventListener() {
                             @Override
                             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                Map<String, Object> data = (Map<String, Object>)dataSnapshot.getValue();
+                                Map<String, Object> data = (Map<String, Object>) dataSnapshot.getValue();
                                 String dataAll = data.get("data_save").toString();
 
                                 final String[] splitData = dataAll.split(":");
@@ -223,16 +250,63 @@ public class Calendar_Fragment extends Fragment {
                                 allDataList.add(splitData[0] + splitData[1] + splitData[2] + splitData[3] + splitData[4] + splitData[5] + splitData[6] + splitData[7]);
                                 Collections.sort(allDataList);
 
+                                //데이터 기존거 지우고
+                                mDatabase.getReference(mUser.getEmail().replace(".", "_"))
+                                        .child("Calendar")
+                                        .child(year + "/" + month + "/" + date)
+                                        .child("sort_data")
+                                        .removeValue();
+                                //데이터 순서별로 다시저장
+                                for (int i = 0; i < allDataList.size(); i++) {
+                                    mDatabase.getReference(mUser.getEmail().replace(".", "_"))
+                                            .child("Calendar")
+                                            .child(year + "/" + month + "/" + date)
+                                            .child("sort_data")
+                                            .push()
+                                            .setValue(allDataList.get(i));
+                                }
+                                // 그리고 키값 다시 받아오기
+                                keyList.clear();
+                                ArrayList<String> keyList2 = new ArrayList<>();
+                                mDatabase.getReference(mUser.getEmail().replace(".", "_"))
+                                        .child("Calendar")
+                                        .child(year + "/" + month + "/" + date)
+                                        .child("sort_data")
+                                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                                for (DataSnapshot dataSnapshotKey : dataSnapshot.getChildren()) {
+                                                    Log.d(TAG, "onDataChange:keyvalue " + dataSnapshotKey.getValue());
+                                                }
+
+
+                                                for (int i = 0; i < keyList.size(); i++) {
+                                                    if (!keyList2.contains(keyList.get(i))) {
+                                                        keyList2.add(keyList.get(i));
+                                                    }
+                                                }
+                                                Log.d(TAG, "onDataChange: keyList1 " + keyList);
+                                                Log.d(TAG, "onDataChange: keyList2 " + keyList2);
+
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                            }
+                                        });
+
                                 Log.d(TAG, "onDataChange: " + allDataList.size());
 
                                 if (therapyList1.size() == startTimeList.size() && therapyList1.size() == endTimeList.size()) {
                                     /** 데이터가, 바뀔때마다 리사이클러뷰 업데이트! */
                                     ArrayList<CardItem> cardItemsList = new ArrayList<>();
                                     calendarDaySchduleAdapter = new CalendarDaySchdule_Adapter(cardItemsList);
+                                    calendarDaySchduleAdapter.setOnItemClickedListener(Calendar_Fragment.this);
                                     LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
                                     recyclerView.setLayoutManager(linearLayoutManager);
                                     calendarDaySchduleAdapter.notifyDataSetChanged();
-                                    Log.d(TAG, "onChildAdded: " + therapyList1.size() + "/" + startTimeList.size() + "/ " + endTimeList.size());
                                     for (int j = 0; j < allDataList.size(); j++) {
                                         try {
                                             final CardItem cardItem = new CardItem(allDataList.get(j).substring(16),
@@ -242,7 +316,7 @@ public class Calendar_Fragment extends Fragment {
                                             recyclerView.removeAllViewsInLayout();
                                             recyclerView.setAdapter(calendarDaySchduleAdapter);
                                             dialog.dismiss();
-                                        }catch (Exception e) {
+                                        } catch (Exception e) {
                                             e.printStackTrace();
                                         }
 
@@ -277,6 +351,8 @@ public class Calendar_Fragment extends Fragment {
                     /** 데이터가, 바뀔때마다 리사이클러뷰 업데이트! */
                     ArrayList<CardItem> cardItemsList = new ArrayList<>();
                     calendarDaySchduleAdapter = new CalendarDaySchdule_Adapter(cardItemsList);
+                    calendarDaySchduleAdapter.setOnItemClickedListener(Calendar_Fragment.this);
+
                     LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
                     recyclerView.setLayoutManager(linearLayoutManager);
                     calendarDaySchduleAdapter.notifyDataSetChanged();
@@ -287,7 +363,6 @@ public class Calendar_Fragment extends Fragment {
 
             }
         });
-
 
 
         /** Floating 추가 버튼 클릭 동작 */
@@ -360,4 +435,95 @@ public class Calendar_Fragment extends Fragment {
         dialog.show();
     }
 
+    @Override
+    public void onItemClick(CalendarDaySchdule_Adapter.CustomViewHolder holder, View view, int position) {
+
+    }
+
+    // 삭제!!
+    @Override
+    public void onDeleteButtonClick(int position) {
+        mDatabase.getReference(mUser.getEmail().replace(".", "_"))
+                .child("Calendar")
+                .child(year + "/" + month + "/" + date)
+                .child("sort_data")
+                .child(keyList.get(position))
+                .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(getContext(), "삭제되었습니다.", Toast.LENGTH_SHORT).show();
+            }
+        });
+//        ArrayList<String> therapyList1 = new ArrayList<>();
+//        ArrayList<String> startTimeList = new ArrayList<>();
+//        ArrayList<String> endTimeList = new ArrayList<>();
+//
+//        ArrayList<String> allDataList = new ArrayList<>();
+//
+//        mDatabase.getReference(mUser.getEmail().replace(".", "_"))
+//                .child("Calendar")
+//                .child(year + "/" + month + "/" + date)
+//                .child("Therapy_schedule")
+//                .child("data_save")
+//                .addChildEventListener(new ChildEventListener() {
+//                    @Override
+//                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//                        Map<String, Object> data = (Map<String, Object>)dataSnapshot.getValue();
+//                        String dataAll = data.get("data_save").toString();
+//
+//                        final String[] splitData = dataAll.split(":");
+//
+//                        allDataList.add(splitData[0] + splitData[1] + splitData[2] + splitData[3] + splitData[4] + splitData[5] + splitData[6] + splitData[7]);
+//                        Collections.sort(allDataList);
+//
+//                        Log.d(TAG, "onDataChange: " + allDataList.size());
+//
+//                        if (therapyList1.size() == startTimeList.size() && therapyList1.size() == endTimeList.size()) {
+//                            /** 데이터가, 바뀔때마다 리사이클러뷰 업데이트! */
+//                            ArrayList<CardItem> cardItemsList = new ArrayList<>();
+//                            calendarDaySchduleAdapter = new CalendarDaySchdule_Adapter(cardItemsList);
+//                            calendarDaySchduleAdapter.setOnItemClickedListener(Calendar_Fragment.this);
+//                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+//                            recyclerView.setLayoutManager(linearLayoutManager);
+//                            calendarDaySchduleAdapter.notifyDataSetChanged();
+//                            Log.d(TAG, "onChildAdded: " + therapyList1.size() + "/" + startTimeList.size() + "/ " + endTimeList.size());
+//                            for (int j = 0; j < allDataList.size(); j++) {
+//                                try {
+//                                    final CardItem cardItem = new CardItem(allDataList.get(j).substring(16),
+//                                            allDataList.get(j).substring(8, 10) + ":" + allDataList.get(j).substring(10, 12),
+//                                            allDataList.get(j).substring(12, 14) + ":" + allDataList.get(j).substring(14, 16));
+//                                    cardItemsList.add(cardItem);
+//                                    recyclerView.removeAllViewsInLayout();
+//                                    recyclerView.setAdapter(calendarDaySchduleAdapter);
+//                                    dialog.dismiss();
+//                                }catch (Exception e) {
+//                                    e.printStackTrace();
+//                                }
+//
+//                            }
+//                            dialog.dismiss();
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                    }
+//                });
+    }
 }

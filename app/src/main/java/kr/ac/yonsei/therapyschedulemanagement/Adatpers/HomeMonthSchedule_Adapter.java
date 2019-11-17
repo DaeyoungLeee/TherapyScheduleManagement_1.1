@@ -48,6 +48,7 @@ public class HomeMonthSchedule_Adapter extends RecyclerView.Adapter<HomeMonthSch
             holder.txt_therapy_month.setText("작업치료");
         }
 
+        
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
