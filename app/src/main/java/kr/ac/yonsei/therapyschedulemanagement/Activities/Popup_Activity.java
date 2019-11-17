@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -11,18 +12,29 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Map;
 
 import it.emperor.animatedcheckbox.AnimatedCheckBox;
 import kr.ac.yonsei.therapyschedulemanagement.R;
 
 public class Popup_Activity extends Activity {
+
+    private static String TAG = "POPUP_ACTIVIRY";
 
     private static final String SENSORY_PAIN = "1";
     private static final String LANGUAGE = "2";
@@ -158,58 +170,25 @@ public class Popup_Activity extends Activity {
 
                         // 감각통증
                         if (check_sensory.isChecked()) {
-//                            DB_Save_All(date, SENSORY_PAIN + db_date_save);
                             DB_save(db_date, "data_save", db_date_save + ":" + SENSORY_PAIN);
-
-//
-//                            // 월별로 저장
-//                            DB_Save_month(db_year_month, "therapy", SENSORY_PAIN);
-//                            DB_Save_month(db_year_month, "day", db_day);
-//                            DB_Save_month(db_year_month, DB_START_TIME, db_start_time);
-//                            DB_Save_month(db_year_month, DB_END_TIME, db_end_time);
 
                             finish();
                         } else if (check_language.isChecked()) {
-//                            DB_Save_All(date, LANGUAGE + db_date_save);
                             DB_save(db_date, "data_save", db_date_save + ":" + LANGUAGE);
 
-//                            // 월별로 저장
-//                            DB_Save_month(db_year_month, "therapy", LANGUAGE);
-//                            DB_Save_month(db_year_month, "day", db_day);
-//                            DB_Save_month(db_year_month, DB_START_TIME, db_start_time);
-//                            DB_Save_month(db_year_month, DB_END_TIME, db_end_time);
                             finish();
                         } else if (check_play.isChecked()) {
-//                            DB_Save_All(date, PLAY + db_date_save);
                             DB_save(db_date, "data_save", db_date_save + ":" + PLAY);
 
-//
-//                            // 월별로 저장
-//                            DB_Save_month(db_year_month, "therapy", PLAY);
-//                            DB_Save_month(db_year_month, "day", db_day);
-//                            DB_Save_month(db_year_month, DB_START_TIME, db_start_time);
-//                            DB_Save_month(db_year_month, DB_END_TIME, db_end_time);
                             finish();
                         } else if (check_physical.isChecked()) {
-//                            DB_Save_All(date, PHYSICAL + db_date_save);
                             DB_save(db_date, "data_save", db_date_save + ":" + PHYSICAL);
 //
-//                            // 월별로 저장
-//                            DB_Save_month(db_year_month, "therapy", PHYSICAL);
-//                            DB_Save_month(db_year_month, "day", db_day);
-//                            DB_Save_month(db_year_month, DB_START_TIME, db_start_time);
-//                            DB_Save_month(db_year_month, DB_END_TIME, db_end_time);
                             finish();
                         } else if (check_occupation.isChecked()) {
-                            //DB_Save_All(date, OCCUPATION + db_date_save);
+
                             DB_save(db_date, "data_save", db_date_save + ":" + OCCUPATION);
 
-//
-//                            // 월별로 저장
-//                            DB_Save_month(db_year_month, "therapy", OCCUPATION);
-//                            DB_Save_month(db_year_month, "day", db_day);
-//                            DB_Save_month(db_year_month, DB_START_TIME, db_start_time);
-//                            DB_Save_month(db_year_month, DB_END_TIME, db_end_time);
                             finish();
                         } else {
                             Toast.makeText(Popup_Activity.this, "일정을 체크해주세요!", Toast.LENGTH_SHORT).show();
@@ -234,6 +213,7 @@ public class Popup_Activity extends Activity {
     //
     // 저장
     private void DB_save(String date, String kind, String time) {
+
         mDatabase.getReference(db_email)
                 .child("Calendar")
                 .child(date)
@@ -242,24 +222,49 @@ public class Popup_Activity extends Activity {
                 .push()
                 .child(kind)
                 .setValue(time);
-    }
-//    private void DB_Save_month(String yearAndMonth, String kind, String time) {
-//        mDatabase.getReference(db_email)
-//                .child("Calendar")
-//                .child(yearAndMonth)
-//                .child(kind)
-//                .push()
-//                .child(kind)
-//                .setValue(time);
-//    }
 
-    private void DB_Save_All(String date, String day, String data) {
+        ArrayList<String> savedList = new ArrayList<>();
+
         mDatabase.getReference(db_email)
                 .child("Calendar")
                 .child(date)
-                .child(day)
-                .push()
-                .child(day)
-                .setValue(data);
+                .child("Therapy_schedule")
+                .child(kind)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot dataSnapshotKey : dataSnapshot.getChildren()) {
+                            savedList.add(dataSnapshotKey.getValue().toString().replace("{data_save=", "").replace("}", ""));
+                        }
+                        Collections.sort(savedList);
+                        Log.d(TAG, "savedList " + savedList.get(0));
+
+                        //기존거 삭제
+                        mDatabase.getReference(db_email)
+                                .child("Calendar")
+                                .child(date)
+                                .child("Therapy_schedule")
+                                .child(kind)
+                                .removeValue();
+
+                        for (int i = 0; i < savedList.size(); i++) {
+                            // 새로 정렬해서 추가
+                            mDatabase.getReference(db_email)
+                                    .child("Calendar")
+                                    .child(date)
+                                    .child("Therapy_schedule")
+                                    .child(kind)
+                                    .push()
+                                    .child(kind)
+                                    .setValue(savedList.get(i));
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
     }
+
 }
