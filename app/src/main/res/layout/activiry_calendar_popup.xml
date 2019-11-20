@@ -4,7 +4,6 @@
     android:layout_width="300dp"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-
     android:background="#efefef"
     android:orientation="vertical">
 
@@ -120,7 +119,7 @@
             android:id="@+id/time_start"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:timePickerMode="spinner" />
+            android:timePickerMode="spinner"/>
 
         <TextView
             android:layout_width="match_parent"

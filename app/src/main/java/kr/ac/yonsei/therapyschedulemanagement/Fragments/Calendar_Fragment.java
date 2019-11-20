@@ -1,10 +1,12 @@
 package kr.ac.yonsei.therapyschedulemanagement.Fragments;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CalendarView;
@@ -52,6 +54,12 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
     private TextView backslide;
     private ProgressDialog dialog;
 
+    // floating button 이동 관련
+    private final static float CLICK_DRAG_TOLERANCE = 10; // Often, there will be a slight, unintentional, drag when the user taps the FAB, so we need to account for this.
+
+    private float downRawX, downRawY;
+    private float dX, dY;
+
     // Firebase
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
@@ -72,7 +80,7 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
 
     View view;
 
-
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_calendar, container, false);
@@ -83,6 +91,117 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
         recyclerView = view.findViewById(R.id.recycler_frag2);
         dialog = new ProgressDialog(getContext());
 
+//        btn_add_schedule.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                View viewParent;
+//
+//                switch (event.getActionMasked()) {
+//                    case MotionEvent.ACTION_DOWN:
+//                        downRawX = event.getRawX();
+//                        downRawY = event.getRawY();
+//                        dX = v.getX() - downRawX;
+//                        dY = v.getY() - downRawY;
+//
+//                        return true; // Consumed
+//
+//                    case MotionEvent.ACTION_MOVE:
+//                        int viewWidth = v.getWidth();
+//                        int viewHeight = v.getHeight();
+//
+//                        viewParent = (View) v.getParent();
+//                        int parentWidth = viewParent.getWidth();
+//                        int parentHeight = viewParent.getHeight();
+//
+//                        float newX = event.getRawX() + dX;
+//                        newX = Math.max(0, newX); // Don't allow the FAB past the left hand side of the parent
+//                        newX = Math.min(parentWidth - viewWidth, newX); // Don't allow the FAB past the right hand side of the parent
+//
+//                        float newY = event.getRawY() + dY;
+//                        newY = Math.max(0, newY); // Don't allow the FAB past the top of the parent
+//                        newY = Math.min(parentHeight - viewHeight, newY); // Don't allow the FAB past the bottom of the parent
+//
+//                        v.animate()
+//                                .x(newX)
+//                                .y(newY)
+//                                .setDuration(0)
+//                                .start();
+//                        return true; // Consumed
+//
+//                    case MotionEvent.ACTION_UP:
+//
+//
+//                        float upRawX = event.getRawX();
+//                        float upRawY = event.getRawY();
+//
+//                        float upDX = upRawX - downRawX;
+//                        float upDY = upRawY - downRawY;
+//
+//                        if((Math.abs(upDX) < CLICK_DRAG_TOLERANCE && Math.abs(upDY) < CLICK_DRAG_TOLERANCE))
+//                            return true;
+//
+//                        View viewParent2 = (View) v.getParent();
+//                        float borderY,borderX;
+//                        float oldX=v.getX(), oldY=v.getY();
+//                        float finalX,finalY;
+//
+//                        borderY = Math.min(v.getY()-viewParent2.getTop(),viewParent2.getBottom()-v.getY());
+//                        borderX = Math.min(v.getX()-viewParent2.getLeft(),viewParent2.getRight()-v.getX());
+//
+//                        //You can set your dp margin from dimension resources (Suggested)
+//                        //float fab_margin= getResources().getDimension(R.dimen.fab_margin);
+//                        float fab_margin=15;
+//
+//                        //check if is nearest Y o X
+//                        if(borderX>borderY) {
+//                            if(v.getY()>viewParent2.getHeight()/2) { //view near Bottom
+//                                finalY = viewParent2.getBottom() - v.getHeight();
+//                                finalY = Math.min(viewParent2.getHeight() - v.getHeight(), finalY) - fab_margin; // Don't allow the FAB past the bottom of the parent
+//                            }
+//                            else {  //view vicina a Top
+//                                finalY = viewParent2.getTop();
+//                                finalY = Math.max(0, finalY) + fab_margin; // Don't allow the FAB past the top of the parent
+//                            }
+//                            //check if X it's over fab_margin
+//                            finalX=oldX;
+//                            if(v.getX()+viewParent2.getLeft()<fab_margin)
+//                                finalX=viewParent2.getLeft()+fab_margin;
+//                            if(viewParent2.getRight()-v.getX()-v.getWidth()<fab_margin)
+//                                finalX=viewParent2.getRight()- v.getWidth()-fab_margin;
+//                        }
+//                        else {  //view near Right
+//                            if(v.getX()>viewParent2.getWidth()/2) {
+//                                finalX = viewParent2.getRight() - v.getWidth();
+//                                finalX = Math.max(0, finalX) - fab_margin; // Don't allow the FAB past the left hand side of the parent
+//                            }
+//                            else {  //view near Left
+//                                finalX = viewParent2.getLeft();
+//                                finalX = Math.min(viewParent2.getWidth() - v.getWidth(), finalX) + fab_margin; // Don't allow the FAB past the right hand side of the parent
+//                            }
+//                            //check if Y it's over fab_margin
+//                            finalY=oldY;
+//                            if(v.getY()+viewParent2.getTop()<fab_margin)
+//                                finalY=viewParent2.getTop()+fab_margin;
+//                            if(viewParent2.getBottom()-v.getY()-v.getHeight()<fab_margin)
+//                                finalY=viewParent2.getBottom()-v.getHeight()-fab_margin;
+//                        }
+//
+//                        v.animate()
+//                                .x(finalX)
+//                                .y(finalY)
+//                                .setDuration(400)
+//                                .start();
+//
+//                        return false;
+//
+//                    // A drag consumed
+//                    default:
+//                        return true;
+//                }
+//
+//
+//            }
+//        });
 
         // 슬라이딩 올라와있는 상태에서 외부 Fade쪽 클릭하면 다시 내려오는 동작
         backslide = view.findViewById(R.id.backSlide);
@@ -107,242 +226,248 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
         /** 처음 화면 뜰 때 리스트 현재 날짜 보여주기 */
         Log.d(TAG, "onCreateView: " + year + "/" + month + "/" + date);
 
-        /** 처음 화면에서 클릭 안했을 때 어댑터 보여주기 */    
+        /** 처음 화면에서 클릭 안했을 때 어댑터 보여주기 */
         ArrayList<String> allDataList = new ArrayList<>();
         ArrayList<String> allDataList2 = new ArrayList<>();
 
-        mDatabase.getReference(mUser.getEmail().replace(".", "_"))
-                .child("Calendar")
-                .child(year + "/" + month + "/" + date)
-                .child("Therapy_schedule")
-                .child("data_save")
-                .addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        Log.d(TAG, "onChildAdded: REAL");
+        try {
 
-                        Map<String, Object> data = (Map<String, Object>) dataSnapshot.getValue();
-                        String dataAll = data.get("data_save").toString();
+            mDatabase.getReference(mUser.getEmail().replace(".", "_"))
+                    .child("Calendar")
+                    .child(year + "/" + month + "/" + date)
+                    .child("Therapy_schedule")
+                    .child("data_save")
+                    .addChildEventListener(new ChildEventListener() {
+                        @Override
+                        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                            Log.d(TAG, "onChildAdded: REAL");
 
-                        final String[] splitData = dataAll.split(":");
+                            Map<String, Object> data = (Map<String, Object>) dataSnapshot.getValue();
+                            String dataAll = data.get("data_save").toString();
 
-                        allDataList.add(splitData[0] + splitData[1] + splitData[2] + splitData[3] + splitData[4] + splitData[5] + splitData[6] + splitData[7]);
+                            final String[] splitData = dataAll.split(":");
 
-                        Collections.sort(allDataList);
-                        for (int i = 0; i < allDataList.size(); i++) {
-                            if (!allDataList2.contains(allDataList.get(i))) {
-                                allDataList2.add(allDataList.get(i));
+                            allDataList.add(splitData[0] + splitData[1] + splitData[2] + splitData[3] + splitData[4] + splitData[5] + splitData[6] + splitData[7]);
+
+                            Collections.sort(allDataList);
+                            for (int i = 0; i < allDataList.size(); i++) {
+                                if (!allDataList2.contains(allDataList.get(i))) {
+                                    allDataList2.add(allDataList.get(i));
+                                }
                             }
+
+                            Log.d(TAG, "onDataChange: " + allDataList.size());
+
+                            /** 데이터가, 바뀔때마다 리사이클러뷰 업데이트! */
+                            ArrayList<CardItem> cardItemsList = new ArrayList<>();
+                            calendarDaySchduleAdapter = new CalendarDaySchdule_Adapter(cardItemsList);
+                            calendarDaySchduleAdapter.setOnItemClickedListener(Calendar_Fragment.this);
+                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+                            recyclerView.setLayoutManager(linearLayoutManager);
+                            calendarDaySchduleAdapter.notifyDataSetChanged();
+
+                            for (int j = 0; j < allDataList2.size(); j++) {
+                                try {
+                                    final CardItem cardItem = new CardItem(allDataList2.get(j).substring(16),
+                                            allDataList2.get(j).substring(8, 10) + ":" + allDataList2.get(j).substring(10, 12),
+                                            allDataList2.get(j).substring(12, 14) + ":" + allDataList2.get(j).substring(14, 16));
+                                    cardItemsList.add(cardItem);
+                                    recyclerView.removeAllViewsInLayout();
+                                    recyclerView.setAdapter(calendarDaySchduleAdapter);
+                                    dialog.dismiss();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                            dialog.dismiss();
+
                         }
 
-                        Log.d(TAG, "onDataChange: " + allDataList.size());
+                        @Override
+                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
+                        }
+
+                        @Override
+                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                            Log.d(TAG, "onChildRemoved: REAL");
+                            refreshAdapter();
+                        }
+
+                        @Override
+                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+            // 아무 내용이 없으면 보여주지말기
+            if (allDataList.size() == 0) {
+                /** 데이터가, 바뀔때마다 리사이클러뷰 업데이트! */
+                ArrayList<CardItem> cardItemsList = new ArrayList<>();
+                calendarDaySchduleAdapter = new CalendarDaySchdule_Adapter(cardItemsList);
+                calendarDaySchduleAdapter.setOnItemClickedListener(Calendar_Fragment.this);
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+                recyclerView.setLayoutManager(linearLayoutManager);
+                calendarDaySchduleAdapter.notifyDataSetChanged();
+                recyclerView.removeAllViewsInLayout();
+                recyclerView.setAdapter(calendarDaySchduleAdapter);
+                dialog.dismiss();
+            }
+
+            /** 캘린더 날짜 선택했을 때 동작 리스너 */
+            calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+
+                @Override
+                public void onSelectedDayChange(@NonNull CalendarView view, int selected_year, int selected_month, int selected_dayOfMonth) {
+                    year = selected_year;
+                    month = selected_month + 1;
+                    date = selected_dayOfMonth;
+
+                    Log.d(TAG, "onSelectedDayChange: " + year + "/" + month + "/" + date);
+                    showProgressDialog();
+
+                    /** 데이터 받아오기 */
+
+                    ArrayList<String> allDataList = new ArrayList<>();
+                    ArrayList<String> allDataList2 = new ArrayList<>();
+
+                    mDatabase.getReference(mUser.getEmail().replace(".", "_"))
+                            .child("Calendar")
+                            .child(year + "/" + month + "/" + date)
+                            .child("Therapy_schedule")
+                            .child("data_save")
+                            .addChildEventListener(new ChildEventListener() {
+                                @Override
+                                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                    Log.d(TAG, "onChildAdded: REAL1");
+                                    Map<String, Object> data = (Map<String, Object>) dataSnapshot.getValue();
+                                    String dataAll = data.get("data_save").toString();
+
+                                    final String[] splitData = dataAll.split(":");
+
+                                    allDataList.add(splitData[0] + splitData[1] + splitData[2] + splitData[3] + splitData[4] + splitData[5] + splitData[6] + splitData[7]);
+                                    Collections.sort(allDataList);
+
+                                    /** 데이터가, 바뀔때마다 리사이클러뷰 업데이트! */
+                                    for (int i = 0; i < allDataList.size(); i++) {
+                                        if (!allDataList2.contains(allDataList.get(i))) {
+                                            allDataList2.add(allDataList.get(i));
+                                        }
+                                    }
+
+                                    Log.d(TAG, "onDataChange: " + allDataList.size());
+
+                                    /** 데이터가, 바뀔때마다 리사이클러뷰 업데이트! */
+                                    ArrayList<CardItem> cardItemsList = new ArrayList<>();
+                                    calendarDaySchduleAdapter = new CalendarDaySchdule_Adapter(cardItemsList);
+                                    calendarDaySchduleAdapter.setOnItemClickedListener(Calendar_Fragment.this);
+                                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+                                    recyclerView.setLayoutManager(linearLayoutManager);
+                                    calendarDaySchduleAdapter.notifyDataSetChanged();
+
+                                    for (int j = 0; j < allDataList2.size(); j++) {
+                                        try {
+                                            final CardItem cardItem = new CardItem(allDataList2.get(j).substring(16),
+                                                    allDataList2.get(j).substring(8, 10) + ":" + allDataList2.get(j).substring(10, 12),
+                                                    allDataList2.get(j).substring(12, 14) + ":" + allDataList2.get(j).substring(14, 16));
+                                            cardItemsList.add(cardItem);
+                                            recyclerView.removeAllViewsInLayout();
+                                            recyclerView.setAdapter(calendarDaySchduleAdapter);
+                                            dialog.dismiss();
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+
+
+                                        dialog.dismiss();
+                                    }
+                                }
+
+                                @Override
+                                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                                }
+
+                                @Override
+                                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                                    Log.d(TAG, "onChildRemoved: REAL1");
+                                    refreshAdapter();
+                                }
+
+                                @Override
+                                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+
+                    // 아무 내용이 없으면 보여주지말기
+                    if (allDataList.size() == 0) {
                         /** 데이터가, 바뀔때마다 리사이클러뷰 업데이트! */
                         ArrayList<CardItem> cardItemsList = new ArrayList<>();
                         calendarDaySchduleAdapter = new CalendarDaySchdule_Adapter(cardItemsList);
                         calendarDaySchduleAdapter.setOnItemClickedListener(Calendar_Fragment.this);
+
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
                         recyclerView.setLayoutManager(linearLayoutManager);
                         calendarDaySchduleAdapter.notifyDataSetChanged();
-
-                        for (int j = 0; j < allDataList2.size(); j++) {
-                            try {
-                                final CardItem cardItem = new CardItem(allDataList2.get(j).substring(16),
-                                        allDataList2.get(j).substring(8, 10) + ":" + allDataList2.get(j).substring(10, 12),
-                                        allDataList2.get(j).substring(12, 14) + ":" + allDataList2.get(j).substring(14, 16));
-                                cardItemsList.add(cardItem);
-                                recyclerView.removeAllViewsInLayout();
-                                recyclerView.setAdapter(calendarDaySchduleAdapter);
-                                dialog.dismiss();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-
-                        }
+                        recyclerView.removeAllViewsInLayout();
+                        recyclerView.setAdapter(calendarDaySchduleAdapter);
                         dialog.dismiss();
-
                     }
 
-                    @Override
-                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                }
+            });
 
+
+            /** Floating 추가 버튼 클릭 동작 */
+            btn_add_schedule.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // 캘린더 날짜 전달
+                    Intent intent = new Intent(getContext(), Popup_Activity.class);
+                    intent.putExtra("Date", year + "년 " + month + "월 " + date + "일");
+                    intent.putExtra("Year", year);
+                    intent.putExtra("Month", month);
+                    intent.putExtra("Day", date);
+                    startActivityForResult(intent, 1);
+                }
+            });
+
+            /** 슬라이딩뷰 동작 결과에 따른 뷰 위치 */
+            sliding_layout_calendar.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+                @Override
+                public void onPanelSlide(View panel, float slideOffset) {
+
+                }
+
+                @Override
+                public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+                    // 슬라이딩 뷰가 올라오면 Parent뷰로 만들고, 내려가면 캘린더뷰가 Parent 뷰가 되도록
+                    if (newState.toString().equals("DRAGGING")) {
+                        sliding_layout_calendar.bringToFront();
                     }
-
-                    @Override
-                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                        Log.d(TAG, "onChildRemoved: REAL");
-                        refreshAdapter();
+                    if (newState.toString().equals("EXPANDED")) {
+                        sliding_layout_calendar.bringToFront();
+                    } else if (newState.toString().equals("COLLAPSED")) {
+                        calendarView.bringToFront();
                     }
+                }
+            });
 
-                    @Override
-                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+        } catch (Exception e) {
 
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-
-        // 아무 내용이 없으면 보여주지말기
-        if (allDataList.size() == 0) {
-            /** 데이터가, 바뀔때마다 리사이클러뷰 업데이트! */
-            ArrayList<CardItem> cardItemsList = new ArrayList<>();
-            calendarDaySchduleAdapter = new CalendarDaySchdule_Adapter(cardItemsList);
-            calendarDaySchduleAdapter.setOnItemClickedListener(Calendar_Fragment.this);
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-            recyclerView.setLayoutManager(linearLayoutManager);
-            calendarDaySchduleAdapter.notifyDataSetChanged();
-            recyclerView.removeAllViewsInLayout();
-            recyclerView.setAdapter(calendarDaySchduleAdapter);
-            dialog.dismiss();
         }
-
-        /** 캘린더 날짜 선택했을 때 동작 리스너 */
-        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-
-            @Override
-            public void onSelectedDayChange(@NonNull CalendarView view, int selected_year, int selected_month, int selected_dayOfMonth) {
-                year = selected_year;
-                month = selected_month + 1;
-                date = selected_dayOfMonth;
-
-                Log.d(TAG, "onSelectedDayChange: " + year + "/" + month + "/" + date);
-                showProgressDialog();
-
-                /** 데이터 받아오기 */
-
-                ArrayList<String> allDataList = new ArrayList<>();
-                ArrayList<String> allDataList2 = new ArrayList<>();
-
-                mDatabase.getReference(mUser.getEmail().replace(".", "_"))
-                        .child("Calendar")
-                        .child(year + "/" + month + "/" + date)
-                        .child("Therapy_schedule")
-                        .child("data_save")
-                        .addChildEventListener(new ChildEventListener() {
-                            @Override
-                            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                Log.d(TAG, "onChildAdded: REAL1");
-                                Map<String, Object> data = (Map<String, Object>) dataSnapshot.getValue();
-                                String dataAll = data.get("data_save").toString();
-
-                                final String[] splitData = dataAll.split(":");
-
-                                allDataList.add(splitData[0] + splitData[1] + splitData[2] + splitData[3] + splitData[4] + splitData[5] + splitData[6] + splitData[7]);
-                                Collections.sort(allDataList);
-
-                                /** 데이터가, 바뀔때마다 리사이클러뷰 업데이트! */
-                                for (int i = 0; i < allDataList.size(); i++) {
-                                    if (!allDataList2.contains(allDataList.get(i))) {
-                                        allDataList2.add(allDataList.get(i));
-                                    }
-                                }
-
-                                Log.d(TAG, "onDataChange: " + allDataList.size());
-
-                                /** 데이터가, 바뀔때마다 리사이클러뷰 업데이트! */
-                                ArrayList<CardItem> cardItemsList = new ArrayList<>();
-                                calendarDaySchduleAdapter = new CalendarDaySchdule_Adapter(cardItemsList);
-                                calendarDaySchduleAdapter.setOnItemClickedListener(Calendar_Fragment.this);
-                                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-                                recyclerView.setLayoutManager(linearLayoutManager);
-                                calendarDaySchduleAdapter.notifyDataSetChanged();
-
-                                for (int j = 0; j < allDataList2.size(); j++) {
-                                    try {
-                                        final CardItem cardItem = new CardItem(allDataList2.get(j).substring(16),
-                                                allDataList2.get(j).substring(8, 10) + ":" + allDataList2.get(j).substring(10, 12),
-                                                allDataList2.get(j).substring(12, 14) + ":" + allDataList2.get(j).substring(14, 16));
-                                        cardItemsList.add(cardItem);
-                                        recyclerView.removeAllViewsInLayout();
-                                        recyclerView.setAdapter(calendarDaySchduleAdapter);
-                                        dialog.dismiss();
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-
-
-                                    dialog.dismiss();
-                                }
-                            }
-
-                            @Override
-                            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                            }
-
-                            @Override
-                            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                                Log.d(TAG, "onChildRemoved: REAL1");
-                            }
-
-                            @Override
-                            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-
-                // 아무 내용이 없으면 보여주지말기
-                if (allDataList.size() == 0) {
-                    /** 데이터가, 바뀔때마다 리사이클러뷰 업데이트! */
-                    ArrayList<CardItem> cardItemsList = new ArrayList<>();
-                    calendarDaySchduleAdapter = new CalendarDaySchdule_Adapter(cardItemsList);
-                    calendarDaySchduleAdapter.setOnItemClickedListener(Calendar_Fragment.this);
-
-                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-                    recyclerView.setLayoutManager(linearLayoutManager);
-                    calendarDaySchduleAdapter.notifyDataSetChanged();
-                    recyclerView.removeAllViewsInLayout();
-                    recyclerView.setAdapter(calendarDaySchduleAdapter);
-                    dialog.dismiss();
-                }
-
-            }
-        });
-
-
-        /** Floating 추가 버튼 클릭 동작 */
-        btn_add_schedule.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 캘린더 날짜 전달
-                Intent intent = new Intent(getContext(), Popup_Activity.class);
-                intent.putExtra("Date", year + "년 " + month + "월 " + date + "일");
-                intent.putExtra("Year", year);
-                intent.putExtra("Month", month);
-                intent.putExtra("Day", date);
-                startActivityForResult(intent, 1);
-            }
-        });
-
-        /** 슬라이딩뷰 동작 결과에 따른 뷰 위치 */
-        sliding_layout_calendar.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
-            @Override
-            public void onPanelSlide(View panel, float slideOffset) {
-
-            }
-
-            @Override
-            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
-                // 슬라이딩 뷰가 올라오면 Parent뷰로 만들고, 내려가면 캘린더뷰가 Parent 뷰가 되도록
-                if (newState.toString().equals("DRAGGING")) {
-                    sliding_layout_calendar.bringToFront();
-                }
-                if (newState.toString().equals("EXPANDED")) {
-                    sliding_layout_calendar.bringToFront();
-                } else if (newState.toString().equals("COLLAPSED")) {
-                    calendarView.bringToFront();
-                }
-            }
-        });
-
         return view;
 
     }

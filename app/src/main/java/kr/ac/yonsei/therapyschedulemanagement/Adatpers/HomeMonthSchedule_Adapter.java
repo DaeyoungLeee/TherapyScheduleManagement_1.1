@@ -1,8 +1,11 @@
 package kr.ac.yonsei.therapyschedulemanagement.Adatpers;
 
+import android.graphics.Color;
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,16 +39,22 @@ public class HomeMonthSchedule_Adapter extends RecyclerView.Adapter<HomeMonthSch
         holder.txt_start_time_month.setText(cardItemsMonth.get(position).getStartTimeMonth());
         holder.txt_end_time_month.setText(cardItemsMonth.get(position).getEndTimeMonth());
         holder.txt_day_month.setText(cardItemsMonth.get(position).getDayMonth());
+        holder.itemView.setBackgroundColor(Color.parseColor("#00FFFFFF"));
         if (cardItemsMonth.get(position).getTherapyMonth().equals("1")) {
             holder.txt_therapy_month.setText("감각통증치료");
+            holder.img_line.setImageResource(R.drawable.vertical_line_red_icon);
         }else if (cardItemsMonth.get(position).getTherapyMonth().equals("2")) {
             holder.txt_therapy_month.setText("언어치료");
+            holder.img_line.setImageResource(R.drawable.vertical_line_blue_icon);
         }else if (cardItemsMonth.get(position).getTherapyMonth().equals("3")) {
             holder.txt_therapy_month.setText("놀이치료");
+            holder.img_line.setImageResource(R.drawable.vertical_line_yellow_icon);
         }else if (cardItemsMonth.get(position).getTherapyMonth().equals("4")) {
             holder.txt_therapy_month.setText("물리치료");
+            holder.img_line.setImageResource(R.drawable.vertical_line_green_icon);
         }else if (cardItemsMonth.get(position).getTherapyMonth().equals("5")) {
             holder.txt_therapy_month.setText("작업치료");
+            holder.img_line.setImageResource(R.drawable.vertical_line_orange_icon);
         }
 
 
@@ -82,6 +91,7 @@ public class HomeMonthSchedule_Adapter extends RecyclerView.Adapter<HomeMonthSch
     public class CustomViewHolder extends RecyclerView.ViewHolder {
 
         private TextView txt_therapy_month, txt_start_time_month, txt_end_time_month, txt_day_month;
+        private ImageView img_line;
 
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -89,6 +99,7 @@ public class HomeMonthSchedule_Adapter extends RecyclerView.Adapter<HomeMonthSch
             this.txt_start_time_month = itemView.findViewById(R.id.txt_start_time_month);
             this.txt_end_time_month = itemView.findViewById(R.id.txt_end_time_month);
             this.txt_day_month = itemView.findViewById(R.id.txt_day_month);
+            this.img_line = itemView.findViewById(R.id.img_item_line);
         }
     }
 }

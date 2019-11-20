@@ -88,7 +88,7 @@ public class Home_Fragment extends Fragment {
     // UI element
     private ImageView img_weather;
     private TextView txt_date, txt_location, txt_weather;
-    private TextView txt_temp, txt_humidity;
+    private TextView txt_temp, txt_humidity, txt_wind;
     private double latitude, longitude;
     private int year, month, day, day1, day2, nowHour, nowMinute;
     private SlidingUpPanelLayout sl_q1, sl_q2, sl_q3, sl_q4, sl_q5, sl_main;
@@ -128,6 +128,7 @@ public class Home_Fragment extends Fragment {
         txt_location = view.findViewById(R.id.txt_location);
         txt_temp = view.findViewById(R.id.txt_temperature);
         txt_humidity = view.findViewById(R.id.txt_humidity);
+        txt_wind = view.findViewById(R.id.txt_wind);
         web_q1 = view.findViewById(R.id.web_q1);
         web_q2 = view.findViewById(R.id.web_q2);
         web_q3 = view.findViewById(R.id.web_q3);
@@ -218,6 +219,8 @@ public class Home_Fragment extends Fragment {
         // splitData[6] : 끝 분,
         // splitData[7] : 치료 종류
         Log.d(TAG, "onCreateView: year=" + year + "month=" + month + "day=" + day);
+        try {
+
         mDatabase.getReference(mUser.getEmail().replace(".", "_"))
                 .child("Calendar")
                 .child(year + "/" + month + "/" + day)
@@ -459,6 +462,10 @@ public class Home_Fragment extends Fragment {
                 }
             }
         });
+
+        }catch (Exception e) {
+
+        }
         return view;
     }
 
@@ -476,11 +483,15 @@ public class Home_Fragment extends Fragment {
                 try {
                     JSONObject main_object = response.getJSONObject("main");
                     JSONArray array = response.getJSONArray("weather");
+                    JSONObject wind_object = response.getJSONObject("wind");
                     JSONObject object = array.getJSONObject(0);
                     String temp = String.valueOf(main_object.getDouble("temp"));
                     String humidity = String.valueOf(main_object.getInt("humidity"));
                     String descroption = object.getString("description");
+                    String wind = String.valueOf(wind_object.getString("speed"));
                     String city = response.getString("name");
+
+                    txt_wind.setText(wind);
 
                     //humidity 소숫점 제거
                     //받아온 데이터를 어떻게 output해줄지 결정
@@ -545,6 +556,7 @@ public class Home_Fragment extends Fragment {
                     } else if (descroption.equals("light rain")
                             || descroption.equals("moderate rain")
                             || descroption.equals("shower rain")
+                            || descroption.equals("intensity shower rain")
                             || descroption.equals("light intensity shower rain")) {
                         img_weather.setImageResource(R.drawable.heavy_rain_icon);
                         txt_weather.setText("비");
