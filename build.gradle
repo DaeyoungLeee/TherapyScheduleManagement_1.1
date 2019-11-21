@@ -38,6 +38,11 @@ allprojects {
         // 라디오뷰 관련 jitpack설치
         maven { url "https://jitpack.io" }
 
+        // TImePicker
+        maven {
+            url "https://jitpack.io"
+        }
+
     }
 }
 

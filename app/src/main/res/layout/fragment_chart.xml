@@ -3,9 +3,47 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.jaredrummler.materialspinner.MaterialSpinner
+        android:id="@+id/spinner_chart_month"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true" />
+
+    <com.jaredrummler.materialspinner.MaterialSpinner
+        android:id="@+id/spinner_chart_year"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/spinner_chart_month" />
+
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/pieChart"
         android:layout_width="match_parent"
-        android:layout_height="300dp"/>
+        android:layout_height="300dp"
+        android:layout_below="@+id/spinner_chart_month" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_chart"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/pieChart" />
+
+    <LinearLayout
+        android:layout_below="@+id/spinner_chart_month"
+        android:id="@+id/linear_chart_nothong"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ffffff"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/chart_icon"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" 정보가 없습니다!"
+            android:textColor="#000000"/>
+    </LinearLayout>
 
 </RelativeLayout>

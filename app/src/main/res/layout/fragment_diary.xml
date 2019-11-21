@@ -22,7 +22,6 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
-        android:fontFamily="serif"
         android:text="내 아이 컨디션"
         android:textColor="#000000" />
 
@@ -32,7 +31,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/txt_status_title"
         android:background="#ffffff"
-        android:fontFamily="serif"
         android:gravity="center"
         android:padding="4dp"
         android:text="비어있음"
@@ -45,7 +43,6 @@
         android:layout_below="@id/txt_status"
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
-        android:fontFamily="serif"
         android:text="하루일기"
         android:textColor="#000000" />
 
@@ -57,7 +54,6 @@
         android:layout_below="@id/txt_diary_title"
         android:layout_marginTop="4dp"
         android:background="#ccffffff"
-        android:fontFamily="serif"
         android:padding="8dp"
         android:textColor="#000000" />
 
@@ -68,7 +64,6 @@
         android:layout_alignParentBottom="true"
         android:layout_margin="4dp"
         android:background="@color/colorPrimary"
-        android:fontFamily="serif"
         android:text="수정 및 추가"
         android:textColor="#ffffff" />
 
@@ -92,7 +87,7 @@
             android:textSize="24sp"
             android:layout_width="wrap_content"
             android:textColor="#000000"
-            android:fontFamily="serif"
+
             android:layout_height="wrap_content"
             android:text="내용이 없습니다"/>
 

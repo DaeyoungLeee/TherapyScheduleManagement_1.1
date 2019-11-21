@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="53dp"
             android:background="#00000000"
-            android:fontFamily="serif"
+
             android:gravity="center"
             android:text="날짜"
             android:textColor="#000"
@@ -49,7 +49,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="serif"
+
                 android:text="자녀의 컨디션은 어땠나요?"
                 android:textColor="#000000"
                 android:textSize="16sp" />
@@ -71,14 +71,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:fontFamily="serif"
+
                     android:textColor="#000000" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:fontFamily="serif"
+
                     android:text="매우나쁨"
                     android:textColor="#000000" />
 
@@ -95,14 +95,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:fontFamily="serif"
                     android:textColor="#000000" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:fontFamily="serif"
                     android:text="나쁨"
                     android:textColor="#000000" />
 
@@ -119,14 +117,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:fontFamily="serif"
+
                     android:textColor="#000000" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:fontFamily="serif"
+
                     android:text="보통"
                     android:textColor="#000000" />
 
@@ -143,14 +141,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:fontFamily="serif"
+
                     android:textColor="#000000" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:fontFamily="serif"
+
                     android:text="좋음"
                     android:textColor="#000000" />
 
@@ -167,14 +165,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:fontFamily="serif"
+
                     android:textColor="#000000" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:fontFamily="serif"
+
                     android:text="매우좋음"
                     android:textColor="#000000" />
 
@@ -207,7 +205,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="serif"
+
                 android:text="특별한 일이 있었나요?"
                 android:textColor="#000000"
                 android:textSize="16sp" />
@@ -218,7 +216,7 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:gravity="top"
-            android:fontFamily="serif"
+
             android:padding="4dp"
             android:background="#ffffff"
             android:inputType="textMultiLine" />
@@ -238,7 +236,7 @@
             android:layout_height="53dp"
             android:layout_weight="1"
             android:background="#00ffffff"
-            android:fontFamily="serif"
+
             android:gravity="center"
             android:padding="16dp"
             android:text="취소"
@@ -251,7 +249,7 @@
             android:layout_height="53dp"
             android:layout_weight="1"
             android:background="#00ffffff"
-            android:fontFamily="serif"
+
             android:gravity="center"
             android:padding="16dp"
             android:text="삭제"
@@ -264,7 +262,7 @@
             android:layout_height="53dp"
             android:layout_weight="2"
             android:background="@drawable/white_rec_button"
-            android:fontFamily="serif"
+
             android:gravity="center"
             android:padding="16dp"
             android:text="저장"

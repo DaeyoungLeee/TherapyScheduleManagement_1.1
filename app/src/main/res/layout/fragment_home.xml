@@ -41,7 +41,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:fontFamily="serif"
+
                     android:text=""
                     android:textColor="#ffffff" />
 
@@ -61,7 +61,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:fontFamily="serif"
+
                     android:textColor="#ffffff"
                     android:textSize="12dp" />
 
@@ -75,14 +75,14 @@
                         android:id="@+id/txt_temperature"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="serif"
+
                         android:textColor="#ffffff"
                         android:textSize="40sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="serif"
+
                         android:text=" ℃"
                         android:textColor="#ffffff" />
                 </LinearLayout>
@@ -106,14 +106,14 @@
                         android:layout_marginStart="4dp"
                         android:textSize="12dp"
                         android:layout_height="wrap_content"
-                        android:fontFamily="serif"
+
                         android:textColor="#ffffff" />
 
                     <TextView
                         android:layout_gravity="center"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="serif"
+
                         android:textSize="8dp"
                         android:text=" % "
                         android:textColor="#ffffff" />
@@ -132,14 +132,14 @@
                         android:layout_marginStart="4dp"
                         android:textSize="12dp"
                         android:layout_height="wrap_content"
-                        android:fontFamily="serif"
+
                         android:textColor="#ffffff" />
 
                     <TextView
                         android:layout_gravity="center"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="serif"
+
                         android:textSize="8dp"
                         android:text=" ㎧ "
                         android:textColor="#ffffff" />
@@ -153,7 +153,7 @@
                     android:layout_gravity="end"
                     android:layout_marginTop="8dp"
                     android:textSize="10sp"
-                    android:fontFamily="serif"
+
                     android:textColor="#ffffff" />
             </LinearLayout>
 
@@ -183,7 +183,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fontFamily="serif"
+
             android:textSize="16sp" />
 
         <LinearLayout
@@ -196,7 +196,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:background="@drawable/bg_question"
-                android:fontFamily="serif"
+
                 android:gravity="center"
                 android:text="Q&amp;A 이럴땐 이렇게"
                 android:textColor="#000000"
@@ -219,7 +219,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:fontFamily="serif"
+
                         android:gravity="center" />
 
                     <LinearLayout
@@ -236,7 +236,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="#ffffff"
-                            android:fontFamily="serif"
+
                             android:gravity="center"
                             android:padding="16dp"
                             android:text=" 양치 전에 츄잉 껌이나 마이쭈를 씹거나, 입 주변을 꾹꾹 눌러주세요.
@@ -247,11 +247,11 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
-                            android:fontFamily="serif"
+
                             android:gravity="center"
                             android:text="Q1. 양치질을 하기 싫어할 때"
                             android:textColor="@color/colorPrimary"
-                            android:typeface="serif" />
+                             />
 
                     </LinearLayout>
                 </com.sothree.slidinguppanel.SlidingUpPanelLayout>
@@ -270,7 +270,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:fontFamily="serif"
+
                         android:gravity="center" />
 
                     <LinearLayout
@@ -282,13 +282,13 @@
                             android:id="@+id/web_q2"
                             android:layout_width="match_parent"
                             android:layout_height="150dp"
-                            android:fontFamily="serif" />
+                             />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="#ffffff"
-                            android:fontFamily="serif"
+
                             android:gravity="center"
                             android:padding="16dp"
                             android:text="자기전에 어깨나 무릎과 같은 큰 관절들을 지긋이 눌러주시고
@@ -297,11 +297,11 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
-                            android:fontFamily="serif"
+
                             android:gravity="center"
                             android:text="Q2. 잠을 쉽게 자지 못할 때"
                             android:textColor="@color/colorPrimary"
-                            android:typeface="serif" />
+                             />
                     </LinearLayout>
                 </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
@@ -319,7 +319,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:fontFamily="serif"
+
                         android:gravity="center" />
 
                     <LinearLayout
@@ -336,7 +336,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="#ffffff"
-                            android:fontFamily="serif"
+
                             android:gravity="center"
                             android:padding="16dp"
                             android:text="아이가 선호하는 재질의 옷이 있는지 먼저 파악할 수 있도록 해주세요.
@@ -347,11 +347,11 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
-                            android:fontFamily="serif"
+
                             android:gravity="center"
                             android:text="Q3. 옷 입기를 싫어할 때"
                             android:textColor="@color/colorPrimary"
-                            android:typeface="serif" />
+                             />
                     </LinearLayout>
                 </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
@@ -370,7 +370,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:fontFamily="serif"
+
                         android:gravity="center" />
 
                     <LinearLayout
@@ -387,7 +387,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="#ffffff"
-                            android:fontFamily="serif"
+
                             android:gravity="center"
                             android:padding="16dp"
                             android:text="세수 및 손을 씻을 때, 아이의 등 뒤에서 아이를 안아 안정감을 줄 수 있도록 해주세요.
@@ -397,11 +397,11 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
-                            android:fontFamily="serif"
+
                             android:gravity="center"
                             android:text="Q4. 세수, 손 씻기, 샤워하기를 싫어할 때"
                             android:textColor="@color/colorPrimary"
-                            android:typeface="serif" />
+                             />
                     </LinearLayout>
                 </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
@@ -419,7 +419,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:fontFamily="serif"
+
                         android:gravity="center" />
 
                     <LinearLayout
@@ -436,7 +436,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="#ffffff"
-                            android:fontFamily="serif"
+
                             android:gravity="center"
                             android:padding="16dp"
                             android:text="무게감 있는 옷이나 조끼로 앉아있을 수 있는 경험을 늘려주시고 발 받침대가 있으면 쉽게 안정할 수 있어요.
@@ -446,11 +446,11 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
-                            android:fontFamily="serif"
+
                             android:gravity="center"
                             android:text="Q5. 화장실 이용을 무서워할 때"
                             android:textColor="@color/colorPrimary"
-                            android:typeface="serif" />
+                             />
                     </LinearLayout>
                 </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 

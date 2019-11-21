@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -32,7 +34,7 @@ import java.util.Map;
 import it.emperor.animatedcheckbox.AnimatedCheckBox;
 import kr.ac.yonsei.therapyschedulemanagement.R;
 
-public class Popup_Activity extends Activity {
+public class Popup_Activity extends Activity implements View.OnClickListener {
 
     private static String TAG = "POPUP_ACTIVIRY";
 
@@ -55,11 +57,11 @@ public class Popup_Activity extends Activity {
     TextView txt_today;
     Button btn_okay, btn_cancel;
     TimePicker time_start, time_end;
-    AnimatedCheckBox check_sensory;
-    AnimatedCheckBox check_language;
-    AnimatedCheckBox check_play;
-    AnimatedCheckBox check_physical;
-    AnimatedCheckBox check_occupation;
+    RadioButton check_sensory;
+    RadioButton check_language;
+    RadioButton check_play;
+    RadioButton check_physical;
+    RadioButton check_occupation;
 
     int save_year;
     int save_month;
@@ -91,11 +93,11 @@ public class Popup_Activity extends Activity {
         check_physical = findViewById(R.id.check_physical);
         check_occupation = findViewById(R.id.check_occupation);
 
-        check_sensory.setChecked(false);
-        check_language.setChecked(false);
-        check_play.setChecked(false);
-        check_physical.setChecked(false);
-        check_occupation.setChecked(false);
+        check_sensory.setOnClickListener(this);
+        check_language.setOnClickListener(this);
+        check_play.setOnClickListener(this);
+        check_physical.setOnClickListener(this);
+        check_occupation.setOnClickListener(this);
 
         db_email = mAuth.getCurrentUser().getEmail().replace(".", "_");
 
@@ -267,4 +269,39 @@ public class Popup_Activity extends Activity {
                 });
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.check_sensory:
+                check_language.setChecked(false);
+                check_play.setChecked(false);
+                check_physical.setChecked(false);
+                check_occupation.setChecked(false);
+                break;
+            case R.id.check_language:
+                check_sensory.setChecked(false);
+                check_play.setChecked(false);
+                check_physical.setChecked(false);
+                check_occupation.setChecked(false);
+                break;
+            case R.id.check_play:
+                check_sensory.setChecked(false);
+                check_language.setChecked(false);
+                check_physical.setChecked(false);
+                check_occupation.setChecked(false);
+                break;
+            case R.id.check_physical:
+                check_sensory.setChecked(false);
+                check_language.setChecked(false);
+                check_play.setChecked(false);
+                check_occupation.setChecked(false);
+                break;
+            case R.id.check_occupation:
+                check_sensory.setChecked(false);
+                check_language.setChecked(false);
+                check_play.setChecked(false);
+                check_physical.setChecked(false);
+                break;
+        }
+    }
 }

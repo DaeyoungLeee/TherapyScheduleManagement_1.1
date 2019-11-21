@@ -189,6 +189,12 @@ public class DiaryPopup_Activity extends Activity implements View.OnClickListene
                     mDatabase.getReference(mAuth.getCurrentUser().getEmail().replace(".", "_"))
                             .child("Diary")
                             .child(save_year + "/" + save_month + "/" + save_day)
+                            .child("date")
+                            .setValue(save_day);
+
+                    mDatabase.getReference(mAuth.getCurrentUser().getEmail().replace(".", "_"))
+                            .child("Diary")
+                            .child(save_year + "/" + save_month + "/" + save_day)
                             .child("status")
                             .setValue(status);
 

@@ -30,77 +30,110 @@
         android:layout_height="wrap_content"
         android:gravity="center">
         <!-- //end 타이틀바 -->
-        <it.emperor.animatedcheckbox.AnimatedCheckBox
-            android:id="@+id/check_sensory"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            app:acb_animation_duration="500"
-            app:acb_border_checked_color="#000"
-            app:acb_border_checked_stroke_width="2dp"
-            app:acb_border_not_checked_color="@color/colorRed"
-            app:acb_checked="true"
-            app:acb_circle_color="#f00"
-            app:acb_hook_color="#fff"
-            android:onClick="onclick1"
-            app:acb_hook_stroke_width="1dp"
-            app:acb_padding="20dp" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/linear_sensory"
+            android:orientation="vertical">
 
-        <it.emperor.animatedcheckbox.AnimatedCheckBox
-            android:id="@+id/check_language"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            app:acb_animation_duration="500"
-            app:acb_border_checked_color="#000"
-            app:acb_border_checked_stroke_width="2dp"
-            app:acb_border_not_checked_color="@color/colorBlue"
-            app:acb_checked="true"
-            app:acb_circle_color="@color/colorBlue"
-            app:acb_hook_color="#fff"
-            app:acb_hook_stroke_width="1dp"
-            app:acb_padding="20dp" />
+            <RadioButton
+                android:id="@+id/check_sensory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"/>
 
-        <it.emperor.animatedcheckbox.AnimatedCheckBox
-            android:id="@+id/check_play"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            app:acb_animation_duration="500"
-            app:acb_border_checked_color="#000"
-            app:acb_border_checked_stroke_width="2dp"
-            app:acb_border_not_checked_color="@color/colorYellow"
-            app:acb_checked="true"
-            app:acb_circle_color="@color/colorYellow"
-            app:acb_hook_color="#fff"
-            app:acb_hook_stroke_width="1dp"
-            app:acb_padding="20dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="#000000"
+                android:text="감각통증" />
+        </LinearLayout>
 
-        <it.emperor.animatedcheckbox.AnimatedCheckBox
-            android:id="@+id/check_physical"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            app:acb_animation_duration="500"
-            app:acb_border_checked_color="#000"
-            app:acb_border_checked_stroke_width="2dp"
-            app:acb_border_not_checked_color="@color/colorGreen"
-            app:acb_checked="true"
-            app:acb_circle_color="@color/colorGreen"
-            app:acb_hook_color="#fff"
-            app:acb_hook_stroke_width="1dp"
-            app:acb_padding="20dp" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/linear_language"
+            android:orientation="vertical">
 
-        <it.emperor.animatedcheckbox.AnimatedCheckBox
-            android:id="@+id/check_occupation"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            app:acb_animation_duration="500"
-            app:acb_border_checked_color="#000"
-            app:acb_border_checked_stroke_width="2dp"
-            app:acb_border_not_checked_color="@color/colorPink"
-            app:acb_checked="true"
-            app:acb_circle_color="@color/colorPink"
-            app:acb_hook_color="#fff"
-            app:acb_hook_stroke_width="1dp"
-            app:acb_padding="20dp" />
+            <RadioButton
+                android:id="@+id/check_language"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"/>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="#000000"
+                android:text="언어치료" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/linear_play"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <RadioButton
+                android:id="@+id/check_play"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#000000"
+                android:layout_gravity="center"
+                android:text="놀이치료" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/linear_physical"
+            android:orientation="vertical">
+
+            <RadioButton
+                android:id="@+id/check_physical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="#000000"
+                android:text="물리치료" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/linear_occupation"
+            android:orientation="vertical">
+
+            <RadioButton
+                android:id="@+id/check_occupation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="#000000"
+                android:text="작업치료" />
+        </LinearLayout>
     </LinearLayout>
     <!-- Notice -->
     <LinearLayout
@@ -119,7 +152,7 @@
             android:id="@+id/time_start"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:timePickerMode="spinner"/>
+            android:timePickerMode="spinner" />
 
         <TextView
             android:layout_width="match_parent"

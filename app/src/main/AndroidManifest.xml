@@ -25,13 +25,12 @@
 
         <!--   액티비티     -->
         <activity android:name=".Activities.Intro_Activity">
-
-        </activity>
-        <activity android:name=".Activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".Activities.MainActivity">
         </activity>
         <activity android:name=".Activities.LogIn_Activity"/>
         <activity android:name=".Activities.SignIn_Activity"

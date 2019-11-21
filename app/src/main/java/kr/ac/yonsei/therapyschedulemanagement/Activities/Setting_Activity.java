@@ -6,17 +6,35 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import kr.ac.yonsei.therapyschedulemanagement.R;
 
 public class Setting_Activity extends PreferenceActivity {
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.prefs);
+        mAuth = FirebaseAuth.getInstance();
+
+        Preference myPref = (Preference) findPreference("log_out");
+        myPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            public boolean onPreferenceClick(Preference preference) {
+                //open browser or intent here
+                Toast.makeText(Setting_Activity.this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show();
+                mAuth.signOut();
+
+                finishAffinity();
+
+                return true;
+            }
+        });
 
     }
 
@@ -26,6 +44,7 @@ public class Setting_Activity extends PreferenceActivity {
         listener.onPreferenceChange(preference,
                 PreferenceManager.getDefaultSharedPreferences(preference.getContext())
                         .getString(preference.getKey(),""));
+
     }
     //설정 하면 설정값 summary 보여주기 listener
     private static Preference.OnPreferenceChangeListener listener = new Preference.OnPreferenceChangeListener() {
@@ -41,6 +60,8 @@ public class Setting_Activity extends PreferenceActivity {
                         ? listPreference.getEntries()[index]
                         :null);
             }
+
+
             return true;
         }
     };
