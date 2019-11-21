@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import kr.ac.yonsei.therapyschedulemanagement.HomeMonth_CardItem;
 import kr.ac.yonsei.therapyschedulemanagement.R;
 
+import static kr.ac.yonsei.therapyschedulemanagement.Fragments.Home_Fragment.linear_recycle_block;
+
 public class HomeMonthSchedule_Adapter extends RecyclerView.Adapter<HomeMonthSchedule_Adapter.CustomViewHolder> {
 
     private ArrayList<HomeMonth_CardItem> cardItemsMonth;
@@ -57,6 +59,10 @@ public class HomeMonthSchedule_Adapter extends RecyclerView.Adapter<HomeMonthSch
             holder.img_line.setImageResource(R.drawable.vertical_line_orange_icon);
         }
 
+        if(cardItemsMonth.size() != 0) {
+            linear_recycle_block.setVisibility(View.INVISIBLE);
+
+        }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

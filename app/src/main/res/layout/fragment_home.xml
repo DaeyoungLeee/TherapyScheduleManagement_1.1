@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/linear_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -13,6 +13,7 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/linear_weather"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -159,15 +160,56 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="116dp"
+            android:layout_margin="8dp"
+            android:background="#777777"
+            android:id="@+id/linear_home_weather_block"
+            android:gravity="center"
+            android:orientation="vertical">
+            <com.wang.avi.AVLoadingIndicatorView
+                android:id="@+id/avi_home_weather"
+                style="@style/AVLoadingIndicatorView"
+                android:layout_width="wrap_content"
+                app:indicatorColor="#f0f0f0"
+                android:layout_centerInParent="true"
+                android:layout_height="wrap_content"
+                app:indicatorName="LineSpinFadeLoaderIndicator"
+                android:visibility="visible" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linear_recycle_block"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_below="@+id/linear_weather"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/empty_box_icon"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#000000"
+                android:text=" 앞으로 3일간 일정이 없습니다."/>
+
+        </LinearLayout>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView_home"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_below="@+id/linear_weather"
             android:layout_gravity="bottom"
             android:layout_marginTop="4dp"
             android:padding="8dp" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
 
     <com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:sothree="http://schemas.android.com/apk/res-auto"
@@ -236,7 +278,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="#ffffff"
-
                             android:gravity="center"
                             android:padding="16dp"
                             android:text=" 양치 전에 츄잉 껌이나 마이쭈를 씹거나, 입 주변을 꾹꾹 눌러주세요.

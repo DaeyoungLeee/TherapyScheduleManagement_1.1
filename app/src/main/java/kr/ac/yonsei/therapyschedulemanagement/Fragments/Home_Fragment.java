@@ -24,6 +24,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,6 +52,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -95,7 +97,9 @@ public class Home_Fragment extends Fragment {
     private WebView web_q1, web_q2, web_q3, web_q4, web_q5;
     private HomeMonthSchedule_Adapter homeMonthScheduleAdapter;
     private RecyclerView recyclerViewMonth;
-    private LinearLayout linearLayoutMain;
+    private RelativeLayout linearLayoutMain;
+    private AVLoadingIndicatorView avi_home_weather;
+    public static LinearLayout home_block, linear_recycle_block;
 
     private boolean isRunning1 = false;
     private boolean isRunning2 = false;
@@ -136,6 +140,15 @@ public class Home_Fragment extends Fragment {
         web_q5 = view.findViewById(R.id.web_q5);
         recyclerViewMonth = view.findViewById(R.id.recyclerView_home);
         linearLayoutMain = view.findViewById(R.id.linear_main);
+        avi_home_weather = view.findViewById(R.id.avi_home_weather);
+        home_block = view.findViewById(R.id.linear_home_weather_block);
+        linear_recycle_block = view.findViewById(R.id.linear_recycle_block);
+
+        // 날씨정보창 로딩
+        avi_home_weather.smoothToShow();
+        home_block.setVisibility(View.VISIBLE);
+        linear_recycle_block.setVisibility(View.VISIBLE);
+
         // 웹뷰 세팅값
         webSettingMethod(web_q1);
         webSettingMethod(web_q2);
@@ -193,11 +206,11 @@ public class Home_Fragment extends Fragment {
 
             if (lm != null) {
                 lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                        3000,
+                        10000,
                         1,
                         gpsLocationListener);
                 lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                        3000,
+                        10000,
                         1,
                         gpsLocationListener);
             }
@@ -207,7 +220,6 @@ public class Home_Fragment extends Fragment {
         ArrayList<String> dataList2 = new ArrayList<>();
         ArrayList<String> dataList3 = new ArrayList<>();
         ArrayList<String> allDataList = new ArrayList<>();
-
 
         /** 오늘 날짜 */
         // splitData[0] : 연도,
@@ -346,9 +358,7 @@ public class Home_Fragment extends Fragment {
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-
                         }
-
 
                     }
 
@@ -573,6 +583,9 @@ public class Home_Fragment extends Fragment {
                     centi = Math.round(centi);
                     int i = (int) centi;
                     txt_temp.setText(String.valueOf(i));
+
+                    avi_home_weather.hide();
+                    home_block.setVisibility(View.INVISIBLE);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
