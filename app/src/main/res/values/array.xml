@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="chartTemplate">
+        <item>Joyful</item>
+        <item>Liberty</item>
+        <item>Material</item>
+        <item>Pastel</item>
+        <item>Vordiplom</item>
+        <item>Colorful</item>
+    </string-array>
+
+    <string-array name="chartTemplate_value">
+
+        <item>JOYFUL_COLORS</item>
+        <item>LIBERTY_COLORS</item>
+        <item>MATERIAL_COLORS</item>
+        <item>PASTEL_COLORS</item>
+        <item>VORDIPLOM_COLORS</item>
+        <item>COLORFUL_COLORS</item>
+
+    </string-array>
+
+    <string-array name="alert_time_array">
+
+        <item>아침 7시</item>
+        <item>아침 8시</item>
+        <item>아침 9시</item>
+        <item>아침 10시</item>
+
+    </string-array>
+
+    <string-array name="alert_time_array_value">
+
+        <item>아침 7시</item>
+        <item>아침 8시</item>
+        <item>아침 9시</item>
+        <item>아침 10시</item>
+
+    </string-array>
+
+    <string-array name="activity_array">
+
+        <item>저녁 7시</item>
+        <item>저녁 8시</item>
+        <item>저녁 9시</item>
+        <item>저녁 10시</item>
+
+    </string-array>
+
+    <string-array name="activity_array_value">
+
+        <item>저녁 7시</item>
+        <item>저녁 8시</item>
+        <item>저녁 9시</item>
+        <item>저녁 10시</item>
+
+    </string-array>
+</resources>

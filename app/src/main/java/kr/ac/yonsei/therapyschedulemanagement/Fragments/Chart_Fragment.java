@@ -2,9 +2,12 @@ package kr.ac.yonsei.therapyschedulemanagement.Fragments;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -103,6 +106,24 @@ public class Chart_Fragment extends Fragment {
         ArrayList<String> mstatusList = new ArrayList<>();
         ArrayList<String> mcontentsList = new ArrayList<>();
 
+        // 설정해놓은 값 받아오기
+        int[] colorSet = ColorTemplate.JOYFUL_COLORS;
+        SharedPreferences chart_color = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String chartColor = chart_color.getString("chart_color", "JOYFUL_COLORS");
+        if (chartColor.equals("JOYFUL_COLORS")) {
+            colorSet = ColorTemplate.JOYFUL_COLORS;
+        }else if (chartColor.equals("LIBERTY_COLORS")) {
+            colorSet = ColorTemplate.LIBERTY_COLORS;
+        }else if (chartColor.equals("MATERIAL_COLORS")) {
+            colorSet = ColorTemplate.MATERIAL_COLORS;
+        }else if (chartColor.equals("COLORFUL_COLORS")) {
+            colorSet = ColorTemplate.COLORFUL_COLORS;
+        }else if (chartColor.equals("PASTEL_COLORS")) {
+            colorSet = ColorTemplate.PASTEL_COLORS;
+        }else if (chartColor.equals("VORDIPLOM_COLORS")) {
+            colorSet = ColorTemplate.VORDIPLOM_COLORS;
+        }
+
         // 현재 날짜
         int nowYear = date.getYear() + 2000 - 100;
         int nowMonth = date.getMonth() + 1;
@@ -118,6 +139,7 @@ public class Chart_Fragment extends Fragment {
         int index = nowYear - 2018;
         spinner_year.setSelectedIndex(index);
         spinner_month.setSelectedIndex(nowMonth - 1);
+        int[] finalColorSet1 = colorSet;
         spinner_year.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener() {
             @Override
             public void onItemSelected(MaterialSpinner view, int position, long id, Object item) {
@@ -125,7 +147,7 @@ public class Chart_Fragment extends Fragment {
                 recyclerView.setVisibility(View.INVISIBLE);
                 mPiechart.setVisibility(View.INVISIBLE);
                 linear_nothing.setVisibility(View.VISIBLE);
-                selectedSpinnerDB();
+                selectedSpinnerDB(finalColorSet1);
             }
         });
         spinner_month.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
@@ -137,7 +159,7 @@ public class Chart_Fragment extends Fragment {
                 mPiechart.setVisibility(View.INVISIBLE);
                 linear_nothing.setVisibility(View.VISIBLE);
                 Log.d(TAG, "onItemSelected: setyear" + setYear + "- " + setMonth);
-                selectedSpinnerDB();
+                selectedSpinnerDB(finalColorSet1);
             }
         });
 
@@ -146,6 +168,7 @@ public class Chart_Fragment extends Fragment {
                 .child("Diary")
                 .child(nowYear + "/" + nowMonth);
 
+        int[] finalColorSet = colorSet;
         childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -197,7 +220,7 @@ public class Chart_Fragment extends Fragment {
                     PieDataSet dataSet = new PieDataSet(yValues, "");
                     dataSet.setSliceSpace(3f);
                     dataSet.setSelectionShift(5f);
-                    dataSet.setColors(ColorTemplate.PASTEL_COLORS);
+                    dataSet.setColors(finalColorSet);
 
                     PieData data2 = new PieData(dataSet);
 
@@ -350,7 +373,7 @@ public class Chart_Fragment extends Fragment {
                 });
     }
 
-    private void selectedSpinnerDB() {
+    private void selectedSpinnerDB(int[] template) {
         ArrayList<String> verygoodList = new ArrayList<>();
         ArrayList<String> goodList = new ArrayList<>();
         ArrayList<String> normalList = new ArrayList<>();
@@ -411,7 +434,7 @@ public class Chart_Fragment extends Fragment {
                             PieDataSet dataSet = new PieDataSet(yValues, "");
                             dataSet.setSliceSpace(3f);
                             dataSet.setSelectionShift(5f);
-                            dataSet.setColors(ColorTemplate.PASTEL_COLORS);
+                            dataSet.setColors(template);
 
                             PieData data2 = new PieData(dataSet);
 

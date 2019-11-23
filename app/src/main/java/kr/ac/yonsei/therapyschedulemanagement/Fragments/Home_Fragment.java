@@ -3,7 +3,6 @@ package kr.ac.yonsei.therapyschedulemanagement.Fragments;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.job.JobScheduler;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -42,9 +41,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.firebase.jobdispatcher.FirebaseJobDispatcher;
-import com.firebase.jobdispatcher.GooglePlayDriver;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -62,7 +58,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -71,11 +66,8 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 
-import kr.ac.yonsei.therapyschedulemanagement.Adatpers.CalendarDaySchdule_Adapter;
 import kr.ac.yonsei.therapyschedulemanagement.Adatpers.HomeMonthSchedule_Adapter;
-import kr.ac.yonsei.therapyschedulemanagement.CardItem;
 import kr.ac.yonsei.therapyschedulemanagement.HomeMonth_CardItem;
-import kr.ac.yonsei.therapyschedulemanagement.JobSchedulerStart;
 import kr.ac.yonsei.therapyschedulemanagement.R;
 
 public class Home_Fragment extends Fragment {
@@ -163,24 +155,6 @@ public class Home_Fragment extends Fragment {
 
         // 슬라이딩뷰 설정
         slidingViewSet();
-
-        // 잠깐 테스트용, 지울것
-        img_weather.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                JobSchedulerStart.start(getContext());
-                Log.d(TAG, "job_start");
-
-            }
-        });
-        txt_weather.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(getContext()));
-                dispatcher.cancelAll();
-                Log.d(TAG, "job_stop");
-            }
-        });
 
         // now date
         long now = System.currentTimeMillis();

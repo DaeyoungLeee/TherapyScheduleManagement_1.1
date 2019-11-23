@@ -14,10 +14,44 @@
             android:summaryOff="푸시알람 서비스를 이용하지 않습니다"
             android:summaryOn="푸시알람 서비스를 이용합니다"
             android:title="내 아이 정보" />
+    </PreferenceCategory>
 
+    <PreferenceCategory
+        android:title="커스터마이징">
+
+        <ListPreference
+            android:title="차트 색 템플릿 변경"
+            android:dialogTitle="원하는 종류로 템플릿 변경하세요"
+            android:defaultValue="VORDIPLOM_COLORS"
+            android:entries="@array/chartTemplate"
+            android:entryValues="@array/chartTemplate_value"
+            android:key="chart_color"
+            android:summary="차트 색깔 변경"/>
 
     </PreferenceCategory>
+
     <PreferenceCategory android:title="알림">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="push_alert"
+            android:summaryOff="푸시알람 서비스를 이용하지 않습니다"
+            android:summaryOn="푸시알람 서비스를 이용합니다"
+            android:title="푸시알람 사용" />
+
+        <ListPreference
+            android:key="alert_time"
+            android:dependency="push_alert"
+            android:entries="@array/alert_time_array"
+            android:entryValues="@array/alert_time_array_value"
+            android:title="스케줄 알림 시간 설정"/>
+
+        <ListPreference
+            android:key="activity_time"
+            android:dependency="push_alert"
+            android:entries="@array/activity_array"
+            android:entryValues="@array/activity_array_value"
+            android:title="행동특성 알림 시간 설정"/>
+
         <PreferenceScreen
             android:defaultValue="false"
             android:key="push_all"

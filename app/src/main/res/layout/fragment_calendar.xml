@@ -44,7 +44,7 @@
     <com.github.sundeepk.compactcalendarview.CompactCalendarView
         android:id="@+id/compactcalendar_view"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="300dp"
         android:layout_below="@+id/txt_calendar_date"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
@@ -53,7 +53,7 @@
         app:compactCalendarCurrentSelectedDayBackgroundColor="@color/colorPrimaryDark"
         app:compactCalendarDisplayOtherMonthDays="true"
         app:compactCalendarOtherMonthDaysTextColor="@color/colorTransparentPrimary"
-        app:compactCalendarTargetHeight="400dp"
+        app:compactCalendarTargetHeight="300dp"
         app:compactCalendarTextSize="12sp" />
 
     <!--추가 버튼-->

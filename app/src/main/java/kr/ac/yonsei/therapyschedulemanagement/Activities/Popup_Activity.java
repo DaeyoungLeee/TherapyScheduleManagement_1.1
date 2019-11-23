@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -18,20 +17,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Map;
 
-import it.emperor.animatedcheckbox.AnimatedCheckBox;
 import kr.ac.yonsei.therapyschedulemanagement.R;
 public class Popup_Activity extends Activity implements View.OnClickListener {
 
@@ -190,6 +184,8 @@ public class Popup_Activity extends Activity implements View.OnClickListener {
                         } else {
                             Toast.makeText(Popup_Activity.this, "일정을 체크해주세요!", Toast.LENGTH_SHORT).show();
                         }
+
+
                     }
                 } else {
                     Toast.makeText(Popup_Activity.this, "마시멜로버전 이상 가능", Toast.LENGTH_SHORT).show();
