@@ -151,7 +151,6 @@ public class Chart_Fragment extends Fragment {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 try {
                     Map<String, Object> data = (Map<String, Object>) dataSnapshot.getValue();
-                    Log.d(TAG, "onChildAdded: data! " + data);
                     String state = data.get("status").toString();
                     String mStatus = state;
                     String mDate = data.get("date").toString();

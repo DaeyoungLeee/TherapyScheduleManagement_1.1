@@ -33,7 +33,6 @@ import java.util.Map;
 
 import it.emperor.animatedcheckbox.AnimatedCheckBox;
 import kr.ac.yonsei.therapyschedulemanagement.R;
-
 public class Popup_Activity extends Activity implements View.OnClickListener {
 
     private static String TAG = "POPUP_ACTIVIRY";
@@ -66,6 +65,7 @@ public class Popup_Activity extends Activity implements View.OnClickListener {
     int save_year;
     int save_month;
     int save_day;
+    long save_millitime;
     int start_hour, start_minute;
     int end_hour, end_minute;
     // 현재 시간
@@ -108,6 +108,7 @@ public class Popup_Activity extends Activity implements View.OnClickListener {
         save_year = intent.getIntExtra("Year", 2019);
         save_month = intent.getIntExtra("Month", 1);
         save_day = intent.getIntExtra("Day", 1);
+        save_millitime = intent.getLongExtra("MilliTime", 1);
 
         // 초기 시간 설정
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -172,25 +173,19 @@ public class Popup_Activity extends Activity implements View.OnClickListener {
 
                         // 감각통증
                         if (check_sensory.isChecked()) {
-                            DB_save(db_date, "data_save", db_date_save + ":" + SENSORY_PAIN);
-
+                            DB_save(db_date, "data_save", db_date_save + ":" + SENSORY_PAIN + ":" + save_millitime);
                             finish();
                         } else if (check_language.isChecked()) {
-                            DB_save(db_date, "data_save", db_date_save + ":" + LANGUAGE);
-
+                            DB_save(db_date, "data_save", db_date_save + ":" + LANGUAGE + ":" + save_millitime);
                             finish();
                         } else if (check_play.isChecked()) {
-                            DB_save(db_date, "data_save", db_date_save + ":" + PLAY);
-
+                            DB_save(db_date, "data_save", db_date_save + ":" + PLAY + ":" + save_millitime);
                             finish();
                         } else if (check_physical.isChecked()) {
-                            DB_save(db_date, "data_save", db_date_save + ":" + PHYSICAL);
-//
+                            DB_save(db_date, "data_save", db_date_save + ":" + PHYSICAL + ":" + save_millitime);
                             finish();
                         } else if (check_occupation.isChecked()) {
-
-                            DB_save(db_date, "data_save", db_date_save + ":" + OCCUPATION);
-
+                            DB_save(db_date, "data_save", db_date_save + ":" + OCCUPATION + ":" + save_millitime);
                             finish();
                         } else {
                             Toast.makeText(Popup_Activity.this, "일정을 체크해주세요!", Toast.LENGTH_SHORT).show();
@@ -214,7 +209,7 @@ public class Popup_Activity extends Activity implements View.OnClickListener {
 
     //
     // 저장
-    private void DB_save(String date, String kind, String time) {
+    private void DB_save(String date, String kind, String data) {
 
         mDatabase.getReference(db_email)
                 .child("Calendar")
@@ -223,7 +218,7 @@ public class Popup_Activity extends Activity implements View.OnClickListener {
                 .child(kind)
                 .push()
                 .child(kind)
-                .setValue(time);
+                .setValue(data);
 
         ArrayList<String> savedList = new ArrayList<>();
 

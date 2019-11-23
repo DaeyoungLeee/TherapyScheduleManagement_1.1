@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -34,6 +37,8 @@ public class LogIn_Activity extends AppCompatActivity {
     private EditText id, pw;
     private CheckBox check_saveId, check_auto_login;
     private String email, password;
+    private Animation from_bottom;
+    private CardView card_login;
     // Firebase 객체
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
@@ -54,6 +59,10 @@ public class LogIn_Activity extends AppCompatActivity {
 
         check_saveId = findViewById(R.id.check_saveId);
         check_auto_login = findViewById(R.id.check_autoLogin);
+        card_login = findViewById(R.id.card_login);
+        from_bottom = AnimationUtils.loadAnimation(this, R.anim.from_bottom);
+
+        card_login.setAnimation(from_bottom);
 
         // 로그인 변화 리스너
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
@@ -134,7 +143,7 @@ public class LogIn_Activity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Intent intent_goMain = new Intent(LogIn_Activity.this, MainActivity.class);
                             startActivity(intent_goMain);
-                            finish();
+                            Log.d(TAG, "onComplete: 호출");
 
                             // 아이디 저장이 체크되어있으면 저장
                             SharedPreferences sharedPreferences = getSharedPreferences("LOGIN_STATE", MODE_PRIVATE);
@@ -174,6 +183,9 @@ public class LogIn_Activity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), "로그인에 실패했습니다.", Toast.LENGTH_SHORT).show();
                             dialog.dismiss();
                         }
+
+                        finish();
+
                     }
                 });
     }

@@ -29,11 +29,32 @@
 
     </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
-    <CalendarView
-        android:id="@+id/calendarView"
-        android:background="#ffffff"
+    <TextView
+        android:id="@+id/txt_calendar_date"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:gravity="center"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        android:background="#ffffff"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:text="당력" />
+
+    <com.github.sundeepk.compactcalendarview.CompactCalendarView
+        android:id="@+id/compactcalendar_view"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:layout_below="@+id/txt_calendar_date"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        app:compactCalendarBackgroundColor="#ffffff"
+        app:compactCalendarCurrentDayBackgroundColor="@color/colorShallow"
+        app:compactCalendarCurrentSelectedDayBackgroundColor="@color/colorPrimaryDark"
+        app:compactCalendarDisplayOtherMonthDays="true"
+        app:compactCalendarOtherMonthDaysTextColor="@color/colorTransparentPrimary"
+        app:compactCalendarTargetHeight="400dp"
+        app:compactCalendarTextSize="12sp" />
 
     <!--추가 버튼-->
 

@@ -1,5 +1,6 @@
 package kr.ac.yonsei.therapyschedulemanagement.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.preference.ListPreference;
@@ -28,10 +29,11 @@ public class Setting_Activity extends PreferenceActivity {
             public boolean onPreferenceClick(Preference preference) {
                 //open browser or intent here
                 Toast.makeText(Setting_Activity.this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show();
+                // 완전종료
                 mAuth.signOut();
-
                 finishAffinity();
-
+                Intent intent_login = new Intent(getApplicationContext(), LogIn_Activity.class);
+                startActivity(intent_login);
                 return true;
             }
         });

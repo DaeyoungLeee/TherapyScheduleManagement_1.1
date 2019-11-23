@@ -97,6 +97,9 @@ public class MainActivity extends AppCompatActivity {
 
         if (gapTime >= 0 && gapTime <= 2000) {
             super.onBackPressed();
+            finishAffinity();
+            System.runFinalization();
+            finish();
         } else {
             backBtnTime = curTime;
             Toast.makeText(this, "한 번 더 누르면 종료됩니다", Toast.LENGTH_SHORT).show();

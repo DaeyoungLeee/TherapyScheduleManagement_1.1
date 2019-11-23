@@ -3,12 +3,16 @@ package kr.ac.yonsei.therapyschedulemanagement.Fragments;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.CalendarView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +23,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.github.sundeepk.compactcalendarview.CompactCalendarView;
+import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,11 +36,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import kr.ac.yonsei.therapyschedulemanagement.Activities.Popup_Activity;
@@ -47,12 +57,14 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
     private static String TAG = "Fragment2";
     // UI elements
     private FloatingActionButton btn_add_schedule;
-    private CalendarView calendarView;
-    Calendar calendar;
+    private CompactCalendarView compactCalendarView;
     private SlidingUpPanelLayout sliding_layout_calendar;
     private RecyclerView recyclerView;
     private TextView backslide;
     private ProgressDialog dialog;
+    private long milliTime;
+    public static String userEmail;
+    private TextView txt_calendar_date;
 
     // floating button 이동 관련
     private final static float CLICK_DRAG_TOLERANCE = 10; // Often, there will be a slight, unintentional, drag when the user taps the FAB, so we need to account for this.
@@ -63,7 +75,8 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
     // Firebase
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
-    private FirebaseDatabase mDatabase;
+    public static FirebaseDatabase mDatabase;
+
     // Adapter
     CalendarDaySchdule_Adapter calendarDaySchduleAdapter;
 
@@ -85,11 +98,14 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_calendar, container, false);
 
-        calendarView = view.findViewById(R.id.calendarView);
         btn_add_schedule = view.findViewById(R.id.btn_add);
         sliding_layout_calendar = view.findViewById(R.id.sliding_layout_calendar);
         recyclerView = view.findViewById(R.id.recycler_frag2);
+        compactCalendarView = view.findViewById(R.id.compactcalendar_view);
+        txt_calendar_date = view.findViewById(R.id.txt_calendar_date);
         dialog = new ProgressDialog(getContext());
+
+        compactCalendarView.setFirstDayOfWeek(Calendar.SUNDAY);
 
 //        btn_add_schedule.setOnTouchListener(new View.OnTouchListener() {
 //            @Override
@@ -215,6 +231,7 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
         mDatabase = FirebaseDatabase.getInstance();
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
+        userEmail = mUser.getEmail().replace(".", "_");
 
         // 현재 날짜 (초기화)
         long now = System.currentTimeMillis();
@@ -223,6 +240,10 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
         month = dates.getMonth() + 1;
         date = dates.getDate();
         dayName = doDayOfWeek();
+        setMonthSchedule(userEmail, year, month);
+
+        txt_calendar_date.setText(year + "년 " + month + "월");
+
         /** 처음 화면 뜰 때 리스트 현재 날짜 보여주기 */
         Log.d(TAG, "onCreateView: " + year + "/" + month + "/" + date);
 
@@ -231,8 +252,7 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
         ArrayList<String> allDataList2 = new ArrayList<>();
 
         try {
-
-            mDatabase.getReference(mUser.getEmail().replace(".", "_"))
+            mDatabase.getReference(userEmail)
                     .child("Calendar")
                     .child(year + "/" + month + "/" + date)
                     .child("Therapy_schedule")
@@ -243,20 +263,17 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
                             Log.d(TAG, "onChildAdded: REAL");
 
                             Map<String, Object> data = (Map<String, Object>) dataSnapshot.getValue();
+                            Log.d(TAG, "onChildAdded: ?????" + data);
                             String dataAll = data.get("data_save").toString();
 
                             final String[] splitData = dataAll.split(":");
 
                             allDataList.add(splitData[0] + splitData[1] + splitData[2] + splitData[3] + splitData[4] + splitData[5] + splitData[6] + splitData[7]);
-
                             Collections.sort(allDataList);
                             for (int i = 0; i < allDataList.size(); i++) {
-                                if (!allDataList2.contains(allDataList.get(i))) {
+                                if (!allDataList2.contains(allDataList.get(i)))
                                     allDataList2.add(allDataList.get(i));
-                                }
                             }
-
-                            Log.d(TAG, "onDataChange: " + allDataList.size());
 
                             /** 데이터가, 바뀔때마다 리사이클러뷰 업데이트! */
                             ArrayList<CardItem> cardItemsList = new ArrayList<>();
@@ -320,14 +337,15 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
                 dialog.dismiss();
             }
 
-            /** 캘린더 날짜 선택했을 때 동작 리스너 */
-            calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-
+            /** Compact CalendarView 라이브러리 클릭 리스너 */
+            compactCalendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
                 @Override
-                public void onSelectedDayChange(@NonNull CalendarView view, int selected_year, int selected_month, int selected_dayOfMonth) {
-                    year = selected_year;
-                    month = selected_month + 1;
-                    date = selected_dayOfMonth;
+                public void onDayClick(Date dateClicked) {
+
+                    year = dateClicked.getYear() + 2000 - 100;
+                    month = dateClicked.getMonth() + 1;
+                    date = dateClicked.getDate();
+                    milliTime = dateClicked.getTime();
 
                     Log.d(TAG, "onSelectedDayChange: " + year + "/" + month + "/" + date);
                     showProgressDialog();
@@ -337,7 +355,7 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
                     ArrayList<String> allDataList = new ArrayList<>();
                     ArrayList<String> allDataList2 = new ArrayList<>();
 
-                    mDatabase.getReference(mUser.getEmail().replace(".", "_"))
+                    mDatabase.getReference(userEmail)
                             .child("Calendar")
                             .child(year + "/" + month + "/" + date)
                             .child("Therapy_schedule")
@@ -383,8 +401,6 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
-
-
                                         dialog.dismiss();
                                     }
                                 }
@@ -425,6 +441,15 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
                         recyclerView.setAdapter(calendarDaySchduleAdapter);
                         dialog.dismiss();
                     }
+                }
+
+                @Override
+                public void onMonthScroll(Date firstDayOfNewMonth) {
+                    Log.d(TAG, "onMonthScroll: ");
+                    int monthSlide = firstDayOfNewMonth.getMonth() + 1;
+                    int yearSlide = firstDayOfNewMonth.getYear() + 2000 - 100;
+                    setMonthSchedule(userEmail, yearSlide, monthSlide);
+                    txt_calendar_date.setText(yearSlide + "년 " + monthSlide + "월");
 
                 }
             });
@@ -440,6 +465,7 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
                     intent.putExtra("Year", year);
                     intent.putExtra("Month", month);
                     intent.putExtra("Day", date);
+                    intent.putExtra("MilliTime", milliTime);
                     startActivityForResult(intent, 1);
                 }
             });
@@ -460,7 +486,7 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
                     if (newState.toString().equals("EXPANDED")) {
                         sliding_layout_calendar.bringToFront();
                     } else if (newState.toString().equals("COLLAPSED")) {
-                        calendarView.bringToFront();
+                        compactCalendarView.bringToFront();
                     }
                 }
             });
@@ -513,7 +539,7 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
     public void onDeleteButtonClick(int position) {
         // 그리고 키값 다시 받아오기
         keyList.clear();
-        mDatabase.getReference(mUser.getEmail().replace(".", "_"))
+        mDatabase.getReference(userEmail)
                 .child("Calendar")
                 .child(year + "/" + month + "/" + date)
                 .child("Therapy_schedule")
@@ -550,8 +576,9 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
     private void refreshAdapter() {
         ArrayList<String> allDataList = new ArrayList<>();
         ArrayList<String> allDataList2 = new ArrayList<>();
+        ArrayList<String> dotList = new ArrayList<>();
 
-        mDatabase.getReference(mUser.getEmail().replace(".", "_"))
+        mDatabase.getReference(userEmail)
                 .child("Calendar")
                 .child(year + "/" + month + "/" + date)
                 .child("Therapy_schedule")
@@ -574,6 +601,7 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
                                 allDataList2.add(allDataList.get(i));
                             }
                         }
+
 
                         Log.d(TAG, "onDataChange: " + allDataList.size());
 
@@ -624,5 +652,115 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
 
                     }
                 });
+    }
+
+    // 일정 있으면 표시
+    private void setMonthSchedule(String email, int year, int month) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                long now = System.currentTimeMillis();
+                Date dateEvent = new Date(now);
+
+                ArrayList<String> dotList = new ArrayList<>();
+                ArrayList<String> therapyList = new ArrayList<>();
+
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        try {
+
+                            mDatabase.getReference(email)
+                                    .child("Calendar_dot")
+                                    .removeValue();
+
+                            mDatabase.getReference(userEmail)
+                                    .child("Calendar")
+                                    .child(year + "/" + month)
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            int k = 0;
+
+                                            for (DataSnapshot dataSnapshotKey : dataSnapshot.getChildren()) {
+                                                Map<String, Object> data = (Map<String, Object>) dataSnapshotKey.getValue();
+                                                Map<String, Object> dataAll = (Map<String, Object>) data.get("Therapy_schedule");
+                                                Map<String, Object> dataSave = (Map<String, Object>) dataAll.get("data_save");
+
+                                                mDatabase.getReference(email)
+                                                        .child("Calendar_dot")
+                                                        .child(String.valueOf(k))
+                                                        .setValue(dataSave);
+
+                                                mDatabase.getReference(userEmail)
+                                                        .child("Calendar_dot")
+                                                        .child(String.valueOf(k))
+                                                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                            @Override
+                                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                                for (DataSnapshot dataSnapshotKey : dataSnapshot.getChildren()) {
+
+                                                                    final String[] splitData = dataSnapshotKey.getValue().toString()
+                                                                            .replace("{data_save", "").replace("}", "")
+                                                                            .split(":");
+
+                                                                    try {
+
+                                                                        dotList.add(splitData[8]);
+                                                                        therapyList.add(splitData[7]);
+
+                                                                        Log.d(TAG, "onDataChange: !!!!!" + dotList);
+
+                                                                        List<Event> eventArrayList = compactCalendarView.getEvents(dateEvent);
+
+                                                                        for (int i = 0; i < dotList.size(); i++) {
+                                                                            if (therapyList.get(i).equals("1")) {
+                                                                                eventArrayList.add(new Event(Color.RED, Long.parseLong(dotList.get(i))));
+                                                                            } else if (therapyList.get(i).equals("2")) {
+                                                                                eventArrayList.add(new Event(Color.BLUE, Long.parseLong(dotList.get(i))));
+                                                                            } else if (therapyList.get(i).equals("3")) {
+                                                                                eventArrayList.add(new Event(Color.YELLOW, Long.parseLong(dotList.get(i))));
+                                                                            } else if (therapyList.get(i).equals("4")) {
+                                                                                eventArrayList.add(new Event(Color.GREEN, Long.parseLong(dotList.get(i))));
+                                                                            } else if (therapyList.get(i).equals("5")) {
+                                                                                eventArrayList.add(new Event(Color.MAGENTA, Long.parseLong(dotList.get(i))));
+                                                                            }
+                                                                            compactCalendarView.removeAllEvents();
+                                                                            compactCalendarView.addEvents(eventArrayList);
+                                                                        }
+                                                                        dialog.dismiss();
+
+                                                                    } catch (Exception e) {
+                                                                        e.printStackTrace();
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            @Override
+                                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                            }
+                                                        });
+                                                k = k + 1;
+
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+        }).start();
+
     }
 }

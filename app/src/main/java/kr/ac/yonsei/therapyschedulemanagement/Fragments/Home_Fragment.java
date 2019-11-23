@@ -100,6 +100,7 @@ public class Home_Fragment extends Fragment {
     private RelativeLayout linearLayoutMain;
     private AVLoadingIndicatorView avi_home_weather;
     public static LinearLayout home_block, linear_recycle_block;
+    private LinearLayout linear_home_loading;
 
     private boolean isRunning1 = false;
     private boolean isRunning2 = false;
@@ -108,6 +109,9 @@ public class Home_Fragment extends Fragment {
     // 주소정보
     private String area1, area2, area3, area4;
     private String cityName;
+
+    // 날씨 Flag
+    private boolean findWeatherFlag = true;
 
     public static Home_Fragment newInstance() {
         Home_Fragment f = new Home_Fragment();
@@ -143,6 +147,7 @@ public class Home_Fragment extends Fragment {
         avi_home_weather = view.findViewById(R.id.avi_home_weather);
         home_block = view.findViewById(R.id.linear_home_weather_block);
         linear_recycle_block = view.findViewById(R.id.linear_recycle_block);
+        linear_home_loading = view.findViewById(R.id.linear_home_loading);
 
         // 날씨정보창 로딩
         avi_home_weather.smoothToShow();
@@ -155,6 +160,7 @@ public class Home_Fragment extends Fragment {
         webSettingMethod(web_q3);
         webSettingMethod(web_q4);
         webSettingMethod(web_q5);
+
         // 슬라이딩뷰 설정
         slidingViewSet();
 
@@ -232,52 +238,122 @@ public class Home_Fragment extends Fragment {
         // splitData[7] : 치료 종류
         Log.d(TAG, "onCreateView: year=" + year + "month=" + month + "day=" + day);
         try {
+            linear_home_loading.setVisibility(View.VISIBLE);
+            mDatabase.getReference(mUser.getEmail().replace(".", "_"))
+                    .child("Calendar")
+                    .child(year + "/" + month + "/" + day)
+                    .child("Therapy_schedule")
+                    .child("data_save")
+                    .addChildEventListener(new ChildEventListener() {
+                        @Override
+                        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                            Map<String, Object> data = (Map<String, Object>) dataSnapshot.getValue();
+                            String dataAll = data.get("data_save").toString();
 
-        mDatabase.getReference(mUser.getEmail().replace(".", "_"))
-                .child("Calendar")
-                .child(year + "/" + month + "/" + day)
-                .child("Therapy_schedule")
-                .child("data_save")
-                .addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        Map<String, Object> data = (Map<String, Object>) dataSnapshot.getValue();
-                        String dataAll = data.get("data_save").toString();
+                            final String[] splitData = dataAll.split(":");
 
-                        final String[] splitData = dataAll.split(":");
+                            Log.d(TAG, "onChildAdded: nowTIme : " + nowHour + ":" + nowMinute);
+                            if (Integer.parseInt(splitData[5]) > nowHour) {
+                                dataList1.add(splitData[0] + splitData[1] + splitData[2] + splitData[3] + splitData[4] + splitData[5] + splitData[6] + splitData[7]);
+                            } else if (Integer.parseInt(splitData[5]) == nowHour && Integer.parseInt(splitData[6]) >= nowMinute) {
+                                dataList1.add(splitData[0] + splitData[1] + splitData[2] + splitData[3] + splitData[4] + splitData[5] + splitData[6] + splitData[7]);
+                            } else {
 
-                        Log.d(TAG, "onChildAdded: nowTIme : " + nowHour + ":" + nowMinute);
-                        if (Integer.parseInt(splitData[5]) > nowHour) {
-                            dataList1.add(splitData[0] + splitData[1] + splitData[2] + splitData[3] + splitData[4] + splitData[5] + splitData[6] + splitData[7]);
-                        } else if (Integer.parseInt(splitData[5]) == nowHour && Integer.parseInt(splitData[6]) >= nowMinute) {
-                            dataList1.add(splitData[0] + splitData[1] + splitData[2] + splitData[3] + splitData[4] + splitData[5] + splitData[6] + splitData[7]);
-                        } else {
+                            }
 
-                        }
+                            Log.d(TAG, "onDataChange: day1" + dataList1.size());
 
-                        Log.d(TAG, "onDataChange: day1" + dataList1.size());
+                            for (int i = 0; i < dataList1.size(); i++) {
+                                if (!allDataList.contains(dataList1.get(i))) {
+                                    allDataList.add(dataList1.get(i));
 
-                        for (int i = 0; i < dataList1.size(); i++) {
-                            if (!allDataList.contains(dataList1.get(i))) {
-                                allDataList.add(dataList1.get(i));
+                                    Collections.sort(allDataList);
+                                }
+                            }
 
-                                Collections.sort(allDataList);
+                            Log.d(TAG, "alldata=" + allDataList);
+
+                            ArrayList<HomeMonth_CardItem> cardItemsList = new ArrayList<>();
+                            homeMonthScheduleAdapter = new HomeMonthSchedule_Adapter(cardItemsList);
+                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+                            recyclerViewMonth.setLayoutManager(linearLayoutManager);
+                            homeMonthScheduleAdapter.notifyDataSetChanged();
+
+                            if (!isRunning1) {
+                                Log.d(TAG, "onChildAdded: 1번호출");
+                                for (int j = 0; j < allDataList.size(); j++) {
+                                    try {
+                                        isRunning1 = true;
+                                        final HomeMonth_CardItem cardItem = new HomeMonth_CardItem(allDataList.get(j).substring(16),
+                                                allDataList.get(j).substring(6, 8),
+                                                allDataList.get(j).substring(8, 10) + ":" + allDataList.get(j).substring(10, 12),
+                                                allDataList.get(j).substring(12, 14) + ":" + allDataList.get(j).substring(14, 16));
+                                        cardItemsList.add(cardItem);
+                                        recyclerViewMonth.removeAllViewsInLayout();
+                                        recyclerViewMonth.setAdapter(homeMonthScheduleAdapter);
+                                        linear_home_loading.setVisibility(View.INVISIBLE);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
                             }
                         }
 
-                        Log.d(TAG, "alldata=" + allDataList);
+                        @Override
+                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                        ArrayList<HomeMonth_CardItem> cardItemsList = new ArrayList<>();
-                        homeMonthScheduleAdapter = new HomeMonthSchedule_Adapter(cardItemsList);
-                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-                        recyclerViewMonth.setLayoutManager(linearLayoutManager);
-                        homeMonthScheduleAdapter.notifyDataSetChanged();
+                        }
 
-                        if (!isRunning1) {
-                            Log.d(TAG, "onChildAdded: 1번호출");
+                        @Override
+                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                        }
+
+                        @Override
+                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+            /** 내일 날짜 */
+            mDatabase.getReference(mUser.getEmail().replace(".", "_"))
+                    .child("Calendar")
+                    .child(year + "/" + month + "/" + day1)
+                    .child("Therapy_schedule")
+                    .child("data_save")
+                    .addChildEventListener(new ChildEventListener() {
+                        @Override
+                        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                            Map<String, Object> data = (Map<String, Object>) dataSnapshot.getValue();
+                            String dataAll = data.get("data_save").toString();
+
+                            final String[] splitData = dataAll.split(":");
+
+                            dataList2.add(splitData[0] + splitData[1] + splitData[2] + splitData[3] + splitData[4] + splitData[5] + splitData[6] + splitData[7]);
+
+                            Log.d(TAG, "onDataChange: day2" + dataList2);
+
+                            for (int i = 0; i < dataList2.size(); i++) {
+                                if (!allDataList.contains(dataList2.get(i))) {
+                                    allDataList.add(dataList2.get(i));
+
+                                    Collections.sort(allDataList);
+                                }
+                            }
+
+                            ArrayList<HomeMonth_CardItem> cardItemsList = new ArrayList<>();
+                            homeMonthScheduleAdapter = new HomeMonthSchedule_Adapter(cardItemsList);
+                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+                            recyclerViewMonth.setLayoutManager(linearLayoutManager);
+                            homeMonthScheduleAdapter.notifyDataSetChanged();
+
+                            Log.d(TAG, "2번호출");
                             for (int j = 0; j < allDataList.size(); j++) {
                                 try {
-                                    isRunning1 = true;
                                     final HomeMonth_CardItem cardItem = new HomeMonth_CardItem(allDataList.get(j).substring(16),
                                             allDataList.get(j).substring(6, 8),
                                             allDataList.get(j).substring(8, 10) + ":" + allDataList.get(j).substring(10, 12),
@@ -285,196 +361,132 @@ public class Home_Fragment extends Fragment {
                                     cardItemsList.add(cardItem);
                                     recyclerViewMonth.removeAllViewsInLayout();
                                     recyclerViewMonth.setAdapter(homeMonthScheduleAdapter);
+                                    linear_home_loading.setVisibility(View.INVISIBLE);
+                                    isRunning2 = true;
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }
+
                         }
-                    }
 
-                    @Override
-                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        @Override
+                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                        @Override
+                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        @Override
+                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    }
-                });
-        /** 내일 날짜 */
-        mDatabase.getReference(mUser.getEmail().replace(".", "_"))
-                .child("Calendar")
-                .child(year + "/" + month + "/" + day1)
-                .child("Therapy_schedule")
-                .child("data_save")
-                .addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        Map<String, Object> data = (Map<String, Object>) dataSnapshot.getValue();
-                        String dataAll = data.get("data_save").toString();
+                        }
+                    });
+            /** 모레 날짜 */
+            mDatabase.getReference(mUser.getEmail().replace(".", "_"))
+                    .child("Calendar")
+                    .child(year + "/" + month + "/" + day2)
+                    .child("Therapy_schedule")
+                    .child("data_save")
+                    .addChildEventListener(new ChildEventListener() {
+                        @Override
+                        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                            Map<String, Object> data = (Map<String, Object>) dataSnapshot.getValue();
+                            String dataAll = data.get("data_save").toString();
 
-                        final String[] splitData = dataAll.split(":");
+                            final String[] splitData = dataAll.split(":");
 
-                        dataList2.add(splitData[0] + splitData[1] + splitData[2] + splitData[3] + splitData[4] + splitData[5] + splitData[6] + splitData[7]);
+                            dataList3.add(splitData[0] + splitData[1] + splitData[2] + splitData[3] + splitData[4] + splitData[5] + splitData[6] + splitData[7]);
 
-                        Log.d(TAG, "onDataChange: day2" + dataList2);
+                            Log.d(TAG, "onDataChange: day3" + dataList3.size());
+                            Log.d(TAG, "allDataList = " + allDataList.size());
 
-                        for (int i = 0; i < dataList2.size(); i++) {
-                            if (!allDataList.contains(dataList2.get(i))) {
-                                allDataList.add(dataList2.get(i));
-
-                                Collections.sort(allDataList);
+                            for (int i = 0; i < dataList3.size(); i++) {
+                                if (!allDataList.contains(dataList3.get(i))) {
+                                    allDataList.add(dataList3.get(i));
+                                    Collections.sort(allDataList);
+                                }
                             }
-                        }
 
-                        ArrayList<HomeMonth_CardItem> cardItemsList = new ArrayList<>();
-                        homeMonthScheduleAdapter = new HomeMonthSchedule_Adapter(cardItemsList);
-                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-                        recyclerViewMonth.setLayoutManager(linearLayoutManager);
-                        homeMonthScheduleAdapter.notifyDataSetChanged();
+                            ArrayList<HomeMonth_CardItem> cardItemsList = new ArrayList<>();
+                            homeMonthScheduleAdapter = new HomeMonthSchedule_Adapter(cardItemsList);
+                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+                            recyclerViewMonth.setLayoutManager(linearLayoutManager);
+                            homeMonthScheduleAdapter.notifyDataSetChanged();
 
-                        Log.d(TAG, "2번호출");
-                        for (int j = 0; j < allDataList.size(); j++) {
-                            try {
-                                final HomeMonth_CardItem cardItem = new HomeMonth_CardItem(allDataList.get(j).substring(16),
-                                        allDataList.get(j).substring(6, 8),
-                                        allDataList.get(j).substring(8, 10) + ":" + allDataList.get(j).substring(10, 12),
-                                        allDataList.get(j).substring(12, 14) + ":" + allDataList.get(j).substring(14, 16));
-                                cardItemsList.add(cardItem);
-                                recyclerViewMonth.removeAllViewsInLayout();
-                                recyclerViewMonth.setAdapter(homeMonthScheduleAdapter);
-                                isRunning2 = true;
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                            Log.d(TAG, "3번호출");
+
+                            for (int j = 0; j < allDataList.size(); j++) {
+                                try {
+                                    final HomeMonth_CardItem cardItem = new HomeMonth_CardItem(allDataList.get(j).substring(16),
+                                            allDataList.get(j).substring(6, 8),
+                                            allDataList.get(j).substring(8, 10) + ":" + allDataList.get(j).substring(10, 12),
+                                            allDataList.get(j).substring(12, 14) + ":" + allDataList.get(j).substring(14, 16));
+                                    cardItemsList.add(cardItem);
+                                    recyclerViewMonth.removeAllViewsInLayout();
+                                    recyclerViewMonth.setAdapter(homeMonthScheduleAdapter);
+                                    linear_home_loading.setVisibility(View.INVISIBLE);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
+
+
                         }
 
-                    }
+                        @Override
+                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                    @Override
-                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                    }
-
-                    @Override
-                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-                    }
-
-                    @Override
-                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-        /** 모레 날짜 */
-        mDatabase.getReference(mUser.getEmail().replace(".", "_"))
-                .child("Calendar")
-                .child(year + "/" + month + "/" + day2)
-                .child("Therapy_schedule")
-                .child("data_save")
-                .addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        Map<String, Object> data = (Map<String, Object>) dataSnapshot.getValue();
-                        String dataAll = data.get("data_save").toString();
-
-                        final String[] splitData = dataAll.split(":");
-
-                        dataList3.add(splitData[0] + splitData[1] + splitData[2] + splitData[3] + splitData[4] + splitData[5] + splitData[6] + splitData[7]);
-
-                        Log.d(TAG, "onDataChange: day3" + dataList3.size());
-                        Log.d(TAG, "allDataList = " + allDataList.size());
-
-                        for (int i = 0; i < dataList3.size(); i++) {
-                            if (!allDataList.contains(dataList3.get(i))) {
-                                allDataList.add(dataList3.get(i));
-                                Collections.sort(allDataList);
-                            }
                         }
 
-                        ArrayList<HomeMonth_CardItem> cardItemsList = new ArrayList<>();
-                        homeMonthScheduleAdapter = new HomeMonthSchedule_Adapter(cardItemsList);
-                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-                        recyclerViewMonth.setLayoutManager(linearLayoutManager);
-                        homeMonthScheduleAdapter.notifyDataSetChanged();
+                        @Override
+                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
-                        Log.d(TAG, "3번호출");
-                        for (int j = 0; j < allDataList.size(); j++) {
-                            try {
-                                final HomeMonth_CardItem cardItem = new HomeMonth_CardItem(allDataList.get(j).substring(16),
-                                        allDataList.get(j).substring(6, 8),
-                                        allDataList.get(j).substring(8, 10) + ":" + allDataList.get(j).substring(10, 12),
-                                        allDataList.get(j).substring(12, 14) + ":" + allDataList.get(j).substring(14, 16));
-                                cardItemsList.add(cardItem);
-                                recyclerViewMonth.removeAllViewsInLayout();
-                                recyclerViewMonth.setAdapter(homeMonthScheduleAdapter);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
                         }
 
+                        @Override
+                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    }
+                        }
+                    });
 
-                    @Override
-                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
-                    }
-
-                    @Override
-                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-
-        // 메인 슬라이딩 뷰 동작
-        sl_main.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
-            @Override
-            public void onPanelSlide(View panel, float slideOffset) {
-            }
-
-            @Override
-            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
-                // 슬라이딩 뷰가 올라오면 Parent뷰로 만들고, 내려가면 캘린더뷰가 Parent 뷰가 되도록
-                if (newState.toString().equals("DRAGGING")) {
-                    sl_main.bringToFront();
+            // 메인 슬라이딩 뷰 동작
+            sl_main.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+                @Override
+                public void onPanelSlide(View panel, float slideOffset) {
                 }
-                if (newState.toString().equals("EXPANDED")) {
-                    sl_main.bringToFront();
-                } else if (newState.toString().equals("COLLAPSED")) {
-                    linearLayoutMain.bringToFront();
+
+                @Override
+                public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+                    // 슬라이딩 뷰가 올라오면 Parent뷰로 만들고, 내려가면 캘린더뷰가 Parent 뷰가 되도록
+                    if (newState.toString().equals("DRAGGING")) {
+                        sl_main.bringToFront();
+                    }
+                    if (newState.toString().equals("EXPANDED")) {
+                        sl_main.bringToFront();
+                    } else if (newState.toString().equals("COLLAPSED")) {
+                        linearLayoutMain.bringToFront();
+                    }
                 }
-            }
-        });
+            });
 
-        }catch (Exception e) {
 
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return view;
     }
@@ -618,8 +630,12 @@ public class Home_Fragment extends Fragment {
 
             latitude = now_latitude;
             longitude = now_longitude;
-            getAddress(longitude, latitude);
 
+            // 프래그먼트가 한 번 열릴때 한 번만 탐색
+            if (findWeatherFlag) {
+                getAddress(longitude, latitude);
+                findWeatherFlag = false;
+            }
             try {
                 LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
@@ -638,12 +654,12 @@ public class Home_Fragment extends Fragment {
                     return;
                 }
                 lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                        3000,
+                        10000,
                         1,
                         gpsLocationListener);
 
                 lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                        3000,
+                        10000,
                         1,
                         gpsLocationListener);
             } catch (Exception e) {
