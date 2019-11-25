@@ -63,6 +63,8 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
             setTime_note = "21:0";
         else if (alertTime.equals("저녁 10시"))
             setTime_note = "22:0";
+        else if (alertTime.equals("저녁 11시"))
+            setTime_note = "23:0";
 
         long now = System.currentTimeMillis();
         Date date = new Date(now);
@@ -72,7 +74,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
         int hour = date.getHours();
         int minute = date.getMinutes();
 
-        Log.d("date", "onReceive!!!: " + year + "/" + month + "/" + day + "/" + hour + ":" + minute);
+        Log.d("date", "onReceive!!!: " + hour + ":" + minute);
         String nowTime = hour + ":" + minute;
 
         ArrayList<String> list1 = new ArrayList<>();
@@ -85,6 +87,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
         // splitData[5] : 끝 시간,
         // splitData[6] : 끝 분,
         // splitData[7] : 치료 종류
+        Log.d("TAG", "onReceive: setTime!!! = " + setTime);
         if (nowTime.equals(setTime)) {
             mDatabase.getReference(mAuth.getCurrentUser().getEmail().replace(".", "_"))
                     .child("Calendar")
@@ -179,6 +182,8 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
                         }
                     });
         }
+
+        Log.d("TAG", "onReceive: setTimeNote!!! = " + setTime_note);
 
         if (nowTime.equals(setTime_note)) {
 

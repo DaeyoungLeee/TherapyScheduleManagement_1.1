@@ -16,13 +16,15 @@
         android:hardwareAccelerated="true"
         android:allowBackup="true"
         android:icon="@drawable/app_logo_main"
-        android:label="모바일 14조"
+        android:label="인지재활 스케줄 관리"
         android:roundIcon="@drawable/app_logo_main"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:label"
         tools:ignore="GoogleAppIndexingWarning">
-
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-6270688884891981~9770535273"/>
         <!--   액티비티     -->
         <activity android:name=".Activities.Intro_Activity">
             <intent-filter>

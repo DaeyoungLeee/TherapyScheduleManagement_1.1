@@ -52,18 +52,6 @@
             android:entryValues="@array/activity_array_value"
             android:title="행동특성 알림 시간 설정"/>
 
-        <PreferenceScreen
-            android:defaultValue="false"
-            android:key="push_all"
-            android:summaryOff="푸시알람 서비스를 이용하지 않습니다"
-            android:summaryOn="푸시알람 서비스를 이용합니다"
-            android:title="알림 시간 설정" />
-        <PreferenceScreen
-            android:defaultValue="false"
-            android:key="push_all"
-            android:summaryOff="푸시알람 서비스를 이용하지 않습니다"
-            android:summaryOn="푸시알람 서비스를 이용합니다"
-            android:title="치료 스케줄 설정" />
         <Preference
             android:defaultValue="false"
             android:key="log_out"

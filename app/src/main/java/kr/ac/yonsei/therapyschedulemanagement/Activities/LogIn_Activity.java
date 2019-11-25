@@ -177,15 +177,13 @@ public class LogIn_Activity extends AppCompatActivity {
                                 editor.putBoolean("CHECKBOX_AUTO_LOGIN", true);
                             }
                             editor.apply();
+                            finish();
 
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(getApplicationContext(), "로그인에 실패했습니다.", Toast.LENGTH_SHORT).show();
                             dialog.dismiss();
                         }
-
-                        finish();
-
                     }
                 });
     }

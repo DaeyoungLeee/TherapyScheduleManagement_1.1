@@ -1,17 +1,23 @@
 package kr.ac.yonsei.therapyschedulemanagement.Adatpers;
 
 import android.app.ProgressDialog;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CalendarView;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -68,14 +74,14 @@ public class CalendarDaySchdule_Adapter extends RecyclerView.Adapter<CalendarDay
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String therapy = holder.txt_therapy.getText().toString();
-                Toast.makeText(v.getContext(), therapy, Toast.LENGTH_SHORT).show();
+
+
             }
         });
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                remove(holder.getAdapterPosition());
+
 
                 return true;
             }
@@ -117,6 +123,8 @@ public class CalendarDaySchdule_Adapter extends RecyclerView.Adapter<CalendarDay
         private ImageView img_delete;
         private ImageView img_calendar_dot;
         OnItemClickedListener listener;
+        private FirebaseDatabase mDatabase;
+        private FirebaseAuth mAuth;
 
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -125,6 +133,8 @@ public class CalendarDaySchdule_Adapter extends RecyclerView.Adapter<CalendarDay
             this.txt_end_time = itemView.findViewById(R.id.txt_end_time);
             this.img_calendar_dot = itemView.findViewById(R.id.img_calendar_dot);
             this.img_delete = itemView.findViewById(R.id.img_delete);
+            this.mAuth = FirebaseAuth.getInstance();
+            this.mDatabase = FirebaseDatabase.getInstance();
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

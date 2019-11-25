@@ -11,6 +11,9 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import kr.ac.yonsei.therapyschedulemanagement.Fragments.Calendar_Fragment;
@@ -26,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private FrameLayout fragment;
     private long backBtnTime = 0;
     private static int ONE_MINUTE = 5626;
+    private AdView adView1;
 
     private PagerAdapter pagerAdapter;
     private ViewPager viewPager;
@@ -34,9 +38,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        MobileAds.initialize(this, "ca-app-pub-6270688884891981~9770535273");
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView1 = findViewById(R.id.ad_adview1);
+        adView1.loadAd(adRequest);
 
         bottomNavigation = findViewById(R.id.bottom_navigation);
         fragment = findViewById(R.id.frame);
+
 
         //첫 화면
         if (savedInstanceState == null) {

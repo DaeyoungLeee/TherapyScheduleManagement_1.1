@@ -13,6 +13,7 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -41,6 +42,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -85,8 +87,7 @@ public class Home_Fragment extends Fragment {
     private TextView txt_temp, txt_humidity, txt_wind;
     private double latitude, longitude;
     private int year, month, day, day1, day2, nowHour, nowMinute;
-    private SlidingUpPanelLayout sl_q1, sl_q2, sl_q3, sl_q4, sl_q5, sl_main;
-    private WebView web_q1, web_q2, web_q3, web_q4, web_q5;
+    private SlidingUpPanelLayout sl_q1, sl_q2, sl_q3, sl_q4, sl_q5, sl_q6, sl_q7, sl_q8, sl_q9, sl_q10, sl_main;
     private HomeMonthSchedule_Adapter homeMonthScheduleAdapter;
     private RecyclerView recyclerViewMonth;
     private RelativeLayout linearLayoutMain;
@@ -95,8 +96,6 @@ public class Home_Fragment extends Fragment {
     private LinearLayout linear_home_loading;
 
     private boolean isRunning1 = false;
-    private boolean isRunning2 = false;
-    private boolean isRunning3 = false;
 
     // 주소정보
     private String area1, area2, area3, area4;
@@ -129,11 +128,7 @@ public class Home_Fragment extends Fragment {
         txt_temp = view.findViewById(R.id.txt_temperature);
         txt_humidity = view.findViewById(R.id.txt_humidity);
         txt_wind = view.findViewById(R.id.txt_wind);
-        web_q1 = view.findViewById(R.id.web_q1);
-        web_q2 = view.findViewById(R.id.web_q2);
-        web_q3 = view.findViewById(R.id.web_q3);
-        web_q4 = view.findViewById(R.id.web_q4);
-        web_q5 = view.findViewById(R.id.web_q5);
+
         recyclerViewMonth = view.findViewById(R.id.recyclerView_home);
         linearLayoutMain = view.findViewById(R.id.linear_main);
         avi_home_weather = view.findViewById(R.id.avi_home_weather);
@@ -141,17 +136,12 @@ public class Home_Fragment extends Fragment {
         linear_recycle_block = view.findViewById(R.id.linear_recycle_block);
         linear_home_loading = view.findViewById(R.id.linear_home_loading);
 
+
+
         // 날씨정보창 로딩
         avi_home_weather.smoothToShow();
         home_block.setVisibility(View.VISIBLE);
         linear_recycle_block.setVisibility(View.VISIBLE);
-
-        // 웹뷰 세팅값
-        webSettingMethod(web_q1);
-        webSettingMethod(web_q2);
-        webSettingMethod(web_q3);
-        webSettingMethod(web_q4);
-        webSettingMethod(web_q5);
 
         // 슬라이딩뷰 설정
         slidingViewSet();
@@ -336,7 +326,6 @@ public class Home_Fragment extends Fragment {
                                     recyclerViewMonth.removeAllViewsInLayout();
                                     recyclerViewMonth.setAdapter(homeMonthScheduleAdapter);
                                     linear_home_loading.setVisibility(View.INVISIBLE);
-                                    isRunning2 = true;
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -469,6 +458,7 @@ public class Home_Fragment extends Fragment {
      * 날씨정보 받아오기
      */
     public void findWeather() {
+
         //open weather api 받아오기
         String Url = "https://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&appid=27b1b8b908d5ad361af19ff8eee92989";
         //JSON형태로 저장된 url 받아오기
@@ -559,10 +549,6 @@ public class Home_Fragment extends Fragment {
 
                     }
 
-                    //일자
-                    Calendar calendar = Calendar.getInstance();
-                    SimpleDateFormat adf = new SimpleDateFormat("EEEE-DD-MM");
-
                     //화씨로 표시된 온도를 도씨로 변경
                     double temp_int = Double.parseDouble(temp);
                     double centi = temp_int - 273.15;
@@ -581,17 +567,16 @@ public class Home_Fragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), "지역 설정을 다시 해주세요.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "지역 설정을 다시 해주세요.", Toast.LENGTH_SHORT).show();
             }
         });
 
-        /* 이전 응답 결과가 있어도 새로운 결과를 매 번 보여주기(캐싱 없애기)
-        jor.setShouldCache(false);
-        */
-        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        /*  캐싱 유무 */
+        RequestQueue queue = Volley.newRequestQueue(getContext());
         queue.add(jor);
-    }
 
+
+    }
     /**
      * 위치 정보 리스너
      */
@@ -825,12 +810,11 @@ public class Home_Fragment extends Fragment {
         sl_q3 = view.findViewById(R.id.Q3);
         sl_q4 = view.findViewById(R.id.Q4);
         sl_q5 = view.findViewById(R.id.Q5);
-
-        web_q1.onPause();
-        web_q2.onPause();
-        web_q3.onPause();
-        web_q4.onPause();
-        web_q5.onPause();
+        sl_q6 = view.findViewById(R.id.Q6);
+        sl_q7 = view.findViewById(R.id.Q7);
+        sl_q8 = view.findViewById(R.id.Q8);
+        sl_q9 = view.findViewById(R.id.Q9);
+        sl_q10 = view.findViewById(R.id.Q10);
 
         sl_q1.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
@@ -844,16 +828,30 @@ public class Home_Fragment extends Fragment {
                     sl_q1.bringToFront();
                 }
                 if (newState.toString().equals("EXPANDED")) {
+                    sl_q2.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                    sl_q3.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                    sl_q4.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                    sl_q5.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                    sl_q6.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                    sl_q7.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                    sl_q8.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                    sl_q9.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                    sl_q10.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+
+                    sl_q1.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);
                     sl_q1.bringToFront();
-                    web_q1.loadUrl("https://www.youtube.com/watch?v=A9c7KW8ePVE");
-                    web_q1.onResume();
+
                 } else if (newState.toString().equals("COLLAPSED")) {
                     sl_q1.bringToFront();
                     sl_q2.bringToFront();
                     sl_q3.bringToFront();
                     sl_q4.bringToFront();
                     sl_q5.bringToFront();
-                    web_q1.onPause();
+                    sl_q6.bringToFront();
+                    sl_q7.bringToFront();
+                    sl_q8.bringToFront();
+                    sl_q9.bringToFront();
+                    sl_q10.bringToFront();
                 }
             }
         });
@@ -871,15 +869,18 @@ public class Home_Fragment extends Fragment {
                 }
                 if (newState.toString().equals("EXPANDED")) {
                     sl_q2.bringToFront();
-                    web_q2.loadUrl("https://www.youtube.com/watch?v=2XQo8N72YII");
-                    web_q2.onResume();
+
                 } else if (newState.toString().equals("COLLAPSED")) {
                     sl_q1.bringToFront();
                     sl_q2.bringToFront();
                     sl_q3.bringToFront();
                     sl_q4.bringToFront();
                     sl_q5.bringToFront();
-                    web_q2.onPause();
+                    sl_q6.bringToFront();
+                    sl_q7.bringToFront();
+                    sl_q8.bringToFront();
+                    sl_q9.bringToFront();
+                    sl_q10.bringToFront();
                 }
             }
         });
@@ -895,8 +896,6 @@ public class Home_Fragment extends Fragment {
                     sl_q3.bringToFront();
                 }
                 if (newState.toString().equals("EXPANDED")) {
-                    web_q3.onResume();
-                    web_q3.loadUrl("https://www.youtube.com/watch?v=dCAZ2fio2BA");
                     sl_q3.bringToFront();
                 } else if (newState.toString().equals("COLLAPSED")) {
                     sl_q1.bringToFront();
@@ -904,7 +903,11 @@ public class Home_Fragment extends Fragment {
                     sl_q3.bringToFront();
                     sl_q4.bringToFront();
                     sl_q5.bringToFront();
-                    web_q3.onPause();
+                    sl_q6.bringToFront();
+                    sl_q7.bringToFront();
+                    sl_q8.bringToFront();
+                    sl_q9.bringToFront();
+                    sl_q10.bringToFront();
                 }
             }
         });
@@ -921,15 +924,18 @@ public class Home_Fragment extends Fragment {
                 }
                 if (newState.toString().equals("EXPANDED")) {
                     sl_q4.bringToFront();
-                    web_q4.loadUrl("https://www.youtube.com/watch?v=fiNHTC6LSg0");
-                    web_q4.onResume();
+
                 } else if (newState.toString().equals("COLLAPSED")) {
                     sl_q1.bringToFront();
                     sl_q2.bringToFront();
                     sl_q3.bringToFront();
                     sl_q4.bringToFront();
                     sl_q5.bringToFront();
-                    web_q4.onPause();
+                    sl_q6.bringToFront();
+                    sl_q7.bringToFront();
+                    sl_q8.bringToFront();
+                    sl_q9.bringToFront();
+                    sl_q10.bringToFront();
                 }
             }
         });
@@ -946,28 +952,159 @@ public class Home_Fragment extends Fragment {
                 }
                 if (newState.toString().equals("EXPANDED")) {
                     sl_q5.bringToFront();
-                    web_q5.loadUrl("https://www.youtube.com/watch?v=nbTFiG2aclk");
-                    web_q5.onResume();
                 } else if (newState.toString().equals("COLLAPSED")) {
                     sl_q1.bringToFront();
                     sl_q2.bringToFront();
                     sl_q3.bringToFront();
                     sl_q4.bringToFront();
                     sl_q5.bringToFront();
-                    web_q5.onPause();
+                    sl_q6.bringToFront();
+                    sl_q7.bringToFront();
+                    sl_q8.bringToFront();
+                    sl_q9.bringToFront();
+                    sl_q10.bringToFront();
                 }
             }
         });
-    }
+        sl_q6.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
 
-    private void webSettingMethod(WebView webView) {
-        WebSettings webSettings = webView.getSettings();
+            }
 
-        webSettings.setSupportZoom(true);
-        webSettings.setJavaScriptEnabled(true);
-        //webset.setCacheMode(WebSettings.LOAD_NO_CACHE);
-        webSettings.setSupportMultipleWindows(true);
-        webView.setWebViewClient(new WebViewClient());
+            @Override
+            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+                if (newState.toString().equals("DRAGGING")) {
+                    sl_q6.bringToFront();
+                }
+                if (newState.toString().equals("EXPANDED")) {
+                    sl_q6.bringToFront();
+
+                } else if (newState.toString().equals("COLLAPSED")) {
+                    sl_q1.bringToFront();
+                    sl_q2.bringToFront();
+                    sl_q3.bringToFront();
+                    sl_q4.bringToFront();
+                    sl_q5.bringToFront();
+                    sl_q6.bringToFront();
+                    sl_q7.bringToFront();
+                    sl_q8.bringToFront();
+                    sl_q9.bringToFront();
+                    sl_q10.bringToFront();
+                }
+            }
+        });
+        sl_q7.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+
+            }
+
+            @Override
+            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+                if (newState.toString().equals("DRAGGING")) {
+                    sl_q7.bringToFront();
+                }
+                if (newState.toString().equals("EXPANDED")) {
+                    sl_q7.bringToFront();
+
+                } else if (newState.toString().equals("COLLAPSED")) {
+                    sl_q1.bringToFront();
+                    sl_q2.bringToFront();
+                    sl_q3.bringToFront();
+                    sl_q4.bringToFront();
+                    sl_q5.bringToFront();
+                    sl_q6.bringToFront();
+                    sl_q7.bringToFront();
+                    sl_q8.bringToFront();
+                    sl_q9.bringToFront();
+                    sl_q10.bringToFront();
+                }
+            }
+        });
+        sl_q8.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+
+            }
+
+            @Override
+            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+                if (newState.toString().equals("DRAGGING")) {
+                    sl_q8.bringToFront();
+                }
+                if (newState.toString().equals("EXPANDED")) {
+                    sl_q8.bringToFront();
+
+                } else if (newState.toString().equals("COLLAPSED")) {
+                    sl_q1.bringToFront();
+                    sl_q2.bringToFront();
+                    sl_q3.bringToFront();
+                    sl_q4.bringToFront();
+                    sl_q5.bringToFront();
+                    sl_q6.bringToFront();
+                    sl_q7.bringToFront();
+                    sl_q8.bringToFront();
+                    sl_q9.bringToFront();
+                    sl_q10.bringToFront();
+                }
+            }
+        });
+        sl_q9.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+
+            }
+
+            @Override
+            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+                if (newState.toString().equals("DRAGGING")) {
+                    sl_q9.bringToFront();
+                }
+                if (newState.toString().equals("EXPANDED")) {
+                    sl_q9.bringToFront();
+
+                } else if (newState.toString().equals("COLLAPSED")) {
+                    sl_q1.bringToFront();
+                    sl_q2.bringToFront();
+                    sl_q3.bringToFront();
+                    sl_q4.bringToFront();
+                    sl_q5.bringToFront();
+                    sl_q6.bringToFront();
+                    sl_q7.bringToFront();
+                    sl_q8.bringToFront();
+                    sl_q9.bringToFront();
+                    sl_q10.bringToFront();
+                }
+            }
+        });
+        sl_q10.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+
+            }
+
+            @Override
+            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+                if (newState.toString().equals("DRAGGING")) {
+                    sl_q10.bringToFront();
+                }
+                if (newState.toString().equals("EXPANDED")) {
+                    sl_q10.bringToFront();
+                } else if (newState.toString().equals("COLLAPSED")) {
+                    sl_q1.bringToFront();
+                    sl_q2.bringToFront();
+                    sl_q3.bringToFront();
+                    sl_q4.bringToFront();
+                    sl_q5.bringToFront();
+                    sl_q6.bringToFront();
+                    sl_q7.bringToFront();
+                    sl_q8.bringToFront();
+                    sl_q9.bringToFront();
+                    sl_q10.bringToFront();
+                }
+            }
+        });
     }
 
     @Override

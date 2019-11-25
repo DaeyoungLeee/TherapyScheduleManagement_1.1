@@ -120,7 +120,7 @@ public class SignIn_Activity extends AppCompatActivity {
                 String password1 = edt_member_userPassword1.getText().toString();
                 String password2 = edt_member_userPassword2.getText().toString();
                 if (password1.equals(password2)) {
-                    edt_member_userPassword2.setTextColor(Color.parseColor("#ff6edf"));
+                    edt_member_userPassword2.setTextColor(Color.parseColor("#09ee09"));
                 }else {
                     edt_member_userPassword2.setTextColor(Color.RED);
                 }
@@ -208,7 +208,7 @@ public class SignIn_Activity extends AppCompatActivity {
     // 비밀번호 유효성 검사
     private void check_validation(String password) {
         // 비밀번호 유효성 검사식1 : 숫자, 특수문자가 포함되어야 한다.
-        String regExp_symbol = "([0-9].*[!,@,#,^,&,*,(,)])|([!,@,#,^,&,*,(,)].*[0-9])";
+        String regExp_symbol = "([0-9].*[!,@,#,^,&,*,(,),%])|([!,@,#,^,&,*,(,),%].*[0-9])";
         // 비밀번호 유효성 검사식2 : 영문자 대소문자가 적어도 하나씩은 포함되어야 한다.
         //String regExp_alpha = "([a-z].*[A-Z])|([A-Z].*[a-z])";
         // 정규표현식 컴파일
@@ -219,7 +219,7 @@ public class SignIn_Activity extends AppCompatActivity {
         //Matcher matcher_alpha = pattern_alpha.matcher(password);
 
         if (matcher_symbol.find()) {
-            edt_member_userPassword1.setTextColor(Color.parseColor("#ff6edf"));
+            edt_member_userPassword1.setTextColor(Color.parseColor("#09ee09"));
         }
     }
 

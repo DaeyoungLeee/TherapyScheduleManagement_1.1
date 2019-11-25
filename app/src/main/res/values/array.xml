@@ -35,6 +35,7 @@
         <item>아침 8시</item>
         <item>아침 9시</item>
         <item>아침 10시</item>
+        <item>저녁 11시</item>
 
     </string-array>
 
@@ -44,6 +45,7 @@
         <item>저녁 8시</item>
         <item>저녁 9시</item>
         <item>저녁 10시</item>
+        <item>저녁 11시</item>
 
     </string-array>
 

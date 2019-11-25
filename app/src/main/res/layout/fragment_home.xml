@@ -281,6 +281,7 @@
                 android:textColor="#000000"
                 android:textSize="16sp" />
 
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -298,18 +299,12 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-
                         android:gravity="center" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
-
-                        <WebView
-                            android:id="@+id/web_q1"
-                            android:layout_width="match_parent"
-                            android:layout_height="150dp" />
 
                         <TextView
                             android:layout_width="match_parent"
@@ -325,7 +320,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
-
+                            android:background="#ffffff"
                             android:gravity="center"
                             android:text="Q1. 양치질을 하기 싫어할 때"
                             android:textColor="@color/colorPrimary" />
@@ -354,11 +349,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
-
-                        <WebView
-                            android:id="@+id/web_q2"
-                            android:layout_width="match_parent"
-                            android:layout_height="150dp" />
 
                         <TextView
                             android:layout_width="match_parent"
@@ -401,11 +391,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
-
-                        <WebView
-                            android:id="@+id/web_q3"
-                            android:layout_width="match_parent"
-                            android:layout_height="150dp" />
 
                         <TextView
                             android:layout_width="match_parent"
@@ -452,11 +437,6 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-                        <WebView
-                            android:id="@+id/web_q4"
-                            android:layout_width="match_parent"
-                            android:layout_height="150dp" />
-
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -500,11 +480,6 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-                        <WebView
-                            android:id="@+id/web_q5"
-                            android:layout_width="match_parent"
-                            android:layout_height="150dp" />
-
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -526,8 +501,211 @@
                     </LinearLayout>
                 </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
+                <com.sothree.slidinguppanel.SlidingUpPanelLayout
+                    android:id="@+id/Q6"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="250dp"
+                    android:background="#ffffff"
+                    android:gravity="top"
+                    sothree:umanoFadeColor="#99000000"
+                    sothree:umanoPanelHeight="50dp"
+                    sothree:umanoShadowHeight="0dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:gravity="center" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="#ffffff"
+                            android:gravity="center"
+                            android:padding="16dp"
+                            android:text="하기 전에 두피마사지를 진행하는 것이 좋아요.
+ 거울 앞에 앉아 말로 어느 방향을 빗을 지 알려주세요.
+ 머리를 빗을 때 아프지 않도록 에센스를 사용한 후 빗살이 넓은 빗으로 빗어주세요.." />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:gravity="center"
+                            android:text="Q6. 머리 빗는 것을 싫어할 때"
+                            android:textColor="@color/colorPrimary" />
+                    </LinearLayout>
+                </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+
+                <com.sothree.slidinguppanel.SlidingUpPanelLayout
+                    android:id="@+id/Q7"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="300dp"
+                    android:background="#ffffff"
+                    android:gravity="top"
+                    sothree:umanoFadeColor="#99000000"
+                    sothree:umanoPanelHeight="50dp"
+                    sothree:umanoShadowHeight="0dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:gravity="center" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="#ffffff"
+                            android:gravity="center"
+                            android:padding="16dp"
+                            android:text="무게감 있는 조끼를 입고, 이발 전 목과 어깨를 지긋이 눌러주세요.
+ 발이 뜨는 것을 싫어한다면 의자 높이를 조정하거나 발 받침이 있으면 좋아요.
+ 사람이 많아 붐비는 것을 아동이 싫어한다면 덜 바쁜 시간을 예약하고
+ 아동의 특성을 미용사분께 먼저 알려주시면 좋아요." />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:gravity="center"
+                            android:text="Q7. 이발에 어려움을 겪을 때"
+                            android:textColor="@color/colorPrimary" />
+                    </LinearLayout>
+                </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+
+                <com.sothree.slidinguppanel.SlidingUpPanelLayout
+                    android:id="@+id/Q8"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="350dp"
+                    android:background="#ffffff"
+                    android:gravity="top"
+                    sothree:umanoFadeColor="#99000000"
+                    sothree:umanoPanelHeight="50dp"
+                    sothree:umanoShadowHeight="0dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:gravity="center"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="#ffffff"
+                            android:gravity="center"
+                            android:padding="16dp"
+                            android:text="잇몸이나 뺨 마사지를 한 후, 먹을 수 있도록 해주세요.
+ 편식하는 음식이 있다면 잘게 잘라 좋아하는 음식에 섞어주되 여러 종류의 음식을 섞지 않도록 해주세요." />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:gravity="center"
+                            android:text="Q8.편식이 심할 때"
+                            android:textColor="@color/colorPrimary" />
+                    </LinearLayout>
+                </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+
+                <com.sothree.slidinguppanel.SlidingUpPanelLayout
+                    android:id="@+id/Q9"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="400dp"
+                    android:background="#ffffff"
+                    android:gravity="top"
+                    sothree:umanoFadeColor="#99000000"
+                    sothree:umanoPanelHeight="50dp"
+                    sothree:umanoShadowHeight="0dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:gravity="center" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="#ffffff"
+                            android:gravity="center"
+                            android:padding="16dp"
+                            android:text=" 엉덩이나 허리를 뒤에서 잡아주거나, 손목과 발목에 무거운 물건(모래주머니)을 부착하면 좋아요
+ 두려워 하는 활동을 아주 약하고 짧게 시도하면서, 점차 강도와 시간을 늘려가는 것도 좋은 방법이에요
+ (단 아동이 직접 시도하기 전까지 인내심을 가지고 기다려 주세요)
+" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:gravity="center"
+                            android:text="Q9. 높은 곳에 올라가기 싫어할 때"
+                            android:textColor="@color/colorPrimary" />
+
+                    </LinearLayout>
+                </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+
+                <com.sothree.slidinguppanel.SlidingUpPanelLayout
+                    android:id="@+id/Q10"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="450dp"
+                    android:background="#ffffff"
+                    android:gravity="top"
+                    sothree:umanoFadeColor="#99000000"
+                    sothree:umanoPanelHeight="50dp"
+                    sothree:umanoShadowHeight="0dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:gravity="center" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="#ffffff"
+                            android:gravity="center"
+                            android:padding="16dp"
+                            android:text="미끄럼 타기, 점프하기, 그네타기 등 활동적인 경험이 좋아요
+ 앞'뒤 또는 좌'우로 반복적으로 움직이는 춤을 추는 것도 도움이 됩니다
+ 다양한 자세(앉기, 기울이기, 팔꿈치로 받치기 등)를 경험할 수 있도록 도와주세요." />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:gravity="center"
+                            android:text="Q10. 방향을 찾거나, 양손 동시 과제를 어려워 할 때"
+                            android:textColor="@color/colorPrimary" />
+                    </LinearLayout>
+                </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+
             </RelativeLayout>
+
         </LinearLayout>
     </com.sothree.slidinguppanel.SlidingUpPanelLayout>
-
 </RelativeLayout>

@@ -112,15 +112,15 @@ public class Chart_Fragment extends Fragment {
         String chartColor = chart_color.getString("chart_color", "JOYFUL_COLORS");
         if (chartColor.equals("JOYFUL_COLORS")) {
             colorSet = ColorTemplate.JOYFUL_COLORS;
-        }else if (chartColor.equals("LIBERTY_COLORS")) {
+        } else if (chartColor.equals("LIBERTY_COLORS")) {
             colorSet = ColorTemplate.LIBERTY_COLORS;
-        }else if (chartColor.equals("MATERIAL_COLORS")) {
+        } else if (chartColor.equals("MATERIAL_COLORS")) {
             colorSet = ColorTemplate.MATERIAL_COLORS;
-        }else if (chartColor.equals("COLORFUL_COLORS")) {
+        } else if (chartColor.equals("COLORFUL_COLORS")) {
             colorSet = ColorTemplate.COLORFUL_COLORS;
-        }else if (chartColor.equals("PASTEL_COLORS")) {
+        } else if (chartColor.equals("PASTEL_COLORS")) {
             colorSet = ColorTemplate.PASTEL_COLORS;
-        }else if (chartColor.equals("VORDIPLOM_COLORS")) {
+        } else if (chartColor.equals("VORDIPLOM_COLORS")) {
             colorSet = ColorTemplate.VORDIPLOM_COLORS;
         }
 
@@ -323,32 +323,36 @@ public class Chart_Fragment extends Fragment {
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        Map<String, Object> data = (Map<String, Object>) dataSnapshot.getValue();
-                        String state = data.get("status").toString();
-                        String mStatus = state;
-                        String mDate = data.get("date").toString();
-                        String mContents = data.get("contents").toString();
+                        try {
 
-                        if (state.equals(status)) {
-                            mstatusList.add(mStatus);
-                            mdateList.add(mDate);
-                            mcontentsList.add(mContents);
+                            Map<String, Object> data = (Map<String, Object>) dataSnapshot.getValue();
+                            String state = data.get("status").toString();
+                            String mStatus = state;
+                            String mDate = data.get("date").toString();
+                            String mContents = data.get("contents").toString();
+
+                            if (state.equals(status)) {
+                                mstatusList.add(mStatus);
+                                mdateList.add(mDate);
+                                mcontentsList.add(mContents);
+                            }
+
+                            // 어댑터 연결 세팅
+                            ArrayList<Chart_CardItem> chartCardItems = new ArrayList<>();
+                            chartDataAdapter = new ChartData_Adapter(chartCardItems);
+                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+                            recyclerView.setLayoutManager(linearLayoutManager);
+                            chartDataAdapter.notifyDataSetChanged();
+
+                            for (int i = 0; i < mdateList.size(); i++) {
+                                Chart_CardItem cardItem = new Chart_CardItem(mdateList.get(i), mstatusList.get(i), mcontentsList.get(i));
+                                chartCardItems.add(cardItem);
+                                recyclerView.removeAllViews();
+                                recyclerView.setAdapter(chartDataAdapter);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-
-                        // 어댑터 연결 세팅
-                        ArrayList<Chart_CardItem> chartCardItems = new ArrayList<>();
-                        chartDataAdapter = new ChartData_Adapter(chartCardItems);
-                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-                        recyclerView.setLayoutManager(linearLayoutManager);
-                        chartDataAdapter.notifyDataSetChanged();
-
-                        for (int i = 0; i < mdateList.size(); i++) {
-                            Chart_CardItem cardItem = new Chart_CardItem(mdateList.get(i), mstatusList.get(i), mcontentsList.get(i));
-                            chartCardItems.add(cardItem);
-                            recyclerView.removeAllViews();
-                            recyclerView.setAdapter(chartDataAdapter);
-                        }
-
                     }
 
                     @Override
