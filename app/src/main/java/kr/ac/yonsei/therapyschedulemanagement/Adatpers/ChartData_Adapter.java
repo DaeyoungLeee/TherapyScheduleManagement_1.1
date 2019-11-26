@@ -1,5 +1,6 @@
 package kr.ac.yonsei.therapyschedulemanagement.Adatpers;
 
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,19 +12,30 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Date;
 
+import kr.ac.yonsei.therapyschedulemanagement.Activities.ContentsPopup_Activity;
+import kr.ac.yonsei.therapyschedulemanagement.Activities.Popup_Activity;
 import kr.ac.yonsei.therapyschedulemanagement.CardItem;
 import kr.ac.yonsei.therapyschedulemanagement.Chart_CardItem;
 import kr.ac.yonsei.therapyschedulemanagement.R;
+
+import static kr.ac.yonsei.therapyschedulemanagement.Fragments.Chart_Fragment.staticMonth;
+import static kr.ac.yonsei.therapyschedulemanagement.Fragments.Chart_Fragment.staticYear;
 
 public class ChartData_Adapter extends RecyclerView.Adapter<ChartData_Adapter.CustomViewHolder> {
 
     private ArrayList<Chart_CardItem> cardItems;
     ChartData_Adapter.OnItemClickedListener listener;
-
 
     public static interface OnItemClickedListener {
         public void onItemClick(CalendarDaySchdule_Adapter.CustomViewHolder holder, View view, int position);
@@ -50,6 +62,16 @@ public class ChartData_Adapter extends RecyclerView.Adapter<ChartData_Adapter.Cu
         holder.txt_status.setText(cardItems.get(position).getChartStatus());
         holder.txt_contents.setText(cardItems.get(position).getChartContents());
 
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(holder.itemView.getContext(), ContentsPopup_Activity.class);
+                intent.putExtra("CHART_DAY", cardItems.get(position).getChartDate());
+                holder.itemView.getContext().startActivity(intent);
+            }
+        });
+
+
     }
     @Override
     public int getItemCount() {
@@ -70,12 +92,16 @@ public class ChartData_Adapter extends RecyclerView.Adapter<ChartData_Adapter.Cu
         private TextView txt_date;
         private TextView txt_status;
         private TextView txt_contents;
+        private FirebaseAuth mAuth;
+        private FirebaseDatabase mDatabase;
 
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
             this.txt_date = itemView.findViewById(R.id.txt_chart_date);
             this.txt_status = itemView.findViewById(R.id.txt_chart_status);
             this.txt_contents = itemView.findViewById(R.id.txt_chart_contents);
+            this.mAuth = FirebaseAuth.getInstance();
+            this.mDatabase = FirebaseDatabase.getInstance();
 
         }
     }

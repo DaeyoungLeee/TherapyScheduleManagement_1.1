@@ -2,6 +2,7 @@ package kr.ac.yonsei.therapyschedulemanagement.Adatpers;
 
 import android.graphics.Color;
 import android.media.Image;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -83,7 +84,7 @@ public class HomeMonthSchedule_Adapter extends RecyclerView.Adapter<HomeMonthSch
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             long now = System.currentTimeMillis();
             Date date = new Date(now);
-            int year = date.getYear() + 2000 -100;
+            int year = date.getYear() + 2000 - 100;
             int month = date.getMonth() + 1;
 
             @Override
@@ -95,7 +96,7 @@ public class HomeMonthSchedule_Adapter extends RecyclerView.Adapter<HomeMonthSch
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.item_modify:
-
+                                Toast.makeText(holder.itemView.getContext(), "준비중입니다.", Toast.LENGTH_SHORT).show();
                                 break;
                             case R.id.item_delete:
                                 ArrayList<String> keyList = new ArrayList<>();
@@ -110,6 +111,8 @@ public class HomeMonthSchedule_Adapter extends RecyclerView.Adapter<HomeMonthSch
                                                 for (DataSnapshot dataSnapshotKey : dataSnapshot.getChildren()) {
                                                     keyList.add(dataSnapshotKey.getKey());
                                                 }
+
+
                                                 holder.mDatabase.getReference(holder.mAuth.getCurrentUser().getEmail().replace(".", "_"))
                                                         .child("Calendar")
                                                         .child(year + "/" + month + "/" + cardItemsMonth.get(position).getDayMonth())
@@ -120,7 +123,6 @@ public class HomeMonthSchedule_Adapter extends RecyclerView.Adapter<HomeMonthSch
                                                     @Override
                                                     public void onSuccess(Void aVoid) {
                                                         Toast.makeText(holder.itemView.getContext(), "삭제되었습니다.", Toast.LENGTH_SHORT).show();
-
                                                         // refreshAdapter();
                                                     }
                                                 });
@@ -130,7 +132,8 @@ public class HomeMonthSchedule_Adapter extends RecyclerView.Adapter<HomeMonthSch
                                             public void onCancelled(@NonNull DatabaseError databaseError) {
 
                                             }
-                                        });                                break;
+                                        });
+                                break;
                         }
                         return true;
                     }

@@ -1,20 +1,14 @@
 package kr.ac.yonsei.therapyschedulemanagement.Fragments;
 
-import android.app.AlertDialog;
-import android.app.DatePickerDialog;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,7 +16,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.Entry;
@@ -32,22 +25,18 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
-import kr.ac.yonsei.therapyschedulemanagement.Activities.SignIn_Activity;
 import kr.ac.yonsei.therapyschedulemanagement.Adatpers.ChartData_Adapter;
 import kr.ac.yonsei.therapyschedulemanagement.Chart_CardItem;
 import kr.ac.yonsei.therapyschedulemanagement.R;
@@ -68,6 +57,9 @@ public class Chart_Fragment extends Fragment {
     private String setYear, setMonth;
     private long now = System.currentTimeMillis();
     private Date date = new Date(now);
+    public static String staticYear, staticMonth;
+
+    int[] finalColorSet;
 
     public static Chart_Fragment newInstance() {
         Chart_Fragment f = new Chart_Fragment();
@@ -130,6 +122,10 @@ public class Chart_Fragment extends Fragment {
 
         setYear = String.valueOf(nowYear);
         setMonth = String.valueOf(nowMonth);
+
+        staticYear = setYear;
+        staticMonth = setMonth;
+
         // 스피너 관련
         spinner_month = (MaterialSpinner) view.findViewById(R.id.spinner_chart_month);
         spinner_year = view.findViewById(R.id.spinner_chart_year);
@@ -139,7 +135,7 @@ public class Chart_Fragment extends Fragment {
         int index = nowYear - 2018;
         spinner_year.setSelectedIndex(index);
         spinner_month.setSelectedIndex(nowMonth - 1);
-        int[] finalColorSet1 = colorSet;
+        finalColorSet = colorSet;
         spinner_year.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener() {
             @Override
             public void onItemSelected(MaterialSpinner view, int position, long id, Object item) {
@@ -147,7 +143,9 @@ public class Chart_Fragment extends Fragment {
                 recyclerView.setVisibility(View.INVISIBLE);
                 mPiechart.setVisibility(View.INVISIBLE);
                 linear_nothing.setVisibility(View.VISIBLE);
-                selectedSpinnerDB(finalColorSet1);
+                selectedSpinnerDB(finalColorSet);
+
+                staticYear = setYear;
             }
         });
         spinner_month.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
@@ -159,7 +157,9 @@ public class Chart_Fragment extends Fragment {
                 mPiechart.setVisibility(View.INVISIBLE);
                 linear_nothing.setVisibility(View.VISIBLE);
                 Log.d(TAG, "onItemSelected: setyear" + setYear + "- " + setMonth);
-                selectedSpinnerDB(finalColorSet1);
+                selectedSpinnerDB(finalColorSet);
+
+                staticMonth = setMonth;
             }
         });
 
@@ -168,7 +168,7 @@ public class Chart_Fragment extends Fragment {
                 .child("Diary")
                 .child(nowYear + "/" + nowMonth);
 
-        int[] finalColorSet = colorSet;
+        finalColorSet = colorSet;
         childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -448,7 +448,6 @@ public class Chart_Fragment extends Fragment {
                             mPiechart.invalidate();
                             mPiechart.setData(data2);
 
-
                             mstatusList.add(mStatus);
                             mdateList.add(mDate);
                             mcontentsList.add(mContents);
@@ -496,5 +495,11 @@ public class Chart_Fragment extends Fragment {
 
                     }
                 });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        selectedSpinnerDB(finalColorSet);
     }
 }

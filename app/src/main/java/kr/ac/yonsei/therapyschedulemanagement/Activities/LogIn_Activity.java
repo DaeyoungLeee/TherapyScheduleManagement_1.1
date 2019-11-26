@@ -19,11 +19,24 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.FirebaseDatabase;
 
 import kr.ac.yonsei.therapyschedulemanagement.R;
 
@@ -39,10 +52,16 @@ public class LogIn_Activity extends AppCompatActivity {
     private String email, password;
     private Animation from_bottom;
     private CardView card_login;
+    private SignInButton btn_googleLogin;
+    private GoogleSignInClient mGoogleSignInClient;
+    private static final int RC_SIGN_IN = 9001;
+
     // Firebase 객체
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private FirebaseUser mUser;
+    private FirebaseDatabase mDatabase;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +70,8 @@ public class LogIn_Activity extends AppCompatActivity {
         txt_signin = findViewById(R.id.txt_signin);
 
         mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
+        mDatabase = FirebaseDatabase.getInstance();
 
         dialog = new ProgressDialog(this);
 
@@ -60,9 +81,26 @@ public class LogIn_Activity extends AppCompatActivity {
         check_saveId = findViewById(R.id.check_saveId);
         check_auto_login = findViewById(R.id.check_autoLogin);
         card_login = findViewById(R.id.card_login);
+        btn_googleLogin = findViewById(R.id.btn_google_login);
         from_bottom = AnimationUtils.loadAnimation(this, R.anim.from_bottom);
 
         card_login.setAnimation(from_bottom);
+
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        mGoogleSignInClient = GoogleSignIn.getClient(getApplicationContext(), gso);
+
+        // 구글 로그인 버튼
+        btn_googleLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signIn();
+            }
+        });
 
         // 로그인 변화 리스너
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
@@ -94,7 +132,7 @@ public class LogIn_Activity extends AppCompatActivity {
         check_saveId.setChecked(id_check);
         check_auto_login.setChecked(auto_login_check);
 
-        if(check_auto_login.isChecked()) {
+        if (check_auto_login.isChecked()) {
             mAuth.addAuthStateListener(mAuthStateListener);
         }
 
@@ -156,7 +194,7 @@ public class LogIn_Activity extends AppCompatActivity {
                                 editor.putBoolean("CHECKBOX_AUTO_LOGIN", false);
                             }
                             // 자동 로그인만 체크 되어있는 경우
-                            else if(!check_saveId.isChecked() && check_auto_login.isChecked()) {
+                            else if (!check_saveId.isChecked() && check_auto_login.isChecked()) {
                                 editor.putString("EMAIL", id.getText().toString());
                                 editor.putString("PASSWORD", pw.getText().toString());
                                 editor.putBoolean("CHECKBOX_ID", true);
@@ -199,5 +237,62 @@ public class LogIn_Activity extends AppCompatActivity {
         super.onStop();
         // 로그인이 성공해서 메인으로 넘어가면 다이얼로그 없애기
         dialog.dismiss();
+    }
+
+    // 구글 로그인
+    private void signIn() {
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+        showProgressDialog();
+        dialog.show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                // Google Sign In was successful, authenticate with Firebase
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                firebaseAuthWithGoogle(account);
+            } catch (ApiException e) {
+                // Google Sign In failed, update UI appropriately
+                Log.w(TAG, "Google sign in failed", e);
+                // ...
+            }
+        }
+    }
+
+    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
+        try {
+            AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+            mAuth.signInWithCredential(credential)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                Log.d(TAG, "signInWithCredential:success");
+                                // mDatabase.getReference().setValue(mUser.getEmail().replace(".", "_"));
+                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                startActivity(intent);
+                                finish();
+                                dialog.dismiss();
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            }
+
+                            // ...
+                        }
+                    });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

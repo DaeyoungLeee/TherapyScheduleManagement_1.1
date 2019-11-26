@@ -107,6 +107,7 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
 
         compactCalendarView.setFirstDayOfWeek(Calendar.SUNDAY);
 
+        // 추가 버튼 움직일 수 있도록 하는 코드
         btn_add_schedule.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -119,6 +120,7 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
                         dX = v.getX() - downRawX;
                         dY = v.getY() - downRawY;
 
+                        // false를 리턴해야 onClickListener와 같이 사용할 수 있다.
                         return false; // Consumed
 
                     case MotionEvent.ACTION_MOVE:
@@ -145,8 +147,6 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
                         return true; // Consumed
 
                     case MotionEvent.ACTION_UP:
-
-
                         float upRawX = event.getRawX();
                         float upRawY = event.getRawY();
 
@@ -207,7 +207,7 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
                                 .y(finalY)
                                 .setDuration(400)
                                 .start();
-
+                        // 버튼을 이동하고 손가락을 떼었을 때에는 클릭이 되지 않도록 true 리턴
                         return true;
 
                     // A drag consumed
@@ -574,6 +574,7 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
     }
 
     private void refreshAdapter() {
+        setMonthSchedule(userEmail, year, month);
         ArrayList<String> allDataList = new ArrayList<>();
         ArrayList<String> allDataList2 = new ArrayList<>();
         ArrayList<String> dotList = new ArrayList<>();
@@ -762,5 +763,11 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
             }
         }).start();
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        refreshAdapter();
     }
 }

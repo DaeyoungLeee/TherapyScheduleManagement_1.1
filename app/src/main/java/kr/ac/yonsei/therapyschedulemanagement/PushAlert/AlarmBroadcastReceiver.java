@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.RemoteViews;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,7 +26,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 
-import kr.ac.yonsei.therapyschedulemanagement.Activities.MainActivity;
 import kr.ac.yonsei.therapyschedulemanagement.R;
 
 public class AlarmBroadcastReceiver extends BroadcastReceiver {
@@ -46,7 +44,9 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
         String alertTime = timeSavedPreference.getString("alert_time", "아침 10시");
         String noteTime = timeSavedPreference.getString("activity_time", "저녁 9시");
 
-        if (alertTime.equals("아침 7시"))
+        if (alertTime.equals("아침 6시"))
+            setTime = "6:0";
+        else if (alertTime.equals("아침 7시"))
             setTime = "7:0";
         else if (alertTime.equals("아침 8시"))
             setTime = "8:0";
@@ -57,14 +57,16 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
 
         if (noteTime.equals("저녁 7시"))
             setTime_note = "19:0";
-        else if (alertTime.equals("저녁 8시"))
+        else if (noteTime.equals("저녁 8시"))
             setTime_note = "20:0";
-        else if (alertTime.equals("저녁 9시"))
+        else if (noteTime.equals("저녁 9시"))
             setTime_note = "21:0";
-        else if (alertTime.equals("저녁 10시"))
+        else if (noteTime.equals("저녁 10시"))
             setTime_note = "22:0";
-        else if (alertTime.equals("저녁 11시"))
+        else if (noteTime.equals("저녁 11시"))
             setTime_note = "23:0";
+        else if (noteTime.equals("저녁 12시"))
+            setTime_note = "0:0";
 
         long now = System.currentTimeMillis();
         Date date = new Date(now);
