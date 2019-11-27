@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
@@ -16,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.Entry;
@@ -50,6 +53,7 @@ public class Chart_Fragment extends Fragment {
     private DatabaseReference mRef;
     private ChildEventListener childEventListener;
 
+    // 애니메이션
     private LinearLayout linear_nothing;
     private MaterialSpinner spinner_month, spinner_year;
     private RecyclerView recyclerView;
@@ -58,8 +62,9 @@ public class Chart_Fragment extends Fragment {
     private long now = System.currentTimeMillis();
     private Date date = new Date(now);
     public static String staticYear, staticMonth;
+    private Animation anim_fromBottom, anim_fromRight;
 
-    int[] finalColorSet;
+    int[] colorSet;
 
     public static Chart_Fragment newInstance() {
         Chart_Fragment f = new Chart_Fragment();
@@ -76,6 +81,8 @@ public class Chart_Fragment extends Fragment {
         mDatabase = FirebaseDatabase.getInstance();
         recyclerView = view.findViewById(R.id.recycler_chart);
         linear_nothing = view.findViewById(R.id.linear_chart_nothong);
+        anim_fromBottom = AnimationUtils.loadAnimation(getContext(), R.anim.from_bottom);
+        anim_fromRight = AnimationUtils.loadAnimation(getContext(), R.anim.from_right);
 
         mPiechart = view.findViewById(R.id.pieChart);
         mPiechart.setUsePercentValues(true);
@@ -99,7 +106,6 @@ public class Chart_Fragment extends Fragment {
         ArrayList<String> mcontentsList = new ArrayList<>();
 
         // 설정해놓은 값 받아오기
-        int[] colorSet = ColorTemplate.JOYFUL_COLORS;
         SharedPreferences chart_color = PreferenceManager.getDefaultSharedPreferences(getContext());
         String chartColor = chart_color.getString("chart_color", "JOYFUL_COLORS");
         if (chartColor.equals("JOYFUL_COLORS")) {
@@ -113,6 +119,8 @@ public class Chart_Fragment extends Fragment {
         } else if (chartColor.equals("PASTEL_COLORS")) {
             colorSet = ColorTemplate.PASTEL_COLORS;
         } else if (chartColor.equals("VORDIPLOM_COLORS")) {
+            colorSet = ColorTemplate.VORDIPLOM_COLORS;
+        } else {
             colorSet = ColorTemplate.VORDIPLOM_COLORS;
         }
 
@@ -135,7 +143,6 @@ public class Chart_Fragment extends Fragment {
         int index = nowYear - 2018;
         spinner_year.setSelectedIndex(index);
         spinner_month.setSelectedIndex(nowMonth - 1);
-        finalColorSet = colorSet;
         spinner_year.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener() {
             @Override
             public void onItemSelected(MaterialSpinner view, int position, long id, Object item) {
@@ -143,7 +150,7 @@ public class Chart_Fragment extends Fragment {
                 recyclerView.setVisibility(View.INVISIBLE);
                 mPiechart.setVisibility(View.INVISIBLE);
                 linear_nothing.setVisibility(View.VISIBLE);
-                selectedSpinnerDB(finalColorSet);
+                selectedSpinnerDB();
 
                 staticYear = setYear;
             }
@@ -157,7 +164,7 @@ public class Chart_Fragment extends Fragment {
                 mPiechart.setVisibility(View.INVISIBLE);
                 linear_nothing.setVisibility(View.VISIBLE);
                 Log.d(TAG, "onItemSelected: setyear" + setYear + "- " + setMonth);
-                selectedSpinnerDB(finalColorSet);
+                selectedSpinnerDB();
 
                 staticMonth = setMonth;
             }
@@ -168,7 +175,6 @@ public class Chart_Fragment extends Fragment {
                 .child("Diary")
                 .child(nowYear + "/" + nowMonth);
 
-        finalColorSet = colorSet;
         childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -220,13 +226,14 @@ public class Chart_Fragment extends Fragment {
                     PieDataSet dataSet = new PieDataSet(yValues, "");
                     dataSet.setSliceSpace(3f);
                     dataSet.setSelectionShift(5f);
-                    dataSet.setColors(finalColorSet);
+                    dataSet.setColors(colorSet);
 
                     PieData data2 = new PieData(dataSet);
 
                     data2.setValueTextColor(Color.YELLOW);
                     data2.setValueTextSize(10f);
 
+                    mPiechart.animateY(600, Easing.EaseInCubic);
                     mPiechart.invalidate();
                     mPiechart.setData(data2);
 
@@ -235,6 +242,7 @@ public class Chart_Fragment extends Fragment {
                     chartDataAdapter = new ChartData_Adapter(chartCardItems);
                     LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
                     recyclerView.setLayoutManager(linearLayoutManager);
+                    recyclerView.setAnimation(anim_fromRight); // 애니메이션 추가(밑에서 위로)
                     chartDataAdapter.notifyDataSetChanged();
 
                     for (int i = 0; i < mdateList.size(); i++) {
@@ -377,7 +385,26 @@ public class Chart_Fragment extends Fragment {
                 });
     }
 
-    private void selectedSpinnerDB(int[] template) {
+    private void selectedSpinnerDB() {
+        // 설정해놓은 값 받아오기
+        SharedPreferences chart_color = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String chartColor = chart_color.getString("chart_color", "JOYFUL_COLORS");
+        if (chartColor.equals("JOYFUL_COLORS")) {
+            colorSet = ColorTemplate.JOYFUL_COLORS;
+        } else if (chartColor.equals("LIBERTY_COLORS")) {
+            colorSet = ColorTemplate.LIBERTY_COLORS;
+        } else if (chartColor.equals("MATERIAL_COLORS")) {
+            colorSet = ColorTemplate.MATERIAL_COLORS;
+        } else if (chartColor.equals("COLORFUL_COLORS")) {
+            colorSet = ColorTemplate.COLORFUL_COLORS;
+        } else if (chartColor.equals("PASTEL_COLORS")) {
+            colorSet = ColorTemplate.PASTEL_COLORS;
+        } else if (chartColor.equals("VORDIPLOM_COLORS")) {
+            colorSet = ColorTemplate.VORDIPLOM_COLORS;
+        } else {
+            colorSet = ColorTemplate.VORDIPLOM_COLORS;
+        }
+        // 데이터 받아오기
         ArrayList<String> verygoodList = new ArrayList<>();
         ArrayList<String> goodList = new ArrayList<>();
         ArrayList<String> normalList = new ArrayList<>();
@@ -438,7 +465,7 @@ public class Chart_Fragment extends Fragment {
                             PieDataSet dataSet = new PieDataSet(yValues, "");
                             dataSet.setSliceSpace(3f);
                             dataSet.setSelectionShift(5f);
-                            dataSet.setColors(template);
+                            dataSet.setColors(colorSet);
 
                             PieData data2 = new PieData(dataSet);
 
@@ -500,6 +527,6 @@ public class Chart_Fragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        selectedSpinnerDB(finalColorSet);
+        selectedSpinnerDB();
     }
 }

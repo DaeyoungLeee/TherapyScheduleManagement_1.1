@@ -19,6 +19,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -94,6 +96,7 @@ public class Home_Fragment extends Fragment {
     private AVLoadingIndicatorView avi_home_weather;
     public static LinearLayout home_block, linear_recycle_block;
     private LinearLayout linear_home_loading;
+    private Animation anim_fromBottom;
 
     private boolean isRunning1 = false;
 
@@ -128,6 +131,7 @@ public class Home_Fragment extends Fragment {
         txt_temp = view.findViewById(R.id.txt_temperature);
         txt_humidity = view.findViewById(R.id.txt_humidity);
         txt_wind = view.findViewById(R.id.txt_wind);
+        anim_fromBottom = AnimationUtils.loadAnimation(getContext(), R.anim.from_bottom_fast);
 
         recyclerViewMonth = view.findViewById(R.id.recyclerView_home);
         linearLayoutMain = view.findViewById(R.id.linear_main);
@@ -240,6 +244,7 @@ public class Home_Fragment extends Fragment {
                             ArrayList<HomeMonth_CardItem> cardItemsList = new ArrayList<>();
                             homeMonthScheduleAdapter = new HomeMonthSchedule_Adapter(cardItemsList);
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+                            recyclerViewMonth.setAnimation(anim_fromBottom);    // 에니메이션 적용
                             recyclerViewMonth.setLayoutManager(linearLayoutManager);
                             homeMonthScheduleAdapter.notifyDataSetChanged();
 
@@ -457,7 +462,7 @@ public class Home_Fragment extends Fragment {
     /**
      * 날씨정보 받아오기
      */
-    public void findWeather() {
+    public void findWeather(String cityName) {
 
         //open weather api 받아오기
         String Url = "https://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&appid=27b1b8b908d5ad361af19ff8eee92989";
@@ -736,9 +741,8 @@ public class Home_Fragment extends Fragment {
         @Override
         public void handleMessage(Message msg) {
             txt_location.setText(area1 + " " + area2 + " " + area3 + " " + area4);
-            cityName = koreanAddressToEng(area2);
             try {
-                findWeather();
+                findWeather(koreanAddressToEng(area1, area2));
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -747,28 +751,128 @@ public class Home_Fragment extends Fragment {
     };
 
     // 영어로 주소 변환
-    private String koreanAddressToEng(String koreanAddress) {
+    private String koreanAddressToEng(String mainCity, String koreanAddress) {
 
-        String engAddress;
+        String engAddress = null;
 
-        engAddress = koreanAddress.replace("원주시", "Wonju")
-                .replace("강릉시", "Gangneung")    // 강원도
-                .replace("동해시", "Donghae")
-                .replace("속초시", "Sokcho")
-                .replace("춘천시", "Chuncheon")
-                .replace("태백시", "Taebaek")
-                .replace("고성군", "Goseong")
-                .replace("양구군", "Yanggu")
-                .replace("양양군", "Yangyang")
-                .replace("영월군", "Yeongwol")
-                .replace("인제군", "Inje")
-                .replace("정선군", "Jeongseon")
-                .replace("철원군", "Cheorwon")
-                .replace("평창군", "Pyeongchang")
-                .replace("홍천군", "Hongcheon")
-                .replace("화천군", "Hwacheon")
-                .replace("횡성군", "Hoengseong");
-
+        if (mainCity.contains("인천")) {
+            engAddress = "Incheon";
+        }else if (mainCity.contains("울산")) {
+            engAddress = "Ulsan";
+        }else if (mainCity.contains("대전")) {
+            engAddress = "Daejeon";
+        }else if (mainCity.contains("광주")) {
+            engAddress = "Gwangju";
+        }else if (mainCity.contains("대구")) {
+            engAddress = "Daegu";
+        }else if (mainCity.contains("제주")) {
+            engAddress = "Jeju";
+        }else {
+            engAddress = koreanAddress.replace("원주시", "Wonju-si")
+                    .replace("강릉시", "Gangneung-si")    // 강원도
+                    .replace("동해시", "Donghae-si")
+                    .replace("속초시", "Sokcho-si")
+                    .replace("춘천시", "Chuncheon-si")
+                    .replace("태백시", "Taebaek-si")
+                    .replace("고성군", "Goseong-gun")
+                    .replace("양구군", "Yanggu-gun")
+                    .replace("양양군", "Yangyang-gun")
+                    .replace("영월군", "Yeongwol-gun")
+                    .replace("인제군", "Inje-gun")
+                    .replace("정선군", "Jeongseon-gun")
+                    .replace("철원군", "Cheorwon-gun")
+                    .replace("평창군", "Pyeongchang-gun")
+                    .replace("홍천군", "Hongcheon-gun")
+                    .replace("화천군", "Hwacheon-gun")
+                    .replace("횡성군", "Hoengseong-gun")
+                    // 서울
+                    .replace("강남구", "Gangnam-gu")
+                    .replace("강동구", "Gangdong-gu")
+                    .replace("강북구", "Gangbuk-gu")
+                    .replace("강서구", "Gangseo-gu")
+                    .replace("관악구", "Gwanak-gu")
+                    .replace("광진구", "Gwangjin-gu")
+                    .replace("구로구", "Guro-gu")
+                    .replace("금천구", "Geumcheon-gu")
+                    .replace("도봉구", "Dobong-gu")
+                    .replace("동대문구", "Dongdaemun-gu")
+                    .replace("동작구", "Dongjak-gu")
+                    .replace("마포구", "Mapo-gu")
+                    .replace("서대문구", "Seodaemun-gu")
+                    .replace("서초구", "Seocho-gu")
+                    .replace("성동구", "Seongdong-gu")
+                    .replace("성북구", "Seongbuk-gu")
+                    .replace("송파구", "Songpa-gu")
+                    .replace("양천구", "Yangcheon-gu")
+                    .replace("영등포구", "Yeongdeungpo-gu")
+                    .replace("용산구", "Yongsan-gu")
+                    .replace("은평구", "Eunpyeong-gu")
+                    .replace("종로구", "Jongno-gu")
+                    .replace("중구", "Jung-gu")
+                    .replace("중랑구", "Jungnang-gu")
+                    // 부산
+                    .replace("강서구", "Gangseo-gu")
+                    .replace("금정구", "Gumjung-gu")
+                    .replace("남구", "Nam-gu")
+                    .replace("동구", "Dong-gu")
+                    .replace("동래구", "Dongnae-gu")
+                    .replace("부산진구", "Busanjin-gu")
+                    .replace("북구", "Buk-gu")
+                    .replace("사상구", "Sasang-gu")
+                    .replace("사하구", "Saha-gu")
+                    .replace("서구", "Seo-gu")
+                    .replace("수영구", "Suyeong-gu")
+                    .replace("연제구", "Yeonje-gu")
+                    .replace("영도구", "Yeongdo-gu")
+                    .replace("중구", "Jung-gu")
+                    .replace("해운대구", "Haeundae-gu")
+                    .replace("기장군", "Gijang-gun")
+                    // 경기도
+                    .replace("고양시", "Goyang-si")
+                    .replace("덕양구", "Deogyang-gu")
+                    .replace("일산구", "Ilsan-gu")
+                    .replace("과천시", "Gwacheon-si")
+                    .replace("광명시", "Gwangmyeong-si")
+                    .replace("구리시", "Guri-si")
+                    .replace("기장군", "Gunpo-si")
+                    .replace("김포시", "Gimpo-si")
+                    .replace("남양주시", "Namyangju-si")
+                    .replace("동두천시", "Dongducheon-si")
+                    .replace("부천시", "Bucheon-si")
+                    .replace("소사구", "Sosa-gu")
+                    .replace("오정구", "Ojeong-gu")
+                    .replace("원미구", "Wonmi-gu")
+                    .replace("성남시", "Seongnam-si")
+                    .replace("분당구", "Bundang-gu")
+                    .replace("수정구", "Sujeong-gu")
+                    .replace("중원구", "Jungwon-gu")
+                    .replace("수원시", "Suwon-si")
+                    .replace("권선구", "Gwonseon-gu")
+                    .replace("장안구", "Jangan-gu")
+                    .replace("팔달구", "Paldal-gu")
+                    .replace("시흥시", "Siheung-si")
+                    .replace("안산시", "Ansan-si")
+                    .replace("안성시", "Anseong-si")
+                    .replace("안양시", "Anyang-si")
+                    .replace("동안구", "Dongan-gu")
+                    .replace("만안구", "Manan-gu")
+                    .replace("오산시", "Osan-si")
+                    .replace("용인시", "Yongin-si")
+                    .replace("의왕시", "Uiwang-si")
+                    .replace("의정부시", "Uijeongbu-si")
+                    .replace("이천시", "Icheon-si")
+                    .replace("파주시", "Paju-si")
+                    .replace("평택시", "Pyeongtaek-si")
+                    .replace("하남시", "Hanam-si")
+                    .replace("가평군", "Gapyeong-gun")
+                    .replace("광주군", "Gwangju-gun")
+                    .replace("양주군", "Yangju-gun")
+                    .replace("양평군", "Yangpyeong-gun")
+                    .replace("여주군", "Yeoju-gun")
+                    .replace("연천군", "Yeoncheon-gun")
+                    .replace("포천군", "Pocheon-gun")
+                    .replace("화성군", "Hwaseong-gun");
+        }
         return engAddress;
     }
 

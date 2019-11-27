@@ -1,8 +1,6 @@
 package kr.ac.yonsei.therapyschedulemanagement.Adatpers;
 
 import android.graphics.Color;
-import android.media.Image;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;

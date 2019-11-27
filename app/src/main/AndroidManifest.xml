@@ -47,6 +47,8 @@
             android:theme="@android:style/Theme.Dialog"/>
         <activity android:name=".Activities.ContentsPopup_Activity"
             android:theme="@android:style/Theme.Dialog"/>
+        <activity android:name=".Activities.FinishAdvertisement_Activity"
+            android:theme="@android:style/Theme.Dialog"/>
 
 <!--   브로드캐스트 리시버     -->
         <receiver android:name=".PushAlert.AlarmBroadcastReceiver"/>

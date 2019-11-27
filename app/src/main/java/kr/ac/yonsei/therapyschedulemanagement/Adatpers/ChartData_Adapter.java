@@ -1,36 +1,22 @@
 package kr.ac.yonsei.therapyschedulemanagement.Adatpers;
 
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 import kr.ac.yonsei.therapyschedulemanagement.Activities.ContentsPopup_Activity;
-import kr.ac.yonsei.therapyschedulemanagement.Activities.Popup_Activity;
-import kr.ac.yonsei.therapyschedulemanagement.CardItem;
 import kr.ac.yonsei.therapyschedulemanagement.Chart_CardItem;
 import kr.ac.yonsei.therapyschedulemanagement.R;
-
-import static kr.ac.yonsei.therapyschedulemanagement.Fragments.Chart_Fragment.staticMonth;
-import static kr.ac.yonsei.therapyschedulemanagement.Fragments.Chart_Fragment.staticYear;
 
 public class ChartData_Adapter extends RecyclerView.Adapter<ChartData_Adapter.CustomViewHolder> {
 

@@ -12,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.CalendarView;
 import android.widget.TextView;
@@ -65,6 +67,7 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
     private long milliTime;
     public static String userEmail;
     private TextView txt_calendar_date;
+    private Animation anim_fromTop;
 
     // floating button 이동 관련
     private final static float CLICK_DRAG_TOLERANCE = 10; // Often, there will be a slight, unintentional, drag when the user taps the FAB, so we need to account for this.
@@ -104,8 +107,11 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
         compactCalendarView = view.findViewById(R.id.compactcalendar_view);
         txt_calendar_date = view.findViewById(R.id.txt_calendar_date);
         dialog = new ProgressDialog(getContext());
+        anim_fromTop = AnimationUtils.loadAnimation(getContext(), R.anim.from_top);
 
         compactCalendarView.setFirstDayOfWeek(Calendar.SUNDAY);
+
+        compactCalendarView.setAnimation(anim_fromTop);
 
         // 추가 버튼 움직일 수 있도록 하는 코드
         btn_add_schedule.setOnTouchListener(new View.OnTouchListener() {
