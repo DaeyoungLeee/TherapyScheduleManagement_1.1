@@ -164,6 +164,7 @@ public class Home_Fragment extends Fragment {
 
         // GPS가 꺼져잇으면 켜도록 유도
         chkGpsService();
+        // test git
 
         linearLayoutMain.bringToFront();
 
