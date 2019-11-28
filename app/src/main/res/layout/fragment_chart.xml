@@ -7,8 +7,9 @@
     <Switch
         android:id="@+id/switch_score"
         android:layout_width="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginStart="16dp"
+        android:text="연 평균 보기"
         android:layout_height="wrap_content"/>
 
     <com.jaredrummler.materialspinner.MaterialSpinner
@@ -25,6 +26,12 @@
 
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/pieChart"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_below="@+id/spinner_chart_month" />
+
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/barChart"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_below="@+id/spinner_chart_month" />

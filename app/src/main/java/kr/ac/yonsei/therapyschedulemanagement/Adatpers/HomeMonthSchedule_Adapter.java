@@ -52,7 +52,7 @@ public class HomeMonthSchedule_Adapter extends RecyclerView.Adapter<HomeMonthSch
         holder.txt_day_month.setText(cardItemsMonth.get(position).getDayMonth());
         holder.itemView.setBackgroundColor(Color.parseColor("#00FFFFFF"));
         if (cardItemsMonth.get(position).getTherapyMonth().equals("1")) {
-            holder.txt_therapy_month.setText("감각통증치료");
+            holder.txt_therapy_month.setText("감각통증");
             holder.img_line.setImageResource(R.drawable.vertical_line_red_icon);
         } else if (cardItemsMonth.get(position).getTherapyMonth().equals("2")) {
             holder.txt_therapy_month.setText("언어치료");

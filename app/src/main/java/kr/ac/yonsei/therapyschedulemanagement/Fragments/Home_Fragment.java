@@ -432,6 +432,20 @@ public class Home_Fragment extends Fragment {
                         }
                     });
 
+            // 3초 이상 로딩이 안되면 내용물 없다는 창 띄우기
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            linear_recycle_block.setVisibility(View.VISIBLE);
+                            linear_home_loading.setVisibility(View.INVISIBLE);
+                        }
+                    }, 3500);
+                }
+            }).start();
 
             // 메인 슬라이딩 뷰 동작
             sl_main.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
