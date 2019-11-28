@@ -4,6 +4,13 @@
     android:layout_height="match_parent"
     android:background="#ffffff">
 
+    <Switch
+        android:id="@+id/switch_score"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_height="wrap_content"/>
+
     <com.jaredrummler.materialspinner.MaterialSpinner
         android:id="@+id/spinner_chart_month"
         android:layout_width="wrap_content"
