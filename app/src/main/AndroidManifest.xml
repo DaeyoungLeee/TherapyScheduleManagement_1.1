@@ -16,7 +16,7 @@
         android:hardwareAccelerated="true"
         android:allowBackup="true"
         android:icon="@drawable/app_logo_main"
-        android:label="인지재활 스케줄 관리"
+        android:label="내 아이 치료 스케줄"
         android:roundIcon="@drawable/app_logo_main"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
