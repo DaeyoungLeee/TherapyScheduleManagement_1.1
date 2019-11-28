@@ -66,7 +66,7 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
     private long milliTime;
     public static String userEmail;
     private TextView txt_calendar_date;
-    private Animation anim_fromTop;
+    private Animation anim_fromTop, anim_fromBottom;
 
     // floating button 이동 관련
     private final static float CLICK_DRAG_TOLERANCE = 10; // Often, there will be a slight, unintentional, drag when the user taps the FAB, so we need to account for this.
@@ -106,6 +106,7 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
         txt_calendar_date = view.findViewById(R.id.txt_calendar_date);
         dialog = new ProgressDialog(getContext());
         anim_fromTop = AnimationUtils.loadAnimation(getContext(), R.anim.from_top);
+        anim_fromBottom = AnimationUtils.loadAnimation(getContext(), R.anim.from_bottom);
 
         compactCalendarView.setFirstDayOfWeek(Calendar.SUNDAY);
 
@@ -223,9 +224,6 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
             }
         });
 
-
-
-
         mDatabase = FirebaseDatabase.getInstance();
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
@@ -279,6 +277,7 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
                             calendarDaySchduleAdapter.setOnItemClickedListener(Calendar_Fragment.this);
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
                             recyclerView.setLayoutManager(linearLayoutManager);
+                            recyclerView.setAnimation(anim_fromBottom);
                             calendarDaySchduleAdapter.notifyDataSetChanged();
 
                             for (int j = 0; j < allDataList2.size(); j++) {

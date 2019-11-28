@@ -116,7 +116,7 @@ public class Chart_Fragment extends Fragment {
         spinner_month.setItems("1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월");
         spinner_year.setItems("2018년", "2019년", "2020년", "2021년");
 
-        checkGraphshow();
+        //checkGraphshow();
 
         //offset 설정
         mPiechart.setExtraOffsets(5, 10, 5, 5);
@@ -195,6 +195,154 @@ public class Chart_Fragment extends Fragment {
             }
         });
 
+        // 처음 화면
+        // 체크 안 됐을 때
+        mBarChart.setVisibility(View.INVISIBLE);
+        mPiechart.setVisibility(View.VISIBLE);
+        mRef = mDatabase.getReference(mAuth.getCurrentUser().getEmail().replace(".", "_"))
+                .child("Diary")
+                .child(nowYear + "/" + nowMonth);
+
+        childEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                try {
+                    Map<String, Object> data = (Map<String, Object>) dataSnapshot.getValue();
+                    String state = data.get("status").toString();
+                    String mStatus = state;
+                    String mDate = data.get("date").toString();
+                    String mContents = data.get("contents").toString();
+
+                    mstatusList.add(mStatus);
+                    mdateList.add(mDate);
+                    mcontentsList.add(mContents);
+
+                    if (state.equals("매우좋음")) {
+                        verygoodList.add(state);
+                        Log.d(TAG, "onChildAdded: " + verygoodList.size());
+                    } else if (state.equals("좋음")) {
+                        goodList.add(state);
+                    } else if (state.equals("보통")) {
+                        normalList.add(state);
+                    } else if (state.equals("나쁨")) {
+                        badList.add(state);
+                    } else if (state.equals("매우나쁨")) {
+                        verybadList.add(state);
+                    }
+
+                    // 데이터 입력
+                    ArrayList<PieEntry> yValues = new ArrayList<>();
+
+                    yValues.add(new PieEntry(verybadList.size(), "매우나쁨"));
+                    yValues.add(new PieEntry(badList.size(), "나쁨"));
+                    yValues.add(new PieEntry(normalList.size(), "보통"));
+                    yValues.add(new PieEntry(goodList.size(), "좋음"));
+                    yValues.add(new PieEntry(verygoodList.size(), "매우좋음"));
+
+                    //설명란
+                    Description description = new Description();
+                    description.setText("단위 : %");
+                    description.setTextSize(15);
+                    mPiechart.setDescription(description);
+                    mPiechart.setDrawHoleEnabled(true);                             //여러 효과
+                    mPiechart.setHoleColor(Color.WHITE);
+                    mPiechart.setTransparentCircleRadius(61f);
+                    mPiechart.setCenterText("행동 특성");
+                    mPiechart.setCenterTextSize(16);
+                    mPiechart.setCenterTextColor(Color.BLACK);
+
+                    PieDataSet dataSet = new PieDataSet(yValues, "");
+                    dataSet.setSliceSpace(3f);
+                    dataSet.setSelectionShift(5f);
+                    dataSet.setColors(colorSet);
+
+                    PieData data2 = new PieData(dataSet);
+
+                    data2.setValueTextColor(Color.YELLOW);
+                    data2.setValueTextSize(10f);
+
+                    mPiechart.animateY(600, Easing.EaseInCubic);
+                    mPiechart.invalidate();
+                    mPiechart.setData(data2);
+
+                    // 어댑터 연결 세팅
+                    ArrayList<Chart_CardItem> chartCardItems = new ArrayList<>();
+                    chartDataAdapter = new ChartData_Adapter(chartCardItems);
+                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+                    recyclerView.setLayoutManager(linearLayoutManager);
+                    recyclerView.setAnimation(anim_fromRight); // 애니메이션 추가(밑에서 위로)
+                    chartDataAdapter.notifyDataSetChanged();
+
+                    for (int i = 0; i < mdateList.size(); i++) {
+                        Chart_CardItem cardItem = new Chart_CardItem(mdateList.get(i), mstatusList.get(i), mcontentsList.get(i));
+                        chartCardItems.add(cardItem);
+                        recyclerView.removeAllViews();
+                        recyclerView.setAdapter(chartDataAdapter);
+                    }
+                    linear_nothing.setVisibility(View.INVISIBLE);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        mRef.addChildEventListener(childEventListener);
+
+        // 파이차트 클릭 리스너
+        mPiechart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                Log.d(TAG, "onValueSelected: highlight " + h.getDataIndex());
+                int highlightIndex = (int) h.getX();
+
+                //리스트 내용 비우기
+                mstatusList.clear();
+                mdateList.clear();
+                mcontentsList.clear();
+
+                if (highlightIndex == 0) {
+                    // 매우나쁨
+                    showStatusList("매우나쁨");
+                } else if (highlightIndex == 1) {
+                    //나쁨
+                    showStatusList("나쁨");
+                } else if (highlightIndex == 2) {
+                    //보통
+                    showStatusList("보통");
+                } else if (highlightIndex == 3) {
+                    //좋음
+                    showStatusList("좋음");
+                } else if (highlightIndex == 4) {
+                    //매우좋음
+                    showStatusList("매우좋음");
+                }
+            }
+
+            @Override
+            public void onNothingSelected() {
+
+            }
+        });
 
         switch_score.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -452,6 +600,7 @@ public class Chart_Fragment extends Fragment {
 
     private void selectedSpinnerDB() {
         // 설정해놓은 값 받아오기
+        recyclerView.setAnimation(anim_fromBottom);
         SharedPreferences chart_color = PreferenceManager.getDefaultSharedPreferences(getContext());
         String chartColor = chart_color.getString("chart_color", "JOYFUL_COLORS");
         if (chartColor.equals("JOYFUL_COLORS")) {

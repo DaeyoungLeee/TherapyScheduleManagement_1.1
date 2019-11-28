@@ -32,6 +32,8 @@
 
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/barChart"
+        android:clickable="false"
+        android:focusable="false"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_below="@+id/spinner_chart_month" />

@@ -275,9 +275,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:background="@color/colorPrimaryDark"
-
                 android:gravity="center"
-                android:text="Q&amp;A 이럴땐 이렇게"
+                android:text="⇧  Q&amp;A 이럴땐 이렇게  ⇧"
                 android:textColor="#ffffff"
                 android:textSize="16sp" />
 
