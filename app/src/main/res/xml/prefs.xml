@@ -14,6 +14,12 @@
             android:summaryOff="푸시알람 서비스를 이용하지 않습니다"
             android:summaryOn="푸시알람 서비스를 이용합니다"
             android:title="내 아이 정보" />
+        <PreferenceScreen
+            android:defaultValue="false"
+            android:key="all_delete"
+            android:title="모든 정보 초기화"
+
+            />
     </PreferenceCategory>
 
     <PreferenceCategory
