@@ -108,11 +108,11 @@ public class Diary_Fragment extends Fragment {
         /* starts before 1 month from now */
         /* starts before 1 month from now */
         Calendar startDate = Calendar.getInstance();
-        startDate.add(Calendar.MONTH, -1);
+        startDate.add(Calendar.MONTH, -12);
 
         /* ends after 1 month from now */
         Calendar endDate = Calendar.getInstance();
-        endDate.add(Calendar.MONTH, 1);
+        endDate.add(Calendar.MONTH, 12);
 
         horizontalCalendar = new HorizontalCalendar.Builder(view, R.id.calendarView_horizon)
                 .range(startDate, endDate)

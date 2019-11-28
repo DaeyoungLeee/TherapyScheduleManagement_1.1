@@ -179,6 +179,25 @@ public class Chart_Fragment extends Fragment {
                 selectedSpinnerDB();
 
                 staticYear = setYear;
+
+                // 연평균 데이터
+                ArrayList<BarEntry> bar_yEntry = new ArrayList<>();
+
+                int selectedYear;
+                selectedYear = spinner_year.getSelectedIndex() + 2018;
+
+                barMonthChartYdataa(selectedYear, 1, bar_yEntry, 1);
+                barMonthChartYdataa(selectedYear, 2, bar_yEntry, 2);
+                barMonthChartYdataa(selectedYear, 3, bar_yEntry, 3);
+                barMonthChartYdataa(selectedYear, 4, bar_yEntry, 4);
+                barMonthChartYdataa(selectedYear, 5, bar_yEntry, 5);
+                barMonthChartYdataa(selectedYear, 6, bar_yEntry, 6);
+                barMonthChartYdataa(selectedYear, 7, bar_yEntry, 7);
+                barMonthChartYdataa(selectedYear, 8, bar_yEntry, 8);
+                barMonthChartYdataa(selectedYear, 9, bar_yEntry, 9);
+                barMonthChartYdataa(selectedYear, 10, bar_yEntry, 10);
+                barMonthChartYdataa(selectedYear, 11, bar_yEntry, 11);
+                barMonthChartYdataa(selectedYear, 12, bar_yEntry, 12);
             }
         });
         spinner_month.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
@@ -784,7 +803,14 @@ public class Chart_Fragment extends Fragment {
                             }
                             average = sum / scoreList.size() / 100 * 100;
 
-                            barEntry.add(new BarEntry(xMonth - 1, average));
+                            Log.d(TAG, "onDataChange: 평평" + average);
+
+                            if (Float.isNaN(average)) {
+                                barEntry.add(new BarEntry(xMonth - 1, 0));
+                            }else {
+                                barEntry.add(new BarEntry(xMonth - 1, average));
+
+                            }
 
                             BarData barData = new BarData();
 
