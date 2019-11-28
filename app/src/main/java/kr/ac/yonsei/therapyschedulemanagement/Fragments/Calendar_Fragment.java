@@ -60,7 +60,6 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
     // UI elements
     private FloatingActionButton btn_add_schedule;
     private CompactCalendarView compactCalendarView;
-    private SlidingUpPanelLayout sliding_layout_calendar;
     private RecyclerView recyclerView;
     private TextView backslide;
     private ProgressDialog dialog;
@@ -102,7 +101,6 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
         view = inflater.inflate(R.layout.fragment_calendar, container, false);
 
         btn_add_schedule = view.findViewById(R.id.btn_add);
-        sliding_layout_calendar = view.findViewById(R.id.sliding_layout_calendar);
         recyclerView = view.findViewById(R.id.recycler_frag2);
         compactCalendarView = view.findViewById(R.id.compactcalendar_view);
         txt_calendar_date = view.findViewById(R.id.txt_calendar_date);
@@ -225,14 +223,8 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
             }
         });
 
-        // 슬라이딩 올라와있는 상태에서 외부 Fade쪽 클릭하면 다시 내려오는 동작
-        backslide = view.findViewById(R.id.backSlide);
-        backslide.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sliding_layout_calendar.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-            }
-        });
+
+
 
         mDatabase = FirebaseDatabase.getInstance();
         mAuth = FirebaseAuth.getInstance();
@@ -477,31 +469,14 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
             });
 
             /** 슬라이딩뷰 동작 결과에 따른 뷰 위치 */
-            sliding_layout_calendar.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
-                @Override
-                public void onPanelSlide(View panel, float slideOffset) {
 
-                }
-
-                @Override
-                public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
-                    // 슬라이딩 뷰가 올라오면 Parent뷰로 만들고, 내려가면 캘린더뷰가 Parent 뷰가 되도록
-                    if (newState.toString().equals("DRAGGING")) {
-                        sliding_layout_calendar.bringToFront();
-                    }
-                    if (newState.toString().equals("EXPANDED")) {
-                        sliding_layout_calendar.bringToFront();
-                    } else if (newState.toString().equals("COLLAPSED")) {
-                        compactCalendarView.bringToFront();
-                    }
-                }
-            });
 
         } catch (Exception e) {
 
         }
         return view;
 
+        
     }
 
     // 요일 알아내기
