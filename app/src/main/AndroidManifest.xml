@@ -41,6 +41,7 @@
         <activity android:name=".Activities.SignIn_Activity"
             android:launchMode="singleTop"/>
         <activity android:name=".Activities.Popup_Activity"
+            android:launchMode="singleTop"
             android:theme="@android:style/Theme.Dialog"/>
         <activity android:name=".Activities.Setting_Activity"/>
         <activity android:name=".Activities.DiaryPopup_Activity"
