@@ -108,11 +108,7 @@ public class Chart_Fragment extends Fragment {
         YAxis yAxis = mBarChart.getAxisLeft();
         yAxis.setAxisMaximum(5.0f);
         yAxis.setAxisMinimum(0f);
-        // Bar 차트 x축 설정
-        String[] xData = new String[]{"1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"};
-        XAxis xAxis = mBarChart.getXAxis();
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(xData));
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
 
         // 스피너 관련
         spinner_month = view.findViewById(R.id.spinner_chart_month);
@@ -207,22 +203,32 @@ public class Chart_Fragment extends Fragment {
                     mBarChart.setVisibility(View.VISIBLE);
                     mPiechart.setVisibility(View.INVISIBLE);
 
+                    // Bar 차트 x축 설정
+                    String[] xData = new String[]{"1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"};
+                    XAxis xAxis = mBarChart.getXAxis();
+                    xAxis.setGranularity(1f);
+                    xAxis.setValueFormatter(new IndexAxisValueFormatter(xData));
+                    xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
                     ArrayList<BarEntry> bar_yEntry = new ArrayList<>();
 
-                    barMonthChartYdataa(nowYear, 1, bar_yEntry, 1);
-                    barMonthChartYdataa(nowYear, 2, bar_yEntry, 2);
-                    barMonthChartYdataa(nowYear, 3, bar_yEntry, 3);
-                    barMonthChartYdataa(nowYear, 4, bar_yEntry, 4);
-                    barMonthChartYdataa(nowYear, 5, bar_yEntry, 5);
-                    barMonthChartYdataa(nowYear, 6, bar_yEntry, 6);
-                    barMonthChartYdataa(nowYear, 7, bar_yEntry, 7);
-                    barMonthChartYdataa(nowYear, 8, bar_yEntry, 8);
-                    barMonthChartYdataa(nowYear, 9, bar_yEntry, 9);
-                    barMonthChartYdataa(nowYear, 10, bar_yEntry, 10);
-                    barMonthChartYdataa(nowYear, 11, bar_yEntry, 11);
-                    barMonthChartYdataa(nowYear, 12, bar_yEntry, 12);
-                    mBarChart.invalidate();
-                    mBarChart.animateY(600, Easing.EaseInCubic);
+                    int selectedYear;
+                    selectedYear = spinner_year.getSelectedIndex() + 2018;
+
+                    barMonthChartYdataa(selectedYear, 1, bar_yEntry, 1);
+                    barMonthChartYdataa(selectedYear, 2, bar_yEntry, 2);
+                    barMonthChartYdataa(selectedYear, 3, bar_yEntry, 3);
+                    barMonthChartYdataa(selectedYear, 4, bar_yEntry, 4);
+                    barMonthChartYdataa(selectedYear, 5, bar_yEntry, 5);
+                    barMonthChartYdataa(selectedYear, 6, bar_yEntry, 6);
+                    barMonthChartYdataa(selectedYear, 7, bar_yEntry, 7);
+                    barMonthChartYdataa(selectedYear, 8, bar_yEntry, 8);
+                    barMonthChartYdataa(selectedYear, 9, bar_yEntry, 9);
+                    barMonthChartYdataa(selectedYear, 10, bar_yEntry, 10);
+                    barMonthChartYdataa(selectedYear, 11, bar_yEntry, 11);
+                    barMonthChartYdataa(selectedYear, 12, bar_yEntry, 12);
+
+
 
                 } else {
                     // 체크 안 됐을 때
@@ -605,7 +611,7 @@ public class Chart_Fragment extends Fragment {
                             for (DataSnapshot dataSnapshotKey : dataSnapshot.getChildren()) {
                                 Map<String, Object> data = (Map<String, Object>) dataSnapshotKey.getValue();
                                 String state = data.get("status").toString();
-                                Log.d(TAG, "onDataChange: 2222222" + state);
+                                Log.d(TAG, "onDataChange: 2222222" + data);
                                 if (state.equals("매우좋음")) {
                                     scoreList.add(5);
                                 } else if (state.equals("좋음")) {
@@ -616,7 +622,7 @@ public class Chart_Fragment extends Fragment {
                                     scoreList.add(2);
                                 } else if (state.equals("매우나쁨")) {
                                     scoreList.add(1);
-                                }else {
+                                } else {
                                     barEntry.add(new BarEntry(xMonth - 1, 0f));
                                 }
                             }
@@ -629,24 +635,19 @@ public class Chart_Fragment extends Fragment {
                             }
                             average = sum / scoreList.size() / 100 * 100;
 
-                            Log.d(TAG, "onChildAdded: 합" + sum);
-                            Log.d(TAG, "onChildAdded: 평균" + average);
-
                             barEntry.add(new BarEntry(xMonth - 1, average));
 
-                            try {
-                                BarData barData = new BarData();
+                            BarData barData = new BarData();
 
-                                BarDataSet barDataSet = new BarDataSet(barEntry, "평균데이터");
-                                barDataSet.setColors(colorSet);
+                            BarDataSet barDataSet = new BarDataSet(barEntry, "평균데이터");
+                            barDataSet.setColors(colorSet);
 
-                                barData.addDataSet(barDataSet);
-                                barData.setValueTextSize(12f);
+                            barData.addDataSet(barDataSet);
+                            barData.setValueTextSize(12f);
 
-                                mBarChart.setData(barData);
-                            } catch (Exception e) {
-
-                            }
+                            mBarChart.invalidate();
+                            mBarChart.animateY(600, Easing.EaseInCubic);
+                            mBarChart.setData(barData);
 
                         } catch (Exception e) {
                             e.printStackTrace();
