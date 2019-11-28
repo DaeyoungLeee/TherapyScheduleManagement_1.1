@@ -274,11 +274,11 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:background="@drawable/bg_question"
+                android:background="@color/colorPrimaryDark"
 
                 android:gravity="center"
                 android:text="Q&amp;A 이럴땐 이렇게"
-                android:textColor="#000000"
+                android:textColor="#ffffff"
                 android:textSize="16sp" />
 
 
@@ -367,6 +367,7 @@
                             android:gravity="center"
                             android:text="Q2. 잠을 쉽게 자지 못할 때"
                             android:textColor="@color/colorPrimary" />
+
                     </LinearLayout>
                 </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
@@ -411,6 +412,7 @@
                             android:gravity="center"
                             android:text="Q3. 옷 입기를 싫어할 때"
                             android:textColor="@color/colorPrimary" />
+
                     </LinearLayout>
                 </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
