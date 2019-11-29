@@ -79,7 +79,7 @@ public class Setting_Activity extends PreferenceActivity implements Preference.O
         edt_kidAge.setSummary(edt_kidAge.getText());
 
         String getmail =  mAuth.getCurrentUser().getEmail();//사용자 메일 받아옴
-
+        
         Preference alldelete = (Preference) findPreference("all_delete");
         alldelete.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -102,7 +102,7 @@ public class Setting_Activity extends PreferenceActivity implements Preference.O
 
                             mDatabase.getReference(getmail.replace(".", "_")).removeValue(); //데이터 삭제
                             mDatabase.getReference(getmail.replace(".", "_")).child("dbvalue").setValue("0");
-
+                            mDatabase.getReference(getmail.replace(".","_")).child("login_count").setValue(9);
                             Toast.makeText(Setting_Activity.this, "모든 데이터가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
                             finish();
                         }

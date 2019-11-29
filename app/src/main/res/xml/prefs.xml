@@ -3,19 +3,18 @@
 
     <PreferenceCategory android:title="내 아이 정보 변경">
         <EditTextPreference
-            android:title="이름 "
-            android:maxLength="6"
-            android:key="edtpref_kidName"
             android:defaultValue="이름"
-            android:singleLine="true"/>
+            android:key="edtpref_kidName"
+            android:maxLength="6"
+            android:singleLine="true"
+            android:title="이름 " />
         <EditTextPreference
-            android:title="나이 "
-            android:maxLength="4"
-            android:key="edtpref_kidAge"
             android:defaultValue="나이"
-            android:singleLine="true"/>
+            android:key="edtpref_kidAge"
+            android:maxLength="4"
+            android:singleLine="true"
+            android:title="나이 " />
     </PreferenceCategory>
-
     <PreferenceCategory
         android:title="치료 스케줄 이름 변경">
 

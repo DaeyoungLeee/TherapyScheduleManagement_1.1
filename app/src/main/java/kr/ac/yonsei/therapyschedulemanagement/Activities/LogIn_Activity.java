@@ -32,7 +32,10 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import kr.ac.yonsei.therapyschedulemanagement.R;
 
@@ -175,9 +178,28 @@ public class LogIn_Activity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            mDatabase = FirebaseDatabase.getInstance();
+                            mAuth = FirebaseAuth.getInstance();
+                            String getmail = email.replace(".", "_");
+
                             Intent intent_goMain = new Intent(LogIn_Activity.this, MainActivity.class);
                             startActivity(intent_goMain);
                             Log.d(TAG, "onComplete: 호출");
+
+                            mDatabase.getReference(getmail.replace(".","_")).child("login_count").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    int count=dataSnapshot.getValue(Integer.class);
+                                    count++; //로그인 할때마다 카운트 증가
+                                    mDatabase.getReference(getmail.replace(".","_")).child("login_count").setValue(count);
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
 
                             // 아이디 저장이 체크되어있으면 저장
                             SharedPreferences sharedPreferences = getSharedPreferences("LOGIN_STATE", MODE_PRIVATE);
