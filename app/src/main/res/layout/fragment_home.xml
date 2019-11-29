@@ -315,7 +315,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:background="@color/colorPrimaryDark"
+                android:background="@drawable/home_sliding_custom"
                 android:gravity="center"
                 android:text="⇧  Q&amp;A 이럴땐 이렇게  ⇧"
                 android:textColor="#ffffff"
