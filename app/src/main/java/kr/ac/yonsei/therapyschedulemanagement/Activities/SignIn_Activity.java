@@ -266,7 +266,7 @@ public class SignIn_Activity extends AppCompatActivity {
 
                             mRef.child("token").setValue(userData.getFcmToken());
                             mRef.child("user_name").setValue(userData.getUserName());
-
+                            mRef.child("login_count").setValue(0);
                             Toast.makeText(SignIn_Activity.this, "회원가입 성공", Toast.LENGTH_SHORT).show();
                             finish();
                         }else {
