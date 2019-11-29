@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -31,6 +32,7 @@ public class Setting_Activity extends PreferenceActivity implements Preference.O
     private DatabaseReference mRef;
     private ListPreference chartColorList, alertList, alertNoteList;
     private SwitchPreference pushSwitch;
+    private EditTextPreference edt_red, edt_blue, edt_yellow, edt_green, edt_orange;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,16 +45,31 @@ public class Setting_Activity extends PreferenceActivity implements Preference.O
         alertList = (ListPreference) findPreference("alert_time");
         pushSwitch = (SwitchPreference) findPreference("push_alert");
         alertNoteList = (ListPreference) findPreference("activity_time");
+        edt_red = (EditTextPreference) findPreference("edtpref_red");
+        edt_blue = (EditTextPreference) findPreference("edtpref_blue");
+        edt_yellow = (EditTextPreference) findPreference("edtpref_yellow");
+        edt_green = (EditTextPreference) findPreference("edtpref_green");
+        edt_orange = (EditTextPreference) findPreference("edtpref_orange");
 
         chartColorList.setOnPreferenceChangeListener(this);
         alertList.setOnPreferenceChangeListener(this);
         alertNoteList.setOnPreferenceChangeListener(this);
         pushSwitch.setSwitchTextOn("푸시알람이 울립니다.");
         pushSwitch.setOnPreferenceChangeListener(this);
+        edt_red.setOnPreferenceChangeListener(this);
+        edt_blue.setOnPreferenceChangeListener(this);
+        edt_yellow.setOnPreferenceChangeListener(this);
+        edt_green.setOnPreferenceChangeListener(this);
+        edt_orange.setOnPreferenceChangeListener(this);
 
         chartColorList.setSummary(chartColorList.getValue());
         alertList.setSummary(alertList.getValue());
         alertNoteList.setSummary(alertNoteList.getValue());
+        edt_red.setSummary(edt_red.getText());
+        edt_blue.setSummary(edt_blue.getText());
+        edt_yellow.setSummary(edt_yellow.getText());
+        edt_green.setSummary(edt_green.getText());
+        edt_orange.setSummary(edt_orange.getText());
 
         String getmail =  mAuth.getCurrentUser().getEmail();//사용자 메일 받아옴
 
@@ -76,7 +93,6 @@ public class Setting_Activity extends PreferenceActivity implements Preference.O
                     public void onClick(DialogInterface dialogInterface, int i) {
                         if(confirm1.getText().toString().equals("delete")) {
 
-
                             mDatabase.getReference(getmail.replace(".", "_")).removeValue(); //데이터 삭제
                             mDatabase.getReference(getmail.replace(".", "_")).child("dbvalue").setValue("0");
 
@@ -95,15 +111,6 @@ public class Setting_Activity extends PreferenceActivity implements Preference.O
                 return true;
             }
         });
-
-
-
-
-
-
-
-
-
 
 
         Preference myPref = (Preference) findPreference("log_out");
@@ -167,6 +174,16 @@ public class Setting_Activity extends PreferenceActivity implements Preference.O
             }
         }else if (preference == alertNoteList) {
             alertNoteList.setSummary(String.valueOf(newValue));
+        }else if (preference == edt_red) {
+            edt_red.setSummary(String.valueOf(newValue));
+        }else if (preference == edt_blue) {
+            edt_blue.setSummary(String.valueOf(newValue));
+        }else if (preference == edt_yellow) {
+            edt_yellow.setSummary(String.valueOf(newValue));
+        }else if (preference == edt_green) {
+            edt_green.setSummary(String.valueOf(newValue));
+        }else if (preference == edt_orange) {
+            edt_orange.setSummary(String.valueOf(newValue));
         }
 
         return true;

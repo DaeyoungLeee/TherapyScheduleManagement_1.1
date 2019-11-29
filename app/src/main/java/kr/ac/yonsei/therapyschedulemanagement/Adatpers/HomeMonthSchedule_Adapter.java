@@ -1,6 +1,8 @@
 package kr.ac.yonsei.therapyschedulemanagement.Adatpers;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -50,21 +52,28 @@ public class HomeMonthSchedule_Adapter extends RecyclerView.Adapter<HomeMonthSch
         holder.txt_start_time_month.setText(cardItemsMonth.get(position).getStartTimeMonth());
         holder.txt_end_time_month.setText(cardItemsMonth.get(position).getEndTimeMonth());
         holder.txt_day_month.setText(cardItemsMonth.get(position).getDayMonth());
+        // 저장된 값 가져오기
+        SharedPreferences prefEdtValue = PreferenceManager.getDefaultSharedPreferences(holder.itemView.getContext());
+        String red_icon = prefEdtValue.getString("edtpref_red", "감각통합");
+        String blue_icon = prefEdtValue.getString("edtpref_blue", "언어치료");
+        String yellow_icon = prefEdtValue.getString("edtpref_yellow", "놀이치료");
+        String green_icon = prefEdtValue.getString("edtpref_green", "물리치료");
+        String orange_icon = prefEdtValue.getString("edtpref_orange", "작업치료");
         holder.itemView.setBackgroundColor(Color.parseColor("#00FFFFFF"));
         if (cardItemsMonth.get(position).getTherapyMonth().equals("1")) {
-            holder.txt_therapy_month.setText("감각통증");
+            holder.txt_therapy_month.setText(red_icon);
             holder.img_line.setImageResource(R.drawable.vertical_line_red_icon);
         } else if (cardItemsMonth.get(position).getTherapyMonth().equals("2")) {
-            holder.txt_therapy_month.setText("언어치료");
+            holder.txt_therapy_month.setText(blue_icon);
             holder.img_line.setImageResource(R.drawable.vertical_line_blue_icon);
         } else if (cardItemsMonth.get(position).getTherapyMonth().equals("3")) {
-            holder.txt_therapy_month.setText("놀이치료");
+            holder.txt_therapy_month.setText(yellow_icon);
             holder.img_line.setImageResource(R.drawable.vertical_line_yellow_icon);
         } else if (cardItemsMonth.get(position).getTherapyMonth().equals("4")) {
-            holder.txt_therapy_month.setText("물리치료");
+            holder.txt_therapy_month.setText(green_icon);
             holder.img_line.setImageResource(R.drawable.vertical_line_green_icon);
         } else if (cardItemsMonth.get(position).getTherapyMonth().equals("5")) {
-            holder.txt_therapy_month.setText("작업치료");
+            holder.txt_therapy_month.setText(orange_icon);
             holder.img_line.setImageResource(R.drawable.vertical_line_orange_icon);
         }
 

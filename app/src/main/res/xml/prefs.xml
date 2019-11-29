@@ -14,12 +14,52 @@
             android:summaryOff="푸시알람 서비스를 이용하지 않습니다"
             android:summaryOn="푸시알람 서비스를 이용합니다"
             android:title="내 아이 정보" />
+
         <PreferenceScreen
             android:defaultValue="false"
             android:key="all_delete"
-            android:title="모든 정보 초기화"
+            android:title="모든 정보 초기화"/>
 
-            />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="치료 스케줄 이름 변경">
+
+        <EditTextPreference
+            android:title="빨간색 "
+            android:maxLength="4"
+            android:key="edtpref_red"
+            android:icon="@drawable/dot_red_icon"
+            android:defaultValue="감각통합치료"
+            android:singleLine="true"/>
+        <EditTextPreference
+            android:title="파란색 "
+            android:maxLength="4"
+            android:defaultValue="언어치료"
+            android:key="edtpref_blue"
+            android:icon="@drawable/dot_blue_icon"
+            android:singleLine="true"/>
+        <EditTextPreference
+            android:title="노란색 "
+            android:maxLength="4"
+            android:key="edtpref_yellow"
+            android:defaultValue="놀이치료"
+            android:icon="@drawable/dot_yellow_icon"
+            android:singleLine="true"/>
+        <EditTextPreference
+            android:title="초록색 "
+            android:maxLength="4"
+            android:key="edtpref_green"
+            android:defaultValue="물리치료"
+            android:icon="@drawable/dot_green_icon"
+            android:singleLine="true"/>
+        <EditTextPreference
+            android:title="주황색 "
+            android:maxLength="4"
+            android:key="edtpref_orange"
+            android:defaultValue="작업치료"
+            android:icon="@drawable/dot_orrange_icon"
+            android:singleLine="true"/>
     </PreferenceCategory>
 
     <PreferenceCategory

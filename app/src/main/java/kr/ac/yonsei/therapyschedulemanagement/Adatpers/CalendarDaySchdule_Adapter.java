@@ -1,5 +1,7 @@
 package kr.ac.yonsei.therapyschedulemanagement.Adatpers;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,21 +49,28 @@ public class CalendarDaySchdule_Adapter extends RecyclerView.Adapter<CalendarDay
         holder.txt_start_time.setText(cardItems.get(position).getStartTime());
         holder.txt_end_time.setText(cardItems.get(position).getEndTime());
         String a = cardItems.get(position).getTherapy();
+        // 저장된 값 가져오기
+        SharedPreferences prefEdtValue = PreferenceManager.getDefaultSharedPreferences(holder.itemView.getContext());
+        String red_icon = prefEdtValue.getString("edtpref_red", "감각통합");
+        String blue_icon = prefEdtValue.getString("edtpref_blue", "언어치료");
+        String yellow_icon = prefEdtValue.getString("edtpref_yellow", "놀이치료");
+        String green_icon = prefEdtValue.getString("edtpref_green", "물리치료");
+        String orange_icon = prefEdtValue.getString("edtpref_orange", "작업치료");
         if (a.equals("1")) {
             holder.img_calendar_dot.setImageResource(R.drawable.dot_red_icon);
-            holder.txt_therapy.setText("감각통합치료");
+            holder.txt_therapy.setText(red_icon);
         }else if (a.equals("2")) {
             holder.img_calendar_dot.setImageResource(R.drawable.dot_blue_icon);
-            holder.txt_therapy.setText("언어치료");
+            holder.txt_therapy.setText(blue_icon);
         }else if (a.equals("3")) {
             holder.img_calendar_dot.setImageResource(R.drawable.dot_yellow_icon);
-            holder.txt_therapy.setText("놀이치료");
+            holder.txt_therapy.setText(yellow_icon);
         }else if (a.equals("4")) {
             holder.img_calendar_dot.setImageResource(R.drawable.dot_green_icon);
-            holder.txt_therapy.setText("물리치료");
+            holder.txt_therapy.setText(green_icon);
         }else if (a.equals("5")) {
             holder.img_calendar_dot.setImageResource(R.drawable.dot_orrange_icon);
-            holder.txt_therapy.setText("작업치료");
+            holder.txt_therapy.setText(orange_icon);
         }
 
 
