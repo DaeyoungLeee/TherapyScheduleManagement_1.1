@@ -33,6 +33,7 @@ public class Setting_Activity extends PreferenceActivity implements Preference.O
     private ListPreference chartColorList, alertList, alertNoteList;
     private SwitchPreference pushSwitch;
     private EditTextPreference edt_red, edt_blue, edt_yellow, edt_green, edt_orange;
+    private EditTextPreference edt_kidName, edt_kidAge;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,6 +51,8 @@ public class Setting_Activity extends PreferenceActivity implements Preference.O
         edt_yellow = (EditTextPreference) findPreference("edtpref_yellow");
         edt_green = (EditTextPreference) findPreference("edtpref_green");
         edt_orange = (EditTextPreference) findPreference("edtpref_orange");
+        edt_kidName = (EditTextPreference) findPreference("edtpref_kidName");
+        edt_kidAge = (EditTextPreference) findPreference("edtpref_kidAge");
 
         chartColorList.setOnPreferenceChangeListener(this);
         alertList.setOnPreferenceChangeListener(this);
@@ -61,6 +64,8 @@ public class Setting_Activity extends PreferenceActivity implements Preference.O
         edt_yellow.setOnPreferenceChangeListener(this);
         edt_green.setOnPreferenceChangeListener(this);
         edt_orange.setOnPreferenceChangeListener(this);
+        edt_kidName.setOnPreferenceChangeListener(this);
+        edt_kidAge.setOnPreferenceChangeListener(this);
 
         chartColorList.setSummary(chartColorList.getValue());
         alertList.setSummary(alertList.getValue());
@@ -70,6 +75,8 @@ public class Setting_Activity extends PreferenceActivity implements Preference.O
         edt_yellow.setSummary(edt_yellow.getText());
         edt_green.setSummary(edt_green.getText());
         edt_orange.setSummary(edt_orange.getText());
+        edt_kidName.setSummary(edt_kidName.getText());
+        edt_kidAge.setSummary(edt_kidAge.getText());
 
         String getmail =  mAuth.getCurrentUser().getEmail();//사용자 메일 받아옴
 
@@ -184,6 +191,10 @@ public class Setting_Activity extends PreferenceActivity implements Preference.O
             edt_green.setSummary(String.valueOf(newValue));
         }else if (preference == edt_orange) {
             edt_orange.setSummary(String.valueOf(newValue));
+        }else if (preference == edt_kidName) {
+            edt_kidName.setSummary(String.valueOf(newValue));
+        }else if (preference == edt_kidAge) {
+            edt_kidAge.setSummary(String.valueOf(newValue));
         }
 
         return true;

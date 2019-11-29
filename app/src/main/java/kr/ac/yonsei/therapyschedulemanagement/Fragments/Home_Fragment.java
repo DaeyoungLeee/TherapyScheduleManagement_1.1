@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -15,6 +16,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -97,6 +99,7 @@ public class Home_Fragment extends Fragment {
     public static LinearLayout home_block, linear_recycle_block;
     private LinearLayout linear_home_loading;
     private Animation anim_fromBottom;
+    private TextView txt_kidname, txt_kidage;
 
     private boolean isRunning1 = false;
 
@@ -132,6 +135,8 @@ public class Home_Fragment extends Fragment {
         txt_humidity = view.findViewById(R.id.txt_humidity);
         txt_wind = view.findViewById(R.id.txt_wind);
         anim_fromBottom = AnimationUtils.loadAnimation(getContext(), R.anim.from_bottom_fast);
+        txt_kidage = view.findViewById(R.id.txt_kidAge);
+        txt_kidname = view.findViewById(R.id.txt_kidName);
 
         recyclerViewMonth = view.findViewById(R.id.recyclerView_home);
         linearLayoutMain = view.findViewById(R.id.linear_main);
@@ -139,8 +144,6 @@ public class Home_Fragment extends Fragment {
         home_block = view.findViewById(R.id.linear_home_weather_block);
         linear_recycle_block = view.findViewById(R.id.linear_recycle_block);
         linear_home_loading = view.findViewById(R.id.linear_home_loading);
-
-
 
         // 날씨정보창 로딩
         avi_home_weather.smoothToShow();
@@ -1232,4 +1235,13 @@ public class Home_Fragment extends Fragment {
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String kidName = sharedPreferences.getString("edtpref_kidName", "이름");
+        String kidAge = sharedPreferences.getString("edtpref_kidAge", "나이");
+        txt_kidname.setText(kidName);
+        txt_kidage.setText(kidAge);
+    }
 }

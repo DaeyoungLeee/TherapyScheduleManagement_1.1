@@ -1,25 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory android:title="정보 변경">
-        <PreferenceScreen
-            android:defaultValue="false"
-            android:key="push_all"
-            android:summaryOff="푸시알람 서비스를 이용하지 않습니다"
-            android:summaryOn="푸시알람 서비스를 이용합니다"
-            android:title="개인 정보" />
-        <PreferenceScreen
-            android:defaultValue="false"
-            android:key="push_all"
-            android:summaryOff="푸시알람 서비스를 이용하지 않습니다"
-            android:summaryOn="푸시알람 서비스를 이용합니다"
-            android:title="내 아이 정보" />
-
-        <PreferenceScreen
-            android:defaultValue="false"
-            android:key="all_delete"
-            android:title="모든 정보 초기화"/>
-
+    <PreferenceCategory android:title="내 아이 정보 변경">
+        <EditTextPreference
+            android:title="이름 "
+            android:maxLength="6"
+            android:key="edtpref_kidName"
+            android:defaultValue="이름"
+            android:singleLine="true"/>
+        <EditTextPreference
+            android:title="나이 "
+            android:maxLength="4"
+            android:key="edtpref_kidAge"
+            android:defaultValue="나이"
+            android:singleLine="true"/>
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -104,5 +98,10 @@
             android:summary="로그아웃을 진행합니다"
             android:title="로그아웃"/>
     </PreferenceCategory>
+
+    <PreferenceScreen
+        android:defaultValue="false"
+        android:key="all_delete"
+        android:title="모든 정보 초기화"/>
 
 </PreferenceScreen>

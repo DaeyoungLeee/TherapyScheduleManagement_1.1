@@ -238,13 +238,54 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/linear_kidInformation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/fill_white_round_custom"
+            android:layout_below="@+id/linear_weather"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:textColor="#000000"
+                android:text="내 아이 : "/>
+            <TextView
+                android:id="@+id/txt_kidName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#000000"
+                android:layout_marginEnd="16dp"
+                android:text="이름"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#000000"
+                android:gravity="center"
+                android:text="나이 : "/>
+            <TextView
+                android:id="@+id/txt_kidAge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#000000"
+                android:text="나이"/>
+
+
+        </LinearLayout>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView_home"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/linear_weather"
+            android:layout_below="@+id/linear_kidInformation"
             android:layout_gravity="bottom"
-            android:layout_marginTop="4dp"
             android:padding="8dp" />
 
     </RelativeLayout>
