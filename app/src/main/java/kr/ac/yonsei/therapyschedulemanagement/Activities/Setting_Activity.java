@@ -78,8 +78,8 @@ public class Setting_Activity extends PreferenceActivity implements Preference.O
         edt_kidName.setSummary(edt_kidName.getText());
         edt_kidAge.setSummary(edt_kidAge.getText());
 
-        String getmail =  mAuth.getCurrentUser().getEmail();//사용자 메일 받아옴
-        
+        String getmail = mAuth.getCurrentUser().getEmail();//사용자 메일 받아옴
+
         Preference alldelete = (Preference) findPreference("all_delete");
         alldelete.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -98,16 +98,14 @@ public class Setting_Activity extends PreferenceActivity implements Preference.O
                 rdelete.setPositiveButton("예", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        if(confirm1.getText().toString().equals("delete")) {
+                        if (confirm1.getText().toString().equals("delete")) {
 
                             mDatabase.getReference(getmail.replace(".", "_")).removeValue(); //데이터 삭제
                             mDatabase.getReference(getmail.replace(".", "_")).child("dbvalue").setValue("0");
-                            mDatabase.getReference(getmail.replace(".","_")).child("login_count").setValue(9);
+                            mDatabase.getReference(getmail.replace(".", "_")).child("login_count").setValue(9);
                             Toast.makeText(Setting_Activity.this, "모든 데이터가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
                             finish();
-                        }
-                        else
-                        {
+                        } else {
                             Toast.makeText(Setting_Activity.this, "다시 입력해주세요.", Toast.LENGTH_SHORT).show();
                             confirm1.setText(" ");
                         }
@@ -122,19 +120,36 @@ public class Setting_Activity extends PreferenceActivity implements Preference.O
 
         Preference myPref = (Preference) findPreference("log_out");
         myPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+
             public boolean onPreferenceClick(Preference preference) {
+                AlertDialog.Builder confirmlogout = new AlertDialog.Builder(Setting_Activity.this);
+                confirmlogout.setTitle("정말로 로그아웃 하시겠습니까?");
+                confirmlogout.setPositiveButton("예", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(Setting_Activity.this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show();
+                        // 완전종료
+                        mAuth.signOut();
+                        finishAffinity();
+                        Intent intent_login = new Intent(getApplicationContext(), LogIn_Activity.class);
+                        startActivity(intent_login);
+
+                    }
+                });
+                confirmlogout.setNegativeButton("아니요", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                });
+                confirmlogout.show();
                 //open browser or intent here
-                Toast.makeText(Setting_Activity.this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show();
-                // 완전종료
-                mAuth.signOut();
-                finishAffinity();
-                Intent intent_login = new Intent(getApplicationContext(), LogIn_Activity.class);
-                startActivity(intent_login);
-                return true;
+            return true;
             }
         });
-
     }
+
 
     /** 설정 하면 설정값 summary 보여주기 */
     private static void bindSummaryValue(Preference preference){
