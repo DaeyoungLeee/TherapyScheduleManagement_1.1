@@ -34,10 +34,15 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.formatter.LargeValueFormatter;
+import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -47,6 +52,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
@@ -781,18 +787,18 @@ public class Chart_Fragment extends Fragment {
                                 }
                             }
 
-                            float sum = 0;
+                            float sum = 0.0f;
                             float average;
 
                             for (int i = 0; i < scoreList.size(); i++) {
                                 sum = sum + scoreList.get(i);
                             }
-                            average = sum / scoreList.size() / 100 * 100;
+                            average = sum / scoreList.size();
 
                             Log.d(TAG, "onDataChange: 평평" + average);
 
                             if (Float.isNaN(average)) {
-                                barEntry.add(new BarEntry(xMonth - 1, 0));
+                                barEntry.add(new BarEntry(xMonth - 1, 0.0f));
                             }else {
                                 barEntry.add(new BarEntry(xMonth - 1, average));
 
@@ -802,6 +808,7 @@ public class Chart_Fragment extends Fragment {
 
                             BarDataSet barDataSet = new BarDataSet(barEntry, "평균데이터");
                             barDataSet.setColors(colorSet);
+                            barDataSet.setValueFormatter(new MyValueFormatter());
 
                             barData.addDataSet(barDataSet);
                             barData.setValueTextSize(12f);
@@ -831,6 +838,23 @@ public class Chart_Fragment extends Fragment {
         } else {
             mBarChart.setVisibility(View.INVISIBLE);
             mPiechart.setVisibility(View.VISIBLE);
+        }
+    }
+
+
+    // 소숫점 한 자리까지 보이기 위한 Formatter
+    public class MyValueFormatter extends ValueFormatter implements IValueFormatter {
+
+        private DecimalFormat mFormat;
+
+        public MyValueFormatter() {
+            mFormat = new DecimalFormat("###,###,##0.0"); // use one decimal
+        }
+
+        @Override
+        public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+            // write your logic here
+            return mFormat.format(value) + " $"; // e.g. append a dollar-sign
         }
     }
 }
