@@ -467,20 +467,6 @@ public class Chart_Fragment extends Fragment {
                                 mPiechart.invalidate();
                                 mPiechart.setData(data2);
 
-                                // 어댑터 연결 세팅
-                                ArrayList<Chart_CardItem> chartCardItems = new ArrayList<>();
-                                chartDataAdapter = new ChartData_Adapter(chartCardItems);
-                                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-                                recyclerView.setLayoutManager(linearLayoutManager);
-                                recyclerView.setAnimation(anim_fromRight); // 애니메이션 추가(밑에서 위로)
-                                chartDataAdapter.notifyDataSetChanged();
-
-                                for (int i = 0; i < mdateList.size(); i++) {
-                                    Chart_CardItem cardItem = new Chart_CardItem(mdateList.get(i), mstatusList.get(i), mcontentsList.get(i));
-                                    chartCardItems.add(cardItem);
-                                    recyclerView.removeAllViews();
-                                    recyclerView.setAdapter(chartDataAdapter);
-                                }
                                 linear_nothing.setVisibility(View.INVISIBLE);
 
                             } catch (Exception e) {

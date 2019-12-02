@@ -29,7 +29,7 @@ public class FinishAdvertisement_Activity extends Activity {
         btn_cancel = findViewById(R.id.btn_ad_cancel);
         btn_finish = findViewById(R.id.btn_ad_finish);
 
-        MobileAds.initialize(this, "ca-app-pub-6270688884891981~9770535273");
+        MobileAds.initialize(this, "a-app-pub-6270688884891981~9770535273");
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
 

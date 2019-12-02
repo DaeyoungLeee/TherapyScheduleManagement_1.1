@@ -66,91 +66,39 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigation = findViewById(R.id.bottom_navigation);
         fragment = findViewById(R.id.frame);
         int forlogincount =1; //2번 이상 로그인 시 별점 평가 요청
-        int firstlogin= 0;
-        mDatabase.getReference(email.replace(".","_")).child("login_count").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
 
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                try {
-                    int count=dataSnapshot.getValue(Integer.class);
-                    count++; //로그인 할때마다 카운트 증가
-                    mDatabase.getReference(email.replace(".","_")).child("login_count").setValue(count);
-                }
-                catch (NullPointerException E) {
-                    mDatabase.getReference(email.replace(".", "_")).child("login_count").setValue(0);
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
 
         mDatabase.getReference(email.replace(".","_")).child("login_count").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                try {
-                    int logincount = dataSnapshot.getValue(Integer.class);
-                    if (forlogincount == logincount) {
-                        AlertDialog.Builder givemescoreplz = new AlertDialog.Builder(MainActivity.this);
-                        givemescoreplz.setTitle("평가를 해주세요!! 개발자에게 큰 도움이 됩니다.");
-                        givemescoreplz.setPositiveButton("예", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-
-                                Toast.makeText(getApplicationContext(), "감사합니다~", Toast.LENGTH_SHORT).show();
-                                Intent gotomarket = new Intent(Intent.ACTION_VIEW);
-                                gotomarket.setData(Uri.parse("market://details?id=kr.ac.yonsei.therapyschedulemanagement"));
-                                startActivity(gotomarket);
-                            }
-                        });
-                        givemescoreplz.setNegativeButton("다음에", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                Toast.makeText(getApplicationContext(), "아쉽군요", Toast.LENGTH_SHORT);
-                            }
-                        });
-                        givemescoreplz.show();
-                    }
-
-
-                }
-                catch (NullPointerException K){
-                    mDatabase.getReference(email.replace(".", "_")).child("login_count").setValue(0);
-
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-        mDatabase.getReference(email.replace(".","_")).child("login_count").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-           try{
-                int firstcount = dataSnapshot.getValue(Integer.class);
-                if (firstlogin == firstcount) {
-                    AlertDialog.Builder gotosetting = new AlertDialog.Builder(MainActivity.this);
-                    gotosetting.setTitle("처음이시군요! 아이의 이름과 나이를 설정해주세요");
-                    gotosetting.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                int logincount = dataSnapshot.getValue(Integer.class);
+                if(forlogincount==logincount){
+                    AlertDialog.Builder givemescoreplz = new AlertDialog.Builder(MainActivity.this);
+                    givemescoreplz.setTitle("평가를 해주세요!! 개발자에게 큰 도움이 됩니다.");
+                    givemescoreplz.setPositiveButton("예", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            Intent intent = new Intent(MainActivity.this, Setting_Activity.class);
-                            startActivity(intent);
-                        }
 
+                            Toast.makeText(getApplicationContext(),"감사합니다~",Toast.LENGTH_SHORT).show();
+                            Intent gotomarket = new Intent(Intent.ACTION_VIEW);
+                            gotomarket.setData(Uri.parse("market://details?id=kr.ac.yonsei.therapyschedulemanagement"));
+                            startActivity(gotomarket);
+                        }
                     });
-                    gotosetting.show();
+                    givemescoreplz.setNegativeButton("다음에", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Toast.makeText(getApplicationContext(),"아쉽군요",Toast.LENGTH_SHORT);
+                        }
+                    });
+                    givemescoreplz.show();
+
+
+
+
+
                 }
-            }
-           catch (NullPointerException E){
-               mDatabase.getReference(email.replace(".","_")).child("login_count").setValue(0);
-           }
+
             }
 
             @Override

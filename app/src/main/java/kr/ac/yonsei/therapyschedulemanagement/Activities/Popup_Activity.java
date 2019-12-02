@@ -2,8 +2,10 @@ package kr.ac.yonsei.therapyschedulemanagement.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -55,6 +57,7 @@ public class Popup_Activity extends Activity implements View.OnClickListener {
     RadioButton check_play;
     RadioButton check_physical;
     RadioButton check_occupation;
+    private TextView txt_red, txt_blue, txt_yellow, txt_green, txt_orange;
 
     int save_year;
     int save_month;
@@ -86,6 +89,18 @@ public class Popup_Activity extends Activity implements View.OnClickListener {
         check_play = findViewById(R.id.check_play);
         check_physical = findViewById(R.id.check_physical);
         check_occupation = findViewById(R.id.check_occupation);
+        txt_red = findViewById(R.id.txt_popup_red);
+        txt_blue = findViewById(R.id.txt_popup_blue);
+        txt_yellow = findViewById(R.id.txt_popup_yellow);
+        txt_green = findViewById(R.id.txt_popup_green);
+        txt_orange = findViewById(R.id.txt_popup_orange);
+
+        SharedPreferences settingValue = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        txt_red.setText(settingValue.getString("edtpref_red", "감각통합"));
+        txt_blue.setText(settingValue.getString("edtpref_blue", "언어치료"));
+        txt_yellow.setText(settingValue.getString("edtpref_yellow", "놀이치료"));
+        txt_green.setText(settingValue.getString("edtpref_green", "물리치료"));
+        txt_orange.setText(settingValue.getString("edtpref_orange", "작업치료"));
 
         check_sensory.setOnClickListener(this);
         check_language.setOnClickListener(this);
@@ -294,5 +309,16 @@ public class Popup_Activity extends Activity implements View.OnClickListener {
                 check_physical.setChecked(false);
                 break;
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPreferences settingValue = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        txt_red.setText(settingValue.getString("edtpref_red", "감각통합"));
+        txt_blue.setText(settingValue.getString("edtpref_blue", "언어치료"));
+        txt_yellow.setText(settingValue.getString("edtpref_yellow", "놀이치료"));
+        txt_green.setText(settingValue.getString("edtpref_green", "물리치료"));
+        txt_orange.setText(settingValue.getString("edtpref_orange", "작업치료"));
     }
 }

@@ -91,7 +91,7 @@ public class Home_Fragment extends Fragment {
     private TextView txt_temp, txt_humidity, txt_wind;
     private double latitude, longitude;
     private int year, month, day, day1, day2, nowHour, nowMinute;
-    private SlidingUpPanelLayout sl_q1, sl_q2, sl_q3, sl_q4, sl_q5, sl_q6, sl_q7, sl_q8, sl_q9, sl_q10, sl_main;
+    private SlidingUpPanelLayout sl_main;
     private HomeMonthSchedule_Adapter homeMonthScheduleAdapter;
     private RecyclerView recyclerViewMonth;
     private RelativeLayout linearLayoutMain;
@@ -137,6 +137,7 @@ public class Home_Fragment extends Fragment {
         anim_fromBottom = AnimationUtils.loadAnimation(getContext(), R.anim.from_bottom_fast);
         txt_kidage = view.findViewById(R.id.txt_kidAge);
         txt_kidname = view.findViewById(R.id.txt_kidName);
+        sl_main = view.findViewById(R.id.sliding_layout_home);
 
         recyclerViewMonth = view.findViewById(R.id.recyclerView_home);
         linearLayoutMain = view.findViewById(R.id.linear_main);
@@ -151,7 +152,7 @@ public class Home_Fragment extends Fragment {
         linear_recycle_block.setVisibility(View.VISIBLE);
 
         // 슬라이딩뷰 설정
-        slidingViewSet();
+        slidingViewHierarchy();
 
         // now date
         long now = System.currentTimeMillis();
@@ -443,8 +444,10 @@ public class Home_Fragment extends Fragment {
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            linear_recycle_block.setVisibility(View.VISIBLE);
-                            linear_home_loading.setVisibility(View.INVISIBLE);
+                            if (linear_home_loading.getVisibility() == View.VISIBLE) {
+                                linear_recycle_block.setVisibility(View.VISIBLE);
+                                linear_home_loading.setVisibility(View.INVISIBLE);
+                            }
                         }
                     }, 3500);
                 }
@@ -925,308 +928,8 @@ public class Home_Fragment extends Fragment {
     }
 
     // 슬라이딩 뷰 위계질서
-    private void slidingViewSet() {
-        sl_main = view.findViewById(R.id.sliding_layout_home);
-        sl_q1 = view.findViewById(R.id.Q1);
-        sl_q2 = view.findViewById(R.id.Q2);
-        sl_q3 = view.findViewById(R.id.Q3);
-        sl_q4 = view.findViewById(R.id.Q4);
-        sl_q5 = view.findViewById(R.id.Q5);
-        sl_q6 = view.findViewById(R.id.Q6);
-        sl_q7 = view.findViewById(R.id.Q7);
-        sl_q8 = view.findViewById(R.id.Q8);
-        sl_q9 = view.findViewById(R.id.Q9);
-        sl_q10 = view.findViewById(R.id.Q10);
+    private void slidingViewHierarchy() {
 
-        sl_q1.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
-            @Override
-            public void onPanelSlide(View panel, float slideOffset) {
-
-            }
-
-            @Override
-            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
-                if (newState.toString().equals("DRAGGING")) {
-                    sl_q1.bringToFront();
-                }
-                if (newState.toString().equals("EXPANDED")) {
-                    sl_q2.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-                    sl_q3.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-                    sl_q4.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-                    sl_q5.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-                    sl_q6.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-                    sl_q7.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-                    sl_q8.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-                    sl_q9.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-                    sl_q10.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-
-                    sl_q1.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);
-                    sl_q1.bringToFront();
-
-                } else if (newState.toString().equals("COLLAPSED")) {
-                    sl_q1.bringToFront();
-                    sl_q2.bringToFront();
-                    sl_q3.bringToFront();
-                    sl_q4.bringToFront();
-                    sl_q5.bringToFront();
-                    sl_q6.bringToFront();
-                    sl_q7.bringToFront();
-                    sl_q8.bringToFront();
-                    sl_q9.bringToFront();
-                    sl_q10.bringToFront();
-                }
-            }
-        });
-
-        sl_q2.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
-            @Override
-            public void onPanelSlide(View panel, float slideOffset) {
-
-            }
-
-            @Override
-            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
-                if (newState.toString().equals("DRAGGING")) {
-                    sl_q2.bringToFront();
-                }
-                if (newState.toString().equals("EXPANDED")) {
-                    sl_q2.bringToFront();
-
-                } else if (newState.toString().equals("COLLAPSED")) {
-                    sl_q1.bringToFront();
-                    sl_q2.bringToFront();
-                    sl_q3.bringToFront();
-                    sl_q4.bringToFront();
-                    sl_q5.bringToFront();
-                    sl_q6.bringToFront();
-                    sl_q7.bringToFront();
-                    sl_q8.bringToFront();
-                    sl_q9.bringToFront();
-                    sl_q10.bringToFront();
-                }
-            }
-        });
-        sl_q3.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
-            @Override
-            public void onPanelSlide(View panel, float slideOffset) {
-
-            }
-
-            @Override
-            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
-                if (newState.toString().equals("DRAGGING")) {
-                    sl_q3.bringToFront();
-                }
-                if (newState.toString().equals("EXPANDED")) {
-                    sl_q3.bringToFront();
-                } else if (newState.toString().equals("COLLAPSED")) {
-                    sl_q1.bringToFront();
-                    sl_q2.bringToFront();
-                    sl_q3.bringToFront();
-                    sl_q4.bringToFront();
-                    sl_q5.bringToFront();
-                    sl_q6.bringToFront();
-                    sl_q7.bringToFront();
-                    sl_q8.bringToFront();
-                    sl_q9.bringToFront();
-                    sl_q10.bringToFront();
-                }
-            }
-        });
-        sl_q4.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
-            @Override
-            public void onPanelSlide(View panel, float slideOffset) {
-
-            }
-
-            @Override
-            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
-                if (newState.toString().equals("DRAGGING")) {
-                    sl_q4.bringToFront();
-                }
-                if (newState.toString().equals("EXPANDED")) {
-                    sl_q4.bringToFront();
-
-                } else if (newState.toString().equals("COLLAPSED")) {
-                    sl_q1.bringToFront();
-                    sl_q2.bringToFront();
-                    sl_q3.bringToFront();
-                    sl_q4.bringToFront();
-                    sl_q5.bringToFront();
-                    sl_q6.bringToFront();
-                    sl_q7.bringToFront();
-                    sl_q8.bringToFront();
-                    sl_q9.bringToFront();
-                    sl_q10.bringToFront();
-                }
-            }
-        });
-        sl_q5.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
-            @Override
-            public void onPanelSlide(View panel, float slideOffset) {
-
-            }
-
-            @Override
-            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
-                if (newState.toString().equals("DRAGGING")) {
-                    sl_q5.bringToFront();
-                }
-                if (newState.toString().equals("EXPANDED")) {
-                    sl_q5.bringToFront();
-                } else if (newState.toString().equals("COLLAPSED")) {
-                    sl_q1.bringToFront();
-                    sl_q2.bringToFront();
-                    sl_q3.bringToFront();
-                    sl_q4.bringToFront();
-                    sl_q5.bringToFront();
-                    sl_q6.bringToFront();
-                    sl_q7.bringToFront();
-                    sl_q8.bringToFront();
-                    sl_q9.bringToFront();
-                    sl_q10.bringToFront();
-                }
-            }
-        });
-        sl_q6.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
-            @Override
-            public void onPanelSlide(View panel, float slideOffset) {
-
-            }
-
-            @Override
-            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
-                if (newState.toString().equals("DRAGGING")) {
-                    sl_q6.bringToFront();
-                }
-                if (newState.toString().equals("EXPANDED")) {
-                    sl_q6.bringToFront();
-
-                } else if (newState.toString().equals("COLLAPSED")) {
-                    sl_q1.bringToFront();
-                    sl_q2.bringToFront();
-                    sl_q3.bringToFront();
-                    sl_q4.bringToFront();
-                    sl_q5.bringToFront();
-                    sl_q6.bringToFront();
-                    sl_q7.bringToFront();
-                    sl_q8.bringToFront();
-                    sl_q9.bringToFront();
-                    sl_q10.bringToFront();
-                }
-            }
-        });
-        sl_q7.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
-            @Override
-            public void onPanelSlide(View panel, float slideOffset) {
-
-            }
-
-            @Override
-            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
-                if (newState.toString().equals("DRAGGING")) {
-                    sl_q7.bringToFront();
-                }
-                if (newState.toString().equals("EXPANDED")) {
-                    sl_q7.bringToFront();
-
-                } else if (newState.toString().equals("COLLAPSED")) {
-                    sl_q1.bringToFront();
-                    sl_q2.bringToFront();
-                    sl_q3.bringToFront();
-                    sl_q4.bringToFront();
-                    sl_q5.bringToFront();
-                    sl_q6.bringToFront();
-                    sl_q7.bringToFront();
-                    sl_q8.bringToFront();
-                    sl_q9.bringToFront();
-                    sl_q10.bringToFront();
-                }
-            }
-        });
-        sl_q8.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
-            @Override
-            public void onPanelSlide(View panel, float slideOffset) {
-
-            }
-
-            @Override
-            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
-                if (newState.toString().equals("DRAGGING")) {
-                    sl_q8.bringToFront();
-                }
-                if (newState.toString().equals("EXPANDED")) {
-                    sl_q8.bringToFront();
-
-                } else if (newState.toString().equals("COLLAPSED")) {
-                    sl_q1.bringToFront();
-                    sl_q2.bringToFront();
-                    sl_q3.bringToFront();
-                    sl_q4.bringToFront();
-                    sl_q5.bringToFront();
-                    sl_q6.bringToFront();
-                    sl_q7.bringToFront();
-                    sl_q8.bringToFront();
-                    sl_q9.bringToFront();
-                    sl_q10.bringToFront();
-                }
-            }
-        });
-        sl_q9.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
-            @Override
-            public void onPanelSlide(View panel, float slideOffset) {
-
-            }
-
-            @Override
-            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
-                if (newState.toString().equals("DRAGGING")) {
-                    sl_q9.bringToFront();
-                }
-                if (newState.toString().equals("EXPANDED")) {
-                    sl_q9.bringToFront();
-
-                } else if (newState.toString().equals("COLLAPSED")) {
-                    sl_q1.bringToFront();
-                    sl_q2.bringToFront();
-                    sl_q3.bringToFront();
-                    sl_q4.bringToFront();
-                    sl_q5.bringToFront();
-                    sl_q6.bringToFront();
-                    sl_q7.bringToFront();
-                    sl_q8.bringToFront();
-                    sl_q9.bringToFront();
-                    sl_q10.bringToFront();
-                }
-            }
-        });
-        sl_q10.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
-            @Override
-            public void onPanelSlide(View panel, float slideOffset) {
-
-            }
-
-            @Override
-            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
-                if (newState.toString().equals("DRAGGING")) {
-                    sl_q10.bringToFront();
-                }
-                if (newState.toString().equals("EXPANDED")) {
-                    sl_q10.bringToFront();
-                } else if (newState.toString().equals("COLLAPSED")) {
-                    sl_q1.bringToFront();
-                    sl_q2.bringToFront();
-                    sl_q3.bringToFront();
-                    sl_q4.bringToFront();
-                    sl_q5.bringToFront();
-                    sl_q6.bringToFront();
-                    sl_q7.bringToFront();
-                    sl_q8.bringToFront();
-                    sl_q9.bringToFront();
-                    sl_q10.bringToFront();
-                }
-            }
-        });
     }
 
     @Override

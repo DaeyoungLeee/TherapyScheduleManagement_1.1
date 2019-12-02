@@ -3,22 +3,21 @@
     android:orientation="vertical" android:layout_width="300dp"
     android:layout_gravity="center"
     android:background="#ffffff"
-    android:layout_height="wrap_content">
+    android:layout_height="300dp">
 
     <com.google.android.gms.ads.AdView
         xmlns:ads="http://schemas.android.com/apk/res-auto"
         android:id="@+id/ad_adview_front"
         android:layout_gravity="center" gravity="center"
         android:layout_width="match_parent"
-        ads:adSize = "SMART_BANNER"
+        ads:adSize = "MEDIUM_RECTANGLE"
         android:layout_centerInParent="true"
         android:layout_above="@+id/linear_ad"
-        ads:adUnitId="ca-app-pub-6270688884891981/5003162437"
+        ads:adUnitId="a-app-pub-6270688884891981~9770535273"
         android:layout_height="wrap_content" />
 
     <LinearLayout
         android:id="@+id/linear_ad"
-        android:layout_marginTop="16dp"
         android:layout_width="match_parent"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal"
@@ -30,7 +29,7 @@
             android:layout_weight="1"
             android:id="@+id/btn_ad_cancel"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="50dp"/>
 
         <Button
             android:id="@+id/btn_ad_finish"
@@ -38,7 +37,7 @@
             android:text="종료"
             android:background="#00000000"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="50dp"/>
 
     </LinearLayout>
 
