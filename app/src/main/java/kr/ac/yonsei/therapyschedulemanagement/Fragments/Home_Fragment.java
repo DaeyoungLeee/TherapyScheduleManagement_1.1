@@ -137,7 +137,7 @@ public class Home_Fragment extends Fragment {
         anim_fromBottom = AnimationUtils.loadAnimation(getContext(), R.anim.from_bottom_fast);
         txt_kidage = view.findViewById(R.id.txt_kidAge);
         txt_kidname = view.findViewById(R.id.txt_kidName);
-        sl_main = view.findViewById(R.id.sliding_layout_home);
+        //sl_main = view.findViewById(R.id.sliding_layout_home);
 
         recyclerViewMonth = view.findViewById(R.id.recyclerView_home);
         linearLayoutMain = view.findViewById(R.id.linear_main);
@@ -454,24 +454,24 @@ public class Home_Fragment extends Fragment {
             }).start();
 
             // 메인 슬라이딩 뷰 동작
-            sl_main.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
-                @Override
-                public void onPanelSlide(View panel, float slideOffset) {
-                }
-
-                @Override
-                public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
-                    // 슬라이딩 뷰가 올라오면 Parent뷰로 만들고, 내려가면 캘린더뷰가 Parent 뷰가 되도록
-                    if (newState.toString().equals("DRAGGING")) {
-                        sl_main.bringToFront();
-                    }
-                    if (newState.toString().equals("EXPANDED")) {
-                        sl_main.bringToFront();
-                    } else if (newState.toString().equals("COLLAPSED")) {
-                        linearLayoutMain.bringToFront();
-                    }
-                }
-            });
+//            sl_main.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+//                @Override
+//                public void onPanelSlide(View panel, float slideOffset) {
+//                }
+//
+//                @Override
+//                public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+//                    // 슬라이딩 뷰가 올라오면 Parent뷰로 만들고, 내려가면 캘린더뷰가 Parent 뷰가 되도록
+//                    if (newState.toString().equals("DRAGGING")) {
+//                        sl_main.bringToFront();
+//                    }
+//                    if (newState.toString().equals("EXPANDED")) {
+//                        sl_main.bringToFront();
+//                    } else if (newState.toString().equals("COLLAPSED")) {
+//                        linearLayoutMain.bringToFront();
+//                    }
+//                }
+//            });
 
 
         } catch (Exception e) {
