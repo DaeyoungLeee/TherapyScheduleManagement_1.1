@@ -185,14 +185,30 @@ public class LogIn_Activity extends AppCompatActivity {
                             Intent intent_goMain = new Intent(LogIn_Activity.this, MainActivity.class);
                             startActivity(intent_goMain);
                             Log.d(TAG, "onComplete: 호출");
+                            
+                            try{
+                            
+                                mDatabase.getReference(getmail.replace(".","_")).child("login_count");
+                            }
+                            catch (NullPointerException E ){
 
+                                mDatabase.getReference(getmail.replace(".","_")).child("login_count").setValue(0);
+                                //123
+                            }
+                            
                             mDatabase.getReference(getmail.replace(".","_")).child("login_count").addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
 
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    int count=dataSnapshot.getValue(Integer.class);
-                                    count++; //로그인 할때마다 카운트 증가
-                                    mDatabase.getReference(getmail.replace(".","_")).child("login_count").setValue(count);
+                                  try {
+                                        int count=dataSnapshot.getValue(Integer.class);
+                                        count++; //로그인 할때마다 카운트 증가
+                                        mDatabase.getReference(getmail.replace(".","_")).child("login_count").setValue(count);
+                                    }
+                                    catch (NullPointerException K)
+                                    {
+                                        mDatabase.getReference(getmail.replace(".","_")).child("login_count").setValue(0);
+                                    }
                                 }
 
                                 @Override
