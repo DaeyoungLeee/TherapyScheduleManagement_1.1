@@ -721,7 +721,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:gravity="center" />
-
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -744,6 +746,7 @@
                             android:text="Q10. 방향을 찾거나, 양손 동시 과제를 어려워 할 때"
                             android:textColor="@color/colorPrimary" />
                     </LinearLayout>
+</ScrollView>
                 </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
             </RelativeLayout>

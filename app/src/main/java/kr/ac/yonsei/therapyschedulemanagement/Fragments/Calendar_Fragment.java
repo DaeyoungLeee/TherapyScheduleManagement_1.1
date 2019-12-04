@@ -1,7 +1,9 @@
 package kr.ac.yonsei.therapyschedulemanagement.Fragments;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
@@ -517,40 +520,58 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
     // 삭제!!
     @Override
     public void onDeleteButtonClick(int position) {
-        // 그리고 키값 다시 받아오기
-        keyList.clear();
-        mDatabase.getReference(userEmail)
-                .child("Calendar")
-                .child(year + "/" + month + "/" + date)
-                .child("Therapy_schedule")
-                .child("data_save")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot dataSnapshotKey : dataSnapshot.getChildren()) {
-                            keyList.add(dataSnapshotKey.getKey());
-                        }
-                        mDatabase.getReference(mUser.getEmail().replace(".", "_"))
-                                .child("Calendar")
-                                .child(year + "/" + month + "/" + date)
-                                .child("Therapy_schedule")
-                                .child("data_save")
-                                .child(keyList.get(position))
-                                .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Toast.makeText(getContext(), "삭제되었습니다.", Toast.LENGTH_SHORT).show();
 
-                                refreshAdapter();
+        keyList.clear();
+        AlertDialog.Builder confirm1 = new AlertDialog.Builder(getContext());
+        confirm1.setPositiveButton("수정", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Toast.makeText(getContext(), "수정 test", Toast.LENGTH_SHORT).show();
+            }
+        });
+        confirm1.setNegativeButton("삭제", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                keyList.clear();
+                mDatabase.getReference(userEmail)
+                        .child("Calendar")
+                        .child(year + "/" + month + "/" + date)
+                        .child("Therapy_schedule")
+                        .child("data_save")
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for (DataSnapshot dataSnapshotKey : dataSnapshot.getChildren()) {
+                                    keyList.add(dataSnapshotKey.getKey());
+                                }
+                                mDatabase.getReference(mUser.getEmail().replace(".", "_"))
+                                        .child("Calendar")
+                                        .child(year + "/" + month + "/" + date)
+                                        .child("Therapy_schedule")
+                                        .child("data_save")
+                                        .child(keyList.get(position))
+                                        .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Toast.makeText(getContext(), "삭제되었습니다.", Toast.LENGTH_SHORT).show();
+
+                                        refreshAdapter();
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
                             }
                         });
-                    }
+            }
+        });
+        confirm1.show();
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    }
-                });
+        // 그리고 키값 다시 받아오기
+
     }
 
     private void refreshAdapter() {
