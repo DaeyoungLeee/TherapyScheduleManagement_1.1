@@ -56,7 +56,7 @@ import kr.ac.yonsei.therapyschedulemanagement.Activities.Popup_Activity;
 import kr.ac.yonsei.therapyschedulemanagement.Adatpers.CalendarDaySchdule_Adapter;
 import kr.ac.yonsei.therapyschedulemanagement.CardItem;
 import kr.ac.yonsei.therapyschedulemanagement.R;
-
+import android.view.WindowManager.LayoutParams;
 public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Adapter.OnItemClickedListener {
 
     private static String TAG = "Fragment2";
@@ -567,6 +567,7 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
                         });
             }
         });
+       // LayoutParams abc = confirm1.
         confirm1.show();
 
 
