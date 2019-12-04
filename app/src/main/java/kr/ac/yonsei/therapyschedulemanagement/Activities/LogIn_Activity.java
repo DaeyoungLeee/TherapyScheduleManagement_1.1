@@ -192,6 +192,7 @@ public class LogIn_Activity extends AppCompatActivity {
                             catch (NullPointerException E ){
 
                                 mDatabase.getReference(getmail.replace(".","_")).child("login_count").setValue(0);
+                                //123
                             }
                             mDatabase.getReference(getmail.replace(".","_")).child("login_count").addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
