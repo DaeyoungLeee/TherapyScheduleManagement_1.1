@@ -1,4 +1,97 @@
 <resources>
     <string name="app_name">TherapyScheduleManagement</string>
     <string name="bottomnav_title_0">홈 화면</string>
+    
+    <string name="group1">Q1. 양치질을 하기 싫어 할 때</string>
+    <string name="group2">Q2. 잠을 쉽게 자지 못할 때</string>
+    <string name="group3">Q3. 옷 입기를 싫어할 때</string>
+    <string name="group4">Q4. 세수, 손씻기, 샤워하기 싫어할 때</string>
+    <string name="group5">Q5. 화장실 이용을 무서워 할 때</string>
+    <string name="group6">Q6. 머리 빗는 것을 싫어할 때</string>
+    <string name="group7">Q7. 이발에 어려움을 겪을 때</string>
+    <string name="group8">Q8. 편식이 심할 때</string>
+    <string name="group9">Q9. 높은 곳에 올라가기 싫어할 때(계단, 엘리베이터, 뛰어 내리기 등)</string>
+    <string name="group10">Q10. 방향을 찾거나, 양손 동시 과제를 어려워 할 때(가위질, 공놀이, 좌우의 혼동)</string>
+    
+    <string-array name="group1">
+
+        <item>▶ 양치 전에 츄잉 껌이나 마이쭈를 씹거나, 입 주변을 꾹꾹 눌러주세요.
+ ▶ 세면대에 기대거나 앉아서 양치질을 하도록 해주세요 (안정감을 느낄 수 있도록)
+ ▶ 거울의 빛 반사에 주의하도록 해주세요.
+ ▶ 전동 칫솔 사용도 도움이 됩니다.</item>
+
+    </string-array>
+
+    <string-array name="group2">
+
+        <item>▶ 자기전에 어깨나 무릎과 같은 큰 관절들을 지긋이 눌러주시고
+ ▶ 조용한 목소리로 책을 읽어 주시거나 좋아하는 인형이나 이불을 사용하도록 해주세요.</item>
+
+    </string-array>
+
+    <string-array name="group3">
+
+        <item>▶ 아이가 선호하는 재질의 옷이 있는지 먼저 파악할 수 있도록 해주세요.
+ ▶ 새 옷은 여러 번 세탁하고 상표를 제거해주세요.
+ ▶ 향에 예민할 수 있으니 섬유유연제 사용에 주의해 주세요
+ ▶ 좋아하는 장식물이나 부착물(캐릭터)로 옷을 바꾸어주세요.
+</item>
+
+    </string-array>
+
+    <string-array name="group4">
+
+        <item>▶ 세수 및 손을 씻을 때, 아이의 등 뒤에서 아이를 안아 안정감을 줄 수 있도록 해주세요.
+ ▶ 시각적으로 자극이 되지 않도록 조명을 조절할 수 있으면 좋아요.
+ ▶ 샤워할 시 머리 위치에 변화가 생기지 않게 해주시고 자세를 바꿀 때 먼저 말로 알려주세요.</item>
+
+    </string-array>
+
+    <string-array name="group5">
+
+        <item>▶ 무게감 있는 옷이나 조끼로 앉아있을 수 있는 경험을 늘려주시고 발 받침대가 있으면 쉽게 안정할 수 있어요.
+ ▶ 촉각이 민감하다면 물티슈나 물수건을 사용할 수 있도록 해주세요.
+ ▶ 소리에 민감하다면 공중 화장실 사용 시 핸드 드라이기 고장 표시를 부착해주세요.</item>
+
+    </string-array>
+
+    <string-array name="group6">
+
+        <item>▶ 무게감 있는 옷이나 조끼로 앉아있을 수 있는 경험을 늘려주시고 발 받침대가 있으면 쉽게 안정할 수 있어요.
+ ▶ 촉각이 민감하다면 물티슈나 물수건을 사용할 수 있도록 해주세요.
+ ▶ 소리에 민감하다면 공중 화장실 사용 시 핸드 드라이기 고장 표시를 부착해주세요.</item>
+
+    </string-array>
+
+    <string-array name="group7">
+
+        <item>▶ 무게감 있는 옷이나 조끼로 앉아있을 수 있는 경험을 늘려주시고 발 받침대가 있으면 쉽게 안정할 수 있어요.
+ ▶ 촉각이 민감하다면 물티슈나 물수건을 사용할 수 있도록 해주세요.
+ ▶ 소리에 민감하다면 공중 화장실 사용 시 핸드 드라이기 고장 표시를 부착해주세요.</item>
+
+    </string-array>
+
+    <string-array name="group8">
+
+        <item>▶ 무게감 있는 옷이나 조끼로 앉아있을 수 있는 경험을 늘려주시고 발 받침대가 있으면 쉽게 안정할 수 있어요.
+ ▶ 촉각이 민감하다면 물티슈나 물수건을 사용할 수 있도록 해주세요.
+ ▶ 소리에 민감하다면 공중 화장실 사용 시 핸드 드라이기 고장 표시를 부착해주세요.</item>
+
+    </string-array>
+
+    <string-array name="group9">
+
+        <item>▶ 무게감 있는 옷이나 조끼로 앉아있을 수 있는 경험을 늘려주시고 발 받침대가 있으면 쉽게 안정할 수 있어요.
+ ▶ 촉각이 민감하다면 물티슈나 물수건을 사용할 수 있도록 해주세요.
+ ▶ 소리에 민감하다면 공중 화장실 사용 시 핸드 드라이기 고장 표시를 부착해주세요.</item>
+
+    </string-array>
+
+    <string-array name="group10">
+
+        <item>▶ 무게감 있는 옷이나 조끼로 앉아있을 수 있는 경험을 늘려주시고 발 받침대가 있으면 쉽게 안정할 수 있어요.
+ ▶ 촉각이 민감하다면 물티슈나 물수건을 사용할 수 있도록 해주세요.
+ ▶ 소리에 민감하다면 공중 화장실 사용 시 핸드 드라이기 고장 표시를 부착해주세요.</item>
+
+    </string-array>
 </resources>

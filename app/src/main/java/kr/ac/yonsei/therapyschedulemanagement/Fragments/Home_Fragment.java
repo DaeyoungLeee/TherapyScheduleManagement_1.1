@@ -23,9 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -46,14 +44,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
@@ -64,14 +60,13 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 
+import kr.ac.yonsei.therapyschedulemanagement.Activities.QnA_Activity;
 import kr.ac.yonsei.therapyschedulemanagement.Adatpers.HomeMonthSchedule_Adapter;
 import kr.ac.yonsei.therapyschedulemanagement.HomeMonth_CardItem;
 import kr.ac.yonsei.therapyschedulemanagement.R;
@@ -91,7 +86,6 @@ public class Home_Fragment extends Fragment {
     private TextView txt_temp, txt_humidity, txt_wind;
     private double latitude, longitude;
     private int year, month, day, day1, day2, nowHour, nowMinute;
-    private SlidingUpPanelLayout sl_main;
     private HomeMonthSchedule_Adapter homeMonthScheduleAdapter;
     private RecyclerView recyclerViewMonth;
     private RelativeLayout linearLayoutMain;
@@ -100,6 +94,7 @@ public class Home_Fragment extends Fragment {
     private LinearLayout linear_home_loading;
     private Animation anim_fromBottom;
     private TextView txt_kidname, txt_kidage;
+    private Button btn_qna;
 
     private boolean isRunning1 = false;
 
@@ -137,7 +132,7 @@ public class Home_Fragment extends Fragment {
         anim_fromBottom = AnimationUtils.loadAnimation(getContext(), R.anim.from_bottom_fast);
         txt_kidage = view.findViewById(R.id.txt_kidAge);
         txt_kidname = view.findViewById(R.id.txt_kidName);
-        //sl_main = view.findViewById(R.id.sliding_layout_home);
+        btn_qna = view.findViewById(R.id.btn_qna);
 
         recyclerViewMonth = view.findViewById(R.id.recyclerView_home);
         linearLayoutMain = view.findViewById(R.id.linear_main);
@@ -150,9 +145,6 @@ public class Home_Fragment extends Fragment {
         avi_home_weather.smoothToShow();
         home_block.setVisibility(View.VISIBLE);
         linear_recycle_block.setVisibility(View.VISIBLE);
-
-        // 슬라이딩뷰 설정
-        slidingViewHierarchy();
 
         // now date
         long now = System.currentTimeMillis();
@@ -168,9 +160,18 @@ public class Home_Fragment extends Fragment {
 
         // GPS가 꺼져잇으면 켜도록 유도
         chkGpsService();
-        // test git
 
         linearLayoutMain.bringToFront();
+
+
+        // QnA 버튼 클릭
+        btn_qna.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent_qna = new Intent(getContext(), QnA_Activity.class);
+                startActivity(intent_qna);
+            }
+        });
 
         /** GPS 연동을 위한 권한 체크 및 위치정보 찾기 */
         if (Build.VERSION.SDK_INT >= 23 &&
@@ -452,27 +453,6 @@ public class Home_Fragment extends Fragment {
                     }, 3500);
                 }
             }).start();
-
-            // 메인 슬라이딩 뷰 동작
-//            sl_main.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
-//                @Override
-//                public void onPanelSlide(View panel, float slideOffset) {
-//                }
-//
-//                @Override
-//                public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
-//                    // 슬라이딩 뷰가 올라오면 Parent뷰로 만들고, 내려가면 캘린더뷰가 Parent 뷰가 되도록
-//                    if (newState.toString().equals("DRAGGING")) {
-//                        sl_main.bringToFront();
-//                    }
-//                    if (newState.toString().equals("EXPANDED")) {
-//                        sl_main.bringToFront();
-//                    } else if (newState.toString().equals("COLLAPSED")) {
-//                        linearLayoutMain.bringToFront();
-//                    }
-//                }
-//            });
-
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -927,10 +907,6 @@ public class Home_Fragment extends Fragment {
         }
     }
 
-    // 슬라이딩 뷰 위계질서
-    private void slidingViewHierarchy() {
-
-    }
 
     @Override
     public void onDetach() {

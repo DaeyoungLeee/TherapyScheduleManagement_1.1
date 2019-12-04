@@ -42,13 +42,9 @@ public class MainActivity extends AppCompatActivity {
     private static int ONE_MINUTE = 5626;
     private AdView adView1;
 
-    private PagerAdapter pagerAdapter;
-    private ViewPager viewPager;
     private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthStateListener;
-    private FirebaseUser mUser;
     private FirebaseDatabase mDatabase;
-    private DatabaseReference mRef;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,48 +53,48 @@ public class MainActivity extends AppCompatActivity {
         AdRequest adRequest = new AdRequest.Builder().build();
 
         mDatabase = FirebaseDatabase.getInstance();
-        mAuth =FirebaseAuth.getInstance();
-        String email =  mAuth.getCurrentUser().getEmail();
+        mAuth = FirebaseAuth.getInstance();
+        String email = mAuth.getCurrentUser().getEmail();
 
         adView1 = findViewById(R.id.ad_adview1);
         adView1.loadAd(adRequest);
 
         bottomNavigation = findViewById(R.id.bottom_navigation);
         fragment = findViewById(R.id.frame);
-        int forlogincount =1; //2번 이상 로그인 시 별점 평가 요청
+        int forlogincount = 1; //2번 이상 로그인 시 별점 평가 요청
 
 
-        mDatabase.getReference(email.replace(".","_")).child("login_count").addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase.getReference(email.replace(".", "_")).child("login_count").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                int logincount = dataSnapshot.getValue(Integer.class);
-                if(forlogincount==logincount){
-                    AlertDialog.Builder givemescoreplz = new AlertDialog.Builder(MainActivity.this);
-                    givemescoreplz.setTitle("평가를 해주세요!! 개발자에게 큰 도움이 됩니다.");
-                    givemescoreplz.setPositiveButton("예", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
+                try {
 
-                            Toast.makeText(getApplicationContext(),"감사합니다~",Toast.LENGTH_SHORT).show();
-                            Intent gotomarket = new Intent(Intent.ACTION_VIEW);
-                            gotomarket.setData(Uri.parse("market://details?id=kr.ac.yonsei.therapyschedulemanagement"));
-                            startActivity(gotomarket);
-                        }
-                    });
-                    givemescoreplz.setNegativeButton("다음에", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            Toast.makeText(getApplicationContext(),"아쉽군요",Toast.LENGTH_SHORT);
-                        }
-                    });
-                    givemescoreplz.show();
+                    int logincount = dataSnapshot.getValue(Integer.class);
+                    if (forlogincount == logincount) {
+                        AlertDialog.Builder givemescoreplz = new AlertDialog.Builder(MainActivity.this);
+                        givemescoreplz.setTitle("평가를 해주세요!! 개발자에게 큰 도움이 됩니다.");
+                        givemescoreplz.setPositiveButton("예", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
 
+                                Toast.makeText(getApplicationContext(), "감사합니다~", Toast.LENGTH_SHORT).show();
+                                Intent gotomarket = new Intent(Intent.ACTION_VIEW);
+                                gotomarket.setData(Uri.parse("market://details?id=kr.ac.yonsei.therapyschedulemanagement"));
+                                startActivity(gotomarket);
+                            }
+                        });
+                        givemescoreplz.setNegativeButton("다음에", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Toast.makeText(getApplicationContext(), "아쉽군요", Toast.LENGTH_SHORT);
+                            }
+                        });
+                        givemescoreplz.show();
 
-
-
-
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-
             }
 
             @Override

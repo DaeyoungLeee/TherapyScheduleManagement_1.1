@@ -87,9 +87,10 @@
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:layout_margin="4dp"
-        android:background="@color/colorPrimary"
+        android:background="@drawable/btn_click_primary"
         android:text="수정 및 추가"
-        android:textColor="#ffffff" />
+        android:textStyle="bold"
+        android:textColor="#660099" />
 
     <LinearLayout
         android:id="@+id/linear_empty"

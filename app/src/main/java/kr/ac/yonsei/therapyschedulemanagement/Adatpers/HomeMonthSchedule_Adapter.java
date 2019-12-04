@@ -88,7 +88,7 @@ public class HomeMonthSchedule_Adapter extends RecyclerView.Adapter<HomeMonthSch
 
             }
         });
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+       /* holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             long now = System.currentTimeMillis();
             Date date = new Date(now);
             int year = date.getYear() + 2000 - 100;
@@ -119,7 +119,6 @@ public class HomeMonthSchedule_Adapter extends RecyclerView.Adapter<HomeMonthSch
                                                     keyList.add(dataSnapshotKey.getKey());
                                                 }
 
-
                                                 holder.mDatabase.getReference(holder.mAuth.getCurrentUser().getEmail().replace(".", "_"))
                                                         .child("Calendar")
                                                         .child(year + "/" + month + "/" + cardItemsMonth.get(position).getDayMonth())
@@ -148,7 +147,7 @@ public class HomeMonthSchedule_Adapter extends RecyclerView.Adapter<HomeMonthSch
                 popupMenu.show();
                 return true;
             }
-        });
+        });*/
     }
 
     @Override
