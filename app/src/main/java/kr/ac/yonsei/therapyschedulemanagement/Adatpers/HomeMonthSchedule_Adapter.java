@@ -62,19 +62,19 @@ public class HomeMonthSchedule_Adapter extends RecyclerView.Adapter<HomeMonthSch
         holder.itemView.setBackgroundColor(Color.parseColor("#00FFFFFF"));
         if (cardItemsMonth.get(position).getTherapyMonth().equals("1")) {
             holder.txt_therapy_month.setText(red_icon);
-            holder.img_line.setImageResource(R.drawable.vertical_line_red_icon);
+            holder.img_line.setBackgroundResource(R.color.colorRed);
         } else if (cardItemsMonth.get(position).getTherapyMonth().equals("2")) {
             holder.txt_therapy_month.setText(blue_icon);
-            holder.img_line.setImageResource(R.drawable.vertical_line_blue_icon);
+            holder.img_line.setBackgroundResource(R.color.colorBlue);
         } else if (cardItemsMonth.get(position).getTherapyMonth().equals("3")) {
             holder.txt_therapy_month.setText(yellow_icon);
-            holder.img_line.setImageResource(R.drawable.vertical_line_yellow_icon);
+            holder.img_line.setBackgroundResource(R.color.colorYellow);
         } else if (cardItemsMonth.get(position).getTherapyMonth().equals("4")) {
             holder.txt_therapy_month.setText(green_icon);
-            holder.img_line.setImageResource(R.drawable.vertical_line_green_icon);
+            holder.img_line.setBackgroundResource(R.color.colorGreen);
         } else if (cardItemsMonth.get(position).getTherapyMonth().equals("5")) {
             holder.txt_therapy_month.setText(orange_icon);
-            holder.img_line.setImageResource(R.drawable.vertical_line_orange_icon);
+            holder.img_line.setBackgroundResource(R.color.colorOrange);
         }
 
         if (cardItemsMonth.size() != 0) {
@@ -167,9 +167,9 @@ public class HomeMonthSchedule_Adapter extends RecyclerView.Adapter<HomeMonthSch
     public class CustomViewHolder extends RecyclerView.ViewHolder {
 
         private TextView txt_therapy_month, txt_start_time_month, txt_end_time_month, txt_day_month;
-        private ImageView img_line;
         private FirebaseDatabase mDatabase;
         private FirebaseAuth mAuth;
+        private View img_line;
 
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -177,9 +177,9 @@ public class HomeMonthSchedule_Adapter extends RecyclerView.Adapter<HomeMonthSch
             this.txt_start_time_month = itemView.findViewById(R.id.txt_start_time_month);
             this.txt_end_time_month = itemView.findViewById(R.id.txt_end_time_month);
             this.txt_day_month = itemView.findViewById(R.id.txt_day_month);
-            this.img_line = itemView.findViewById(R.id.img_item_line);
             this.mDatabase = FirebaseDatabase.getInstance();
             this.mAuth = FirebaseAuth.getInstance();
+            this.img_line = itemView.findViewById(R.id.color_item_line);
         }
     }
 }

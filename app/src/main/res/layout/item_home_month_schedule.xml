@@ -57,13 +57,13 @@
                 tools:ignore="SmallSp" />
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/img_item_line"
-            android:layout_width="wrap_content"
-            android:layout_height="70dp"
-            android:layout_gravity="center"
-            android:layout_marginStart="4dp"
-            android:src="@drawable/vertical_line_icon" />
+        <View
+            android:id="@+id/color_item_line"
+            android:layout_width="3dp"
+            android:layout_height="64dp"
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="center_vertical"
+            android:background="@color/colorRed"/>
 
         <LinearLayout
             android:layout_width="match_parent"
