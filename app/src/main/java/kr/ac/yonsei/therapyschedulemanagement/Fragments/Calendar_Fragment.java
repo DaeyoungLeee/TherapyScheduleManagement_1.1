@@ -2,6 +2,7 @@ package kr.ac.yonsei.therapyschedulemanagement.Fragments;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -698,15 +700,15 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
 
                                                                         for (int i = 0; i < dotList.size(); i++) {
                                                                             if (therapyList.get(i).equals("1")) {
-                                                                                eventArrayList.add(new Event(Color.RED, Long.parseLong(dotList.get(i))));
+                                                                                eventArrayList.add(new Event(getResources().getColor(R.color.colorRed), Long.parseLong(dotList.get(i))));
                                                                             } else if (therapyList.get(i).equals("2")) {
-                                                                                eventArrayList.add(new Event(Color.BLUE, Long.parseLong(dotList.get(i))));
+                                                                                eventArrayList.add(new Event(getResources().getColor(R.color.colorBlue), Long.parseLong(dotList.get(i))));
                                                                             } else if (therapyList.get(i).equals("3")) {
-                                                                                eventArrayList.add(new Event(Color.YELLOW, Long.parseLong(dotList.get(i))));
+                                                                                eventArrayList.add(new Event(getResources().getColor(R.color.colorYellow), Long.parseLong(dotList.get(i))));
                                                                             } else if (therapyList.get(i).equals("4")) {
-                                                                                eventArrayList.add(new Event(Color.GREEN, Long.parseLong(dotList.get(i))));
+                                                                                eventArrayList.add(new Event(getResources().getColor(R.color.colorGreen), Long.parseLong(dotList.get(i))));
                                                                             } else if (therapyList.get(i).equals("5")) {
-                                                                                eventArrayList.add(new Event(Color.MAGENTA, Long.parseLong(dotList.get(i))));
+                                                                                eventArrayList.add(new Event(getResources().getColor(R.color.colorOrange), Long.parseLong(dotList.get(i))));
                                                                             }
                                                                             compactCalendarView.removeAllEvents();
                                                                             compactCalendarView.addEvents(eventArrayList);

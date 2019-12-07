@@ -7,10 +7,10 @@
     <color name="colorDark">#212121</color>
     <color name="colorTransparentPrimary">#6698f286</color>
 
-    <color name="colorRed">#de3333</color>
-    <color name="colorYellow">#dddd33</color>
-    <color name="colorBlue">#3333de</color>
-    <color name="colorGreen">#33ee33</color>
-    <color name="colorPink">#ee55aa</color>
+    <color name="colorRed">#E74C3C</color>
+    <color name="colorYellow">#F1C40F</color>
+    <color name="colorBlue">#3498DB</color>
+    <color name="colorGreen">#2ECC71</color>
+    <color name="colorOrange">#E67E22</color>
 
 </resources>
