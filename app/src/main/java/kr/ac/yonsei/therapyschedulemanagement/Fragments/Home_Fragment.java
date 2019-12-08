@@ -142,8 +142,8 @@ public class Home_Fragment extends Fragment {
         linear_home_loading = view.findViewById(R.id.linear_home_loading);
 
         // 날씨정보창 로딩
-        avi_home_weather.smoothToShow();
         home_block.setVisibility(View.VISIBLE);
+        avi_home_weather.smoothToShow();
         linear_recycle_block.setVisibility(View.VISIBLE);
 
         // now date

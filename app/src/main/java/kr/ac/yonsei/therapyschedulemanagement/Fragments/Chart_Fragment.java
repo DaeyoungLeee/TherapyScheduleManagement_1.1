@@ -854,7 +854,7 @@ public class Chart_Fragment extends Fragment {
         @Override
         public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
             // write your logic here
-            return mFormat.format(value) + " $"; // e.g. append a dollar-sign
+            return mFormat.format(value); // e.g. append a dollar-sign
         }
     }
 }

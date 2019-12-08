@@ -160,53 +160,50 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
                         float upDX = upRawX - downRawX;
                         float upDY = upRawY - downRawY;
 
-                        if((Math.abs(upDX) < CLICK_DRAG_TOLERANCE && Math.abs(upDY) < CLICK_DRAG_TOLERANCE))
+                        if ((Math.abs(upDX) < CLICK_DRAG_TOLERANCE && Math.abs(upDY) < CLICK_DRAG_TOLERANCE))
                             return false;
 
                         View viewParent2 = (View) v.getParent();
-                        float borderY,borderX;
-                        float oldX=v.getX(), oldY=v.getY();
-                        float finalX,finalY;
+                        float borderY, borderX;
+                        float oldX = v.getX(), oldY = v.getY();
+                        float finalX, finalY;
 
-                        borderY = Math.min(v.getY()-viewParent2.getTop(),viewParent2.getBottom()-v.getY());
-                        borderX = Math.min(v.getX()-viewParent2.getLeft(),viewParent2.getRight()-v.getX());
+                        borderY = Math.min(v.getY() - viewParent2.getTop(), viewParent2.getBottom() - v.getY());
+                        borderX = Math.min(v.getX() - viewParent2.getLeft(), viewParent2.getRight() - v.getX());
 
                         //You can set your dp margin from dimension resources (Suggested)
                         //float fab_margin= getResources().getDimension(R.dimen.fab_margin);
-                        float fab_margin=15;
+                        float fab_margin = 15;
 
                         //check if is nearest Y o X
-                        if(borderX>borderY) {
-                            if(v.getY()>viewParent2.getHeight()/2) { //view near Bottom
+                        if (borderX > borderY) {
+                            if (v.getY() > viewParent2.getHeight() / 2) { //view near Bottom
                                 finalY = viewParent2.getBottom() - v.getHeight();
                                 finalY = Math.min(viewParent2.getHeight() - v.getHeight(), finalY) - fab_margin; // Don't allow the FAB past the bottom of the parent
-                            }
-                            else {  //view vicina a Top
+                            } else {  //view vicina a Top
                                 finalY = viewParent2.getTop();
                                 finalY = Math.max(0, finalY) + fab_margin; // Don't allow the FAB past the top of the parent
                             }
                             //check if X it's over fab_margin
-                            finalX=oldX;
-                            if(v.getX()+viewParent2.getLeft()<fab_margin)
-                                finalX=viewParent2.getLeft()+fab_margin;
-                            if(viewParent2.getRight()-v.getX()-v.getWidth()<fab_margin)
-                                finalX=viewParent2.getRight()- v.getWidth()-fab_margin;
-                        }
-                        else {  //view near Right
-                            if(v.getX()>viewParent2.getWidth()/2) {
+                            finalX = oldX;
+                            if (v.getX() + viewParent2.getLeft() < fab_margin)
+                                finalX = viewParent2.getLeft() + fab_margin;
+                            if (viewParent2.getRight() - v.getX() - v.getWidth() < fab_margin)
+                                finalX = viewParent2.getRight() - v.getWidth() - fab_margin;
+                        } else {  //view near Right
+                            if (v.getX() > viewParent2.getWidth() / 2) {
                                 finalX = viewParent2.getRight() - v.getWidth();
                                 finalX = Math.max(0, finalX) - fab_margin; // Don't allow the FAB past the left hand side of the parent
-                            }
-                            else {  //view near Left
+                            } else {  //view near Left
                                 finalX = viewParent2.getLeft();
                                 finalX = Math.min(viewParent2.getWidth() - v.getWidth(), finalX) + fab_margin; // Don't allow the FAB past the right hand side of the parent
                             }
                             //check if Y it's over fab_margin
-                            finalY=oldY;
-                            if(v.getY()+viewParent2.getTop()<fab_margin)
-                                finalY=viewParent2.getTop()+fab_margin;
-                            if(viewParent2.getBottom()-v.getY()-v.getHeight()<fab_margin)
-                                finalY=viewParent2.getBottom()-v.getHeight()-fab_margin;
+                            finalY = oldY;
+                            if (v.getY() + viewParent2.getTop() < fab_margin)
+                                finalY = viewParent2.getTop() + fab_margin;
+                            if (viewParent2.getBottom() - v.getY() - v.getHeight() < fab_margin)
+                                finalY = viewParent2.getBottom() - v.getHeight() - fab_margin;
                         }
 
                         v.animate()
@@ -532,20 +529,24 @@ public class Calendar_Fragment extends Fragment implements CalendarDaySchdule_Ad
                         for (DataSnapshot dataSnapshotKey : dataSnapshot.getChildren()) {
                             keyList.add(dataSnapshotKey.getKey());
                         }
-                        mDatabase.getReference(mUser.getEmail().replace(".", "_"))
-                                .child("Calendar")
-                                .child(year + "/" + month + "/" + date)
-                                .child("Therapy_schedule")
-                                .child("data_save")
-                                .child(keyList.get(position))
-                                .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Toast.makeText(getContext(), "삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                        try {
+                            mDatabase.getReference(mUser.getEmail().replace(".", "_"))
+                                    .child("Calendar")
+                                    .child(year + "/" + month + "/" + date)
+                                    .child("Therapy_schedule")
+                                    .child("data_save")
+                                    .child(keyList.get(position))
+                                    .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Toast.makeText(getContext(), "삭제되었습니다.", Toast.LENGTH_SHORT).show();
 
-                                refreshAdapter();
-                            }
-                        });
+                                    refreshAdapter();
+                                }
+                            });
+                        } catch (Exception e) {
+
+                        }
                     }
 
                     @Override

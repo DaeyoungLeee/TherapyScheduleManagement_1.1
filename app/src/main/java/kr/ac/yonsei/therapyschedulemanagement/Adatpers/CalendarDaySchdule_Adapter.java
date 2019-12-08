@@ -98,6 +98,7 @@ public class CalendarDaySchdule_Adapter extends RecyclerView.Adapter<CalendarDay
                 Log.d("tag", "onClick: num" + holder.getAdapterPosition());
                 if (listener != null) {
                     listener.onDeleteButtonClick(holder.getAdapterPosition());
+                    remove(holder.getAdapterPosition());
                 }
             }
         });
