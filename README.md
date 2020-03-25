@@ -12,3 +12,10 @@
 * 이상행동 대처 방법 Q&A
 
 ## 실행 방법
+![1](https://user-images.githubusercontent.com/46988443/77521683-6d075b00-6ec6-11ea-98c8-d216af65b6bf.PNG)
+![캡처](https://user-images.githubusercontent.com/46988443/77521887-b3f55080-6ec6-11ea-8743-faba5a3d8b6b.PNG)
+![캡처](https://user-images.githubusercontent.com/46988443/77521975-d6876980-6ec6-11ea-8ab2-1d8f7958984a.PNG)
+![캡처](https://user-images.githubusercontent.com/46988443/77522105-06cf0800-6ec7-11ea-9959-4d3ef9471e08.PNG)
+
+## 시연 동영상
+[https://youtu.be/vU26yu2y3CY]
